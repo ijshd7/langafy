@@ -26,6 +26,10 @@ public class AppDbContext : DbContext
     public DbSet<UserVocabulary> UserVocabulary => Set<UserVocabulary>();
     public DbSet<Vocabulary> Vocabulary => Set<Vocabulary>();
 
+    // Conversations
+    public DbSet<Conversation> Conversations => Set<Conversation>();
+    public DbSet<Message> Messages => Set<Message>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -194,6 +198,52 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.Vocabulary)
                 .WithMany(v => v.UserVocabularyItems)
                 .HasForeignKey(e => e.VocabularyId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Conversation configuration
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => new { e.UserId, e.LanguageId });
+            entity.Property(e => e.CefrLevel).HasMaxLength(10).IsRequired();
+            entity.Property(e => e.Topic).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.Conversations)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Language)
+                .WithMany()
+                .HasForeignKey(e => e.LanguageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Lesson)
+                .WithMany()
+                .HasForeignKey(e => e.LessonId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasMany(e => e.Messages)
+                .WithOne(m => m.Conversation)
+                .HasForeignKey(m => m.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Message configuration
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.ConversationId);
+            entity.Property(e => e.Role).IsRequired();
+            entity.Property(e => e.Content).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(e => e.Conversation)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(e => e.ConversationId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

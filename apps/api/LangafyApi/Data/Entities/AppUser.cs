@@ -36,4 +36,5 @@ public class AppUser
     public ICollection<UserLanguage> UserLanguages { get; set; } = new List<UserLanguage>();
     public ICollection<UserProgress> UserProgress { get; set; } = new List<UserProgress>();
     public ICollection<UserVocabulary> UserVocabulary { get; set; } = new List<UserVocabulary>();
+    public ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
 }

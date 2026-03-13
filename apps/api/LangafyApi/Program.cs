@@ -44,9 +44,94 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+// Add CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policyBuilder =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            // Development: allow localhost:3000 (web) and common Expo dev ports
+            policyBuilder
+                .WithOrigins("http://localhost:3000", "http://localhost:19000", "http://localhost:19001")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        }
+        else
+        {
+            // Production: use environment variable for allowed origin
+            var allowedOrigin = builder.Configuration["AllowedOrigin"]
+                ?? throw new InvalidOperationException("AllowedOrigin configuration is missing in production.");
+            policyBuilder
+                .WithOrigins(allowedOrigin)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        }
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+// Global exception handler middleware
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+
+        context.Response.ContentType = "application/problem+json";
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        var problemDetails = new
+        {
+            type = "https://langafy.example.com/errors/internal-server-error",
+            title = "An unexpected error occurred",
+            status = StatusCodes.Status500InternalServerError,
+            detail = app.Environment.IsDevelopment() ? exception?.Message : "Please try again later.",
+            instance = context.Request.Path
+        };
+
+        await context.Response.WriteAsJsonAsync(problemDetails);
+    });
+});
+
+// Request logging middleware
+app.Use(async (context, next) =>
+{
+    var startTime = DateTime.UtcNow;
+    var path = context.Request.Path;
+    var method = context.Request.Method;
+
+    try
+    {
+        await next();
+    }
+    finally
+    {
+        var duration = DateTime.UtcNow - startTime;
+        var statusCode = context.Response.StatusCode;
+
+        var logLevel = statusCode >= 500 ? LogLevel.Error : statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+        logger.Log(
+            logLevel,
+            "HTTP {Method} {Path} responded with {StatusCode} in {DurationMs}ms",
+            method,
+            path,
+            statusCode,
+            duration.TotalMilliseconds
+        );
+    }
+});
+
+// CORS middleware
+app.UseCors("AllowFrontend");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

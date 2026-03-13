@@ -3,6 +3,7 @@ using LangafyApi.Features.Auth;
 using LangafyApi.Features.Exercises;
 using LangafyApi.Features.Languages;
 using LangafyApi.Features.Lessons;
+using LangafyApi.Features.Progress;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -70,5 +71,6 @@ app.MapAuthEndpoints();
 app.MapLanguageEndpoints();
 app.MapLessonEndpoints();
 app.MapExerciseEndpoints();
+app.MapProgressEndpoints();
 
 app.Run();

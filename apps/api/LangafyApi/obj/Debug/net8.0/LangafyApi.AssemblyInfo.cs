@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LangafyApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e8a665a42fa35cdf1ae12af361e336d9aca8d67")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2ec5a45bde7a756dc4d70861c11ba5b3ca52995")]
 [assembly: System.Reflection.AssemblyProductAttribute("LangafyApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LangafyApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

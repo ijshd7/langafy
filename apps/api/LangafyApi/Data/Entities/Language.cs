@@ -29,4 +29,5 @@ public class Language
 
     // Navigation properties
     public ICollection<Unit> Units { get; set; } = new List<Unit>();
+    public ICollection<Vocabulary> VocabularyItems { get; set; } = new List<Vocabulary>();
 }

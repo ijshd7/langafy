@@ -19,6 +19,13 @@ public class AppDbContext : DbContext
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<Exercise> Exercises => Set<Exercise>();
 
+    // User and Progress
+    public DbSet<AppUser> Users => Set<AppUser>();
+    public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
+    public DbSet<UserProgress> UserProgress => Set<UserProgress>();
+    public DbSet<UserVocabulary> UserVocabulary => Set<UserVocabulary>();
+    public DbSet<Vocabulary> Vocabulary => Set<Vocabulary>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -94,6 +101,99 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.Lesson)
                 .WithMany(l => l.Exercises)
                 .HasForeignKey(e => e.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // AppUser configuration
+        modelBuilder.Entity<AppUser>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.FirebaseUid).IsUnique();
+            entity.Property(e => e.FirebaseUid).HasMaxLength(128).IsRequired();
+            entity.Property(e => e.Email).HasMaxLength(256).IsRequired();
+            entity.Property(e => e.DisplayName).HasMaxLength(200).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.LastActiveAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        // Vocabulary configuration
+        modelBuilder.Entity<Vocabulary>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.LanguageId, e.CefrLevelId });
+            entity.Property(e => e.WordTarget).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.WordEn).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.PartOfSpeech).HasMaxLength(50);
+            entity.Property(e => e.ExampleSentenceTarget).HasMaxLength(1000);
+            entity.Property(e => e.ExampleSentenceEn).HasMaxLength(1000);
+
+            entity.HasOne(e => e.Language)
+                .WithMany(l => l.VocabularyItems)
+                .HasForeignKey(e => e.LanguageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.CefrLevel)
+                .WithMany()
+                .HasForeignKey(e => e.CefrLevelId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // UserLanguage configuration
+        modelBuilder.Entity<UserLanguage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.UserId, e.LanguageId }).IsUnique();
+            entity.Property(e => e.CurrentCefrLevel).HasMaxLength(10).IsRequired();
+            entity.Property(e => e.StartedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.UserLanguages)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Language)
+                .WithMany()
+                .HasForeignKey(e => e.LanguageId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // UserProgress configuration
+        modelBuilder.Entity<UserProgress>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.UserId, e.ExerciseId });
+            entity.Property(e => e.Score).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.Attempts).IsRequired().HasDefaultValue(0);
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.UserProgress)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Exercise)
+                .WithMany()
+                .HasForeignKey(e => e.ExerciseId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // UserVocabulary configuration
+        modelBuilder.Entity<UserVocabulary>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.UserId, e.VocabularyId }).IsUnique();
+            entity.Property(e => e.EaseFactor).IsRequired().HasDefaultValue(2.5);
+            entity.Property(e => e.IntervalDays).IsRequired().HasDefaultValue(1);
+            entity.Property(e => e.Repetitions).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.NextReviewAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.UserVocabulary)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Vocabulary)
+                .WithMany(v => v.UserVocabularyItems)
+                .HasForeignKey(e => e.VocabularyId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

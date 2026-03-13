@@ -1,0 +1,38 @@
+[
+  {
+    "code": "A1",
+    "name": "Elementary",
+    "description": "Can understand and use very familiar everyday expressions and basic phrases aimed at the satisfaction of needs of a concrete type.",
+    "sortOrder": 1
+  },
+  {
+    "code": "A2",
+    "name": "Elementary",
+    "description": "Can understand sentences and frequently used expressions related to areas of most immediate relevance. Can communicate in simple and routine tasks requiring a simple and direct exchange of information.",
+    "sortOrder": 2
+  },
+  {
+    "code": "B1",
+    "name": "Intermediate",
+    "description": "Can understand the main points of clear standard input on familiar matters regularly encountered in work, school, leisure, etc. Can produce simple connected text on topics which are familiar or of personal interest.",
+    "sortOrder": 3
+  },
+  {
+    "code": "B2",
+    "name": "Intermediate",
+    "description": "Can understand the main ideas of complex text on both concrete and abstract topics, including technical discussions in their field of specialisation. Can interact with a degree of fluency and spontaneity.",
+    "sortOrder": 4
+  },
+  {
+    "code": "C1",
+    "name": "Advanced",
+    "description": "Can understand a wide range of demanding, longer texts, and recognise implicit meaning. Can express ideas fluently and spontaneously without much obvious searching for expressions.",
+    "sortOrder": 5
+  },
+  {
+    "code": "C2",
+    "name": "Advanced",
+    "description": "Can understand with ease virtually everything read or heard. Can summarise information from different spoken and written sources, reconstructing arguments and accounts in a coherent presentation.",
+    "sortOrder": 6
+  }
+]

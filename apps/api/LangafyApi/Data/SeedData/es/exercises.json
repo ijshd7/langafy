@@ -1,0 +1,154 @@
+[
+  {
+    "code": "A1_001_001_001",
+    "lessonCode": "A1_001_001",
+    "type": "MultipleChoice",
+    "sortOrder": 1,
+    "points": 10,
+    "config": {
+      "question": "What is the Spanish word for 'Hello'?",
+      "options": ["Adiós", "Hola", "Buenas noches", "¿Cómo estás?"],
+      "correct_index": 1
+    }
+  },
+  {
+    "code": "A1_001_001_002",
+    "lessonCode": "A1_001_001",
+    "type": "FillBlank",
+    "sortOrder": 2,
+    "points": 10,
+    "config": {
+      "sentence": "Mi nombre es ______.",
+      "correct_answer": "Juan",
+      "alternatives": ["juan", "JUAN"]
+    }
+  },
+  {
+    "code": "A1_001_001_003",
+    "lessonCode": "A1_001_001",
+    "type": "WordScramble",
+    "sortOrder": 3,
+    "points": 15,
+    "config": {
+      "target_word": "Buenos",
+      "hint": "Spanish for 'Good' (masculine plural)",
+      "scrambled_letters": ["s", "o", "n", "u", "e", "B"]
+    }
+  },
+  {
+    "code": "A1_001_002_001",
+    "lessonCode": "A1_001_002",
+    "type": "FillBlank",
+    "sortOrder": 1,
+    "points": 10,
+    "config": {
+      "sentence": "¿Cuál es tu ______?",
+      "correct_answer": "nombre",
+      "alternatives": ["Nombre", "NOMBRE"]
+    }
+  },
+  {
+    "code": "A1_001_002_002",
+    "lessonCode": "A1_001_002",
+    "type": "MultipleChoice",
+    "sortOrder": 2,
+    "points": 10,
+    "config": {
+      "question": "How do you say 'Nice to meet you' in Spanish?",
+      "options": ["Hasta luego", "Mucho gusto", "¿Qué tal?", "Encantado"],
+      "correct_index": 1
+    }
+  },
+  {
+    "code": "A1_001_002_003",
+    "lessonCode": "A1_001_002",
+    "type": "FlashcardMatch",
+    "sortOrder": 3,
+    "points": 20,
+    "config": {
+      "pairs": [
+        {"target": "Hola", "en": "Hello"},
+        {"target": "Adiós", "en": "Goodbye"},
+        {"target": "Por favor", "en": "Please"},
+        {"target": "Gracias", "en": "Thank you"}
+      ],
+      "time_limit_seconds": 60
+    }
+  },
+  {
+    "code": "A1_002_001_001",
+    "lessonCode": "A1_002_001",
+    "type": "MultipleChoice",
+    "sortOrder": 1,
+    "points": 10,
+    "config": {
+      "question": "What is the number 5 in Spanish?",
+      "options": ["Tres", "Cinco", "Siete", "Nueve"],
+      "correct_index": 1
+    }
+  },
+  {
+    "code": "A1_002_001_002",
+    "lessonCode": "A1_002_001",
+    "type": "FillBlank",
+    "sortOrder": 2,
+    "points": 10,
+    "config": {
+      "sentence": "Dos más tres es ______.",
+      "correct_answer": "cinco",
+      "alternatives": ["Cinco", "CINCO"]
+    }
+  },
+  {
+    "code": "A1_002_001_003",
+    "lessonCode": "A1_002_001",
+    "type": "WordScramble",
+    "sortOrder": 3,
+    "points": 15,
+    "config": {
+      "target_word": "Ocho",
+      "hint": "The number 8",
+      "scrambled_letters": ["h", "c", "O", "o"]
+    }
+  },
+  {
+    "code": "A1_002_002_001",
+    "lessonCode": "A1_002_002",
+    "type": "MultipleChoice",
+    "sortOrder": 1,
+    "points": 10,
+    "config": {
+      "question": "What is the Spanish word for 'red'?",
+      "options": ["Azul", "Rojo", "Verde", "Amarillo"],
+      "correct_index": 1
+    }
+  },
+  {
+    "code": "A1_002_002_002",
+    "lessonCode": "A1_002_002",
+    "type": "FillBlank",
+    "sortOrder": 2,
+    "points": 10,
+    "config": {
+      "sentence": "El cielo es ______.",
+      "correct_answer": "azul",
+      "alternatives": ["Azul", "AZUL"]
+    }
+  },
+  {
+    "code": "A1_002_002_003",
+    "lessonCode": "A1_002_002",
+    "type": "FlashcardMatch",
+    "sortOrder": 3,
+    "points": 20,
+    "config": {
+      "pairs": [
+        {"target": "Rojo", "en": "Red"},
+        {"target": "Azul", "en": "Blue"},
+        {"target": "Verde", "en": "Green"},
+        {"target": "Amarillo", "en": "Yellow"}
+      ],
+      "time_limit_seconds": 60
+    }
+  }
+]

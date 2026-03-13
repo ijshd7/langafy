@@ -1,0 +1,32 @@
+[
+  {
+    "code": "es",
+    "name": "Spanish",
+    "nativeName": "Español",
+    "isActive": true
+  },
+  {
+    "code": "fr",
+    "name": "French",
+    "nativeName": "Français",
+    "isActive": false
+  },
+  {
+    "code": "de",
+    "name": "German",
+    "nativeName": "Deutsch",
+    "isActive": false
+  },
+  {
+    "code": "ja",
+    "name": "Japanese",
+    "nativeName": "日本語",
+    "isActive": false
+  },
+  {
+    "code": "ru",
+    "name": "Russian",
+    "nativeName": "Русский",
+    "isActive": false
+  }
+]

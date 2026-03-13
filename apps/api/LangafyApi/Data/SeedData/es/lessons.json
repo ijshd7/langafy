@@ -1,0 +1,34 @@
+[
+  {
+    "code": "A1_001_001",
+    "unitCode": "A1_001",
+    "title": "Basic Greetings",
+    "description": "Learn to say hello, goodbye, and basic courtesies",
+    "objective": "Master common greeting phrases and responses",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_001_002",
+    "unitCode": "A1_001",
+    "title": "Introducing Yourself",
+    "description": "Learn how to introduce yourself and ask for names",
+    "objective": "Introduce yourself and ask others their names",
+    "sortOrder": 2
+  },
+  {
+    "code": "A1_002_001",
+    "unitCode": "A1_002",
+    "title": "Numbers 0-20",
+    "description": "Learn to count and recognize basic numbers",
+    "objective": "Confidently count from 0 to 20 in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_002_002",
+    "unitCode": "A1_002",
+    "title": "Colors & Descriptions",
+    "description": "Learn color names and basic color descriptions",
+    "objective": "Name common colors and use them in simple sentences",
+    "sortOrder": 2
+  }
+]

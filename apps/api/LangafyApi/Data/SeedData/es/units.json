@@ -1,0 +1,16 @@
+[
+  {
+    "code": "A1_001",
+    "cefrLevel": "A1",
+    "title": "Greetings & Introductions",
+    "description": "Learn basic greetings and how to introduce yourself in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_002",
+    "cefrLevel": "A1",
+    "title": "Numbers & Colors",
+    "description": "Master Spanish numbers from 0-100 and learn color names",
+    "sortOrder": 2
+  }
+]

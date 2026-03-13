@@ -1,0 +1,122 @@
+[
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Hola",
+    "wordEn": "Hello",
+    "partOfSpeech": "interjection",
+    "exampleSentenceTarget": "Hola, ¿cómo estás?",
+    "exampleSentenceEn": "Hello, how are you?"
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Adiós",
+    "wordEn": "Goodbye",
+    "partOfSpeech": "interjection",
+    "exampleSentenceTarget": "Adiós, hasta luego.",
+    "exampleSentenceEn": "Goodbye, see you later."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Gracias",
+    "wordEn": "Thank you",
+    "partOfSpeech": "interjection",
+    "exampleSentenceTarget": "Gracias por tu ayuda.",
+    "exampleSentenceEn": "Thank you for your help."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Por favor",
+    "wordEn": "Please",
+    "partOfSpeech": "phrase",
+    "exampleSentenceTarget": "Un café, por favor.",
+    "exampleSentenceEn": "A coffee, please."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Nombre",
+    "wordEn": "Name",
+    "partOfSpeech": "noun",
+    "exampleSentenceTarget": "¿Cuál es tu nombre?",
+    "exampleSentenceEn": "What is your name?"
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Soy",
+    "wordEn": "I am",
+    "partOfSpeech": "verb",
+    "exampleSentenceTarget": "Soy María.",
+    "exampleSentenceEn": "I am María."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Uno",
+    "wordEn": "One",
+    "partOfSpeech": "numeral",
+    "exampleSentenceTarget": "Tengo uno.",
+    "exampleSentenceEn": "I have one."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Dos",
+    "wordEn": "Two",
+    "partOfSpeech": "numeral",
+    "exampleSentenceTarget": "Dos más dos es cuatro.",
+    "exampleSentenceEn": "Two plus two is four."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Tres",
+    "wordEn": "Three",
+    "partOfSpeech": "numeral",
+    "exampleSentenceTarget": "Tengo tres gatos.",
+    "exampleSentenceEn": "I have three cats."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Cuatro",
+    "wordEn": "Four",
+    "partOfSpeech": "numeral",
+    "exampleSentenceTarget": "Cuatro personas están aquí.",
+    "exampleSentenceEn": "Four people are here."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Cinco",
+    "wordEn": "Five",
+    "partOfSpeech": "numeral",
+    "exampleSentenceTarget": "Cinco dólares, por favor.",
+    "exampleSentenceEn": "Five dollars, please."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Rojo",
+    "wordEn": "Red",
+    "partOfSpeech": "adjective",
+    "exampleSentenceTarget": "Me gusta el coche rojo.",
+    "exampleSentenceEn": "I like the red car."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Azul",
+    "wordEn": "Blue",
+    "partOfSpeech": "adjective",
+    "exampleSentenceTarget": "El cielo es azul.",
+    "exampleSentenceEn": "The sky is blue."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Verde",
+    "wordEn": "Green",
+    "partOfSpeech": "adjective",
+    "exampleSentenceTarget": "Las plantas son verdes.",
+    "exampleSentenceEn": "The plants are green."
+  },
+  {
+    "cefrLevel": "A1",
+    "wordTarget": "Amarillo",
+    "wordEn": "Yellow",
+    "partOfSpeech": "adjective",
+    "exampleSentenceTarget": "El sol es amarillo.",
+    "exampleSentenceEn": "The sun is yellow."
+  }
+]

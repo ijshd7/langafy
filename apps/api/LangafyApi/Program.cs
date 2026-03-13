@@ -1,5 +1,6 @@
 using LangafyApi.Data;
 using LangafyApi.Features.Auth;
+using LangafyApi.Features.Languages;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -64,5 +65,6 @@ app.UseAuthorization();
 
 // Map endpoint groups
 app.MapAuthEndpoints();
+app.MapLanguageEndpoints();
 
 app.Run();

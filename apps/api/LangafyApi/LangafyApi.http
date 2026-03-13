@@ -1,0 +1,6 @@
+@LangafyApi_HostAddress = http://localhost:5059
+
+GET {{LangafyApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

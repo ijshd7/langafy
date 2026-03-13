@@ -1,4 +1,5 @@
 using LangafyApi.Data;
+using LangafyApi.Features.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -60,5 +61,8 @@ app.UseHttpsRedirection();
 // Add authentication and authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Map endpoint groups
+app.MapAuthEndpoints();
 
 app.Run();

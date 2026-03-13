@@ -18,7 +18,7 @@ The platform is planned available on **web** (Next.js), **mobile** (React Native
 
 To run Langafy locally, you'll need:
 
-- **Node.js 20+** and npm 10+ — for web and mobile apps
+- **Node.js 22+** and npm 10+ — for web and mobile apps
 - **.NET 8 SDK** — for the API
 - **Docker** and **Docker Compose** — for local database and service orchestration
 - **Expo CLI** (optional) — if developing the mobile app: `npm install -g expo-cli`

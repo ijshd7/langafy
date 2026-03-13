@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@langafy/shared-types": ["../../packages/shared-types/dist/index.d.ts"]
     }
   },
   "include": [

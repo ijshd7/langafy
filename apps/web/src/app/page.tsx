@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CefrLevel } from "@langafy/shared-types";
 
 export default function Home() {
   return (

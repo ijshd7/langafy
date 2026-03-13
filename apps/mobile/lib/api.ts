@@ -1,5 +1,6 @@
 import { ApiResponse } from '@langafy/shared-types';
 import Constants from 'expo-constants';
+import * as firebaseLib from '@/lib/firebase';
 
 /**
  * API Error class for standardized error handling
@@ -220,6 +221,14 @@ class ApiClient {
 
 // Export a singleton instance
 export const apiClient = new ApiClient();
+
+/**
+ * Initialize API client with Firebase token provider
+ * Call this once after Firebase is initialized (typically in your root provider)
+ */
+export function initializeApiClient() {
+  apiClient.setTokenProvider(() => firebaseLib.getAuthToken());
+}
 
 /**
  * Type-safe wrapper for API responses

@@ -139,7 +139,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 | **API** | ASP.NET Core 8 / C# |
 | **Database** | PostgreSQL 16 |
 | **Auth** | Firebase Authentication |
-| **AI** | Anthropic Claude API (maybe) |
+| **AI** | Open Router |
 | **Containerization** | Docker + docker-compose |
 
 ## Development Workflow

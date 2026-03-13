@@ -4,7 +4,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@langafy/shared-types": ["../../packages/shared-types/dist/index.d.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]

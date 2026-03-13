@@ -6,6 +6,7 @@ import { MoonStarIcon, StarIcon, SunIcon } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
 import { Image, type ImageStyle, View } from 'react-native';
+import type { CefrLevel } from '@langafy/shared-types';
 
 const LOGO = {
   light: require('@/assets/images/react-native-reusables-light.png'),

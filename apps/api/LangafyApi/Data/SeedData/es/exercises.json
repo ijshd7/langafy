@@ -1,154 +1,241 @@
 [
-  {
-    "code": "A1_001_001_001",
-    "lessonCode": "A1_001_001",
-    "type": "MultipleChoice",
-    "sortOrder": 1,
-    "points": 10,
-    "config": {
-      "question": "What is the Spanish word for 'Hello'?",
-      "options": ["Adiós", "Hola", "Buenas noches", "¿Cómo estás?"],
-      "correct_index": 1
-    }
-  },
-  {
-    "code": "A1_001_001_002",
-    "lessonCode": "A1_001_001",
-    "type": "FillBlank",
-    "sortOrder": 2,
-    "points": 10,
-    "config": {
-      "sentence": "Mi nombre es ______.",
-      "correct_answer": "Juan",
-      "alternatives": ["juan", "JUAN"]
-    }
-  },
-  {
-    "code": "A1_001_001_003",
-    "lessonCode": "A1_001_001",
-    "type": "WordScramble",
-    "sortOrder": 3,
-    "points": 15,
-    "config": {
-      "target_word": "Buenos",
-      "hint": "Spanish for 'Good' (masculine plural)",
-      "scrambled_letters": ["s", "o", "n", "u", "e", "B"]
-    }
-  },
-  {
-    "code": "A1_001_002_001",
-    "lessonCode": "A1_001_002",
-    "type": "FillBlank",
-    "sortOrder": 1,
-    "points": 10,
-    "config": {
-      "sentence": "¿Cuál es tu ______?",
-      "correct_answer": "nombre",
-      "alternatives": ["Nombre", "NOMBRE"]
-    }
-  },
-  {
-    "code": "A1_001_002_002",
-    "lessonCode": "A1_001_002",
-    "type": "MultipleChoice",
-    "sortOrder": 2,
-    "points": 10,
-    "config": {
-      "question": "How do you say 'Nice to meet you' in Spanish?",
-      "options": ["Hasta luego", "Mucho gusto", "¿Qué tal?", "Encantado"],
-      "correct_index": 1
-    }
-  },
-  {
-    "code": "A1_001_002_003",
-    "lessonCode": "A1_001_002",
-    "type": "FlashcardMatch",
-    "sortOrder": 3,
-    "points": 20,
-    "config": {
-      "pairs": [
-        {"target": "Hola", "en": "Hello"},
-        {"target": "Adiós", "en": "Goodbye"},
-        {"target": "Por favor", "en": "Please"},
-        {"target": "Gracias", "en": "Thank you"}
-      ],
-      "time_limit_seconds": 60
-    }
-  },
-  {
-    "code": "A1_002_001_001",
-    "lessonCode": "A1_002_001",
-    "type": "MultipleChoice",
-    "sortOrder": 1,
-    "points": 10,
-    "config": {
-      "question": "What is the number 5 in Spanish?",
-      "options": ["Tres", "Cinco", "Siete", "Nueve"],
-      "correct_index": 1
-    }
-  },
-  {
-    "code": "A1_002_001_002",
-    "lessonCode": "A1_002_001",
-    "type": "FillBlank",
-    "sortOrder": 2,
-    "points": 10,
-    "config": {
-      "sentence": "Dos más tres es ______.",
-      "correct_answer": "cinco",
-      "alternatives": ["Cinco", "CINCO"]
-    }
-  },
-  {
-    "code": "A1_002_001_003",
-    "lessonCode": "A1_002_001",
-    "type": "WordScramble",
-    "sortOrder": 3,
-    "points": 15,
-    "config": {
-      "target_word": "Ocho",
-      "hint": "The number 8",
-      "scrambled_letters": ["h", "c", "O", "o"]
-    }
-  },
-  {
-    "code": "A1_002_002_001",
-    "lessonCode": "A1_002_002",
-    "type": "MultipleChoice",
-    "sortOrder": 1,
-    "points": 10,
-    "config": {
-      "question": "What is the Spanish word for 'red'?",
-      "options": ["Azul", "Rojo", "Verde", "Amarillo"],
-      "correct_index": 1
-    }
-  },
-  {
-    "code": "A1_002_002_002",
-    "lessonCode": "A1_002_002",
-    "type": "FillBlank",
-    "sortOrder": 2,
-    "points": 10,
-    "config": {
-      "sentence": "El cielo es ______.",
-      "correct_answer": "azul",
-      "alternatives": ["Azul", "AZUL"]
-    }
-  },
-  {
-    "code": "A1_002_002_003",
-    "lessonCode": "A1_002_002",
-    "type": "FlashcardMatch",
-    "sortOrder": 3,
-    "points": 20,
-    "config": {
-      "pairs": [
-        {"target": "Rojo", "en": "Red"},
-        {"target": "Azul", "en": "Blue"},
-        {"target": "Verde", "en": "Green"},
-        {"target": "Amarillo", "en": "Yellow"}
-      ],
-      "time_limit_seconds": 60
-    }
-  }
+  { "code": "A1_001_001_001", "lessonCode": "A1_001_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the Spanish word for 'Hello'?", "options": ["Adiós", "Hola", "Buenas noches", "¿Cómo estás?"], "correct_index": 1 } },
+  { "code": "A1_001_001_002", "lessonCode": "A1_001_001", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Mi nombre es ______.", "correct_answer": "Juan", "alternatives": ["juan", "JUAN"] } },
+  { "code": "A1_001_001_003", "lessonCode": "A1_001_001", "type": "WordScramble", "sortOrder": 3, "points": 15, "config": { "target_word": "Buenos", "hint": "Spanish for 'Good' (masculine plural)", "scrambled_letters": ["s", "o", "n", "u", "e", "B"] } },
+
+  { "code": "A1_001_002_001", "lessonCode": "A1_001_002", "type": "FillBlank", "sortOrder": 1, "points": 10, "config": { "sentence": "¿Cuál es tu ______?", "correct_answer": "nombre", "alternatives": ["Nombre", "NOMBRE"] } },
+  { "code": "A1_001_002_002", "lessonCode": "A1_001_002", "type": "MultipleChoice", "sortOrder": 2, "points": 10, "config": { "question": "How do you say 'Nice to meet you' in Spanish?", "options": ["Hasta luego", "Mucho gusto", "¿Qué tal?", "Encantado"], "correct_index": 1 } },
+  { "code": "A1_001_002_003", "lessonCode": "A1_001_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Hola", "en": "Hello"}, {"target": "Adiós", "en": "Goodbye"}, {"target": "Por favor", "en": "Please"}, {"target": "Gracias", "en": "Thank you"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_001_003_001", "lessonCode": "A1_001_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which phrase means 'Excuse me' in Spanish?", "options": ["De nada", "Lo siento", "Con permiso", "Buenas tardes"], "correct_index": 2 } },
+  { "code": "A1_001_003_002", "lessonCode": "A1_001_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Lo ______, no entiendo.", "correct_answer": "siento", "alternatives": ["Siento", "SIENTO"] } },
+  { "code": "A1_001_003_003", "lessonCode": "A1_001_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Con permiso", "en": "Excuse me"}, {"target": "Lo siento", "en": "I'm sorry"}, {"target": "De nada", "en": "You're welcome"}, {"target": "Perdón", "en": "Pardon me"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_002_001_001", "lessonCode": "A1_002_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the number 5 in Spanish?", "options": ["Tres", "Cinco", "Siete", "Nueve"], "correct_index": 1 } },
+  { "code": "A1_002_001_002", "lessonCode": "A1_002_001", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Dos más tres es ______.", "correct_answer": "cinco", "alternatives": ["Cinco", "CINCO"] } },
+  { "code": "A1_002_001_003", "lessonCode": "A1_002_001", "type": "WordScramble", "sortOrder": 3, "points": 15, "config": { "target_word": "Ocho", "hint": "The number 8", "scrambled_letters": ["h", "c", "O", "o"] } },
+
+  { "code": "A1_002_002_001", "lessonCode": "A1_002_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the Spanish word for 'red'?", "options": ["Azul", "Rojo", "Verde", "Amarillo"], "correct_index": 1 } },
+  { "code": "A1_002_002_002", "lessonCode": "A1_002_002", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "El cielo es ______.", "correct_answer": "azul", "alternatives": ["Azul", "AZUL"] } },
+  { "code": "A1_002_002_003", "lessonCode": "A1_002_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Rojo", "en": "Red"}, {"target": "Azul", "en": "Blue"}, {"target": "Verde", "en": "Green"}, {"target": "Amarillo", "en": "Yellow"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_002_003_001", "lessonCode": "A1_002_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you say 50 in Spanish?", "options": ["Quince", "Cuarenta", "Cincuenta", "Sesenta"], "correct_index": 2 } },
+  { "code": "A1_002_003_002", "lessonCode": "A1_002_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Veinte más diez es ______.", "correct_answer": "treinta", "alternatives": ["Treinta", "TREINTA"] } },
+  { "code": "A1_002_003_003", "lessonCode": "A1_002_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Veinte", "en": "Twenty"}, {"target": "Treinta", "en": "Thirty"}, {"target": "Cuarenta", "en": "Forty"}, {"target": "Cien", "en": "One hundred"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_003_001_001", "lessonCode": "A1_003_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the Spanish word for 'mother'?", "options": ["Hermana", "Abuela", "Madre", "Tía"], "correct_index": 2 } },
+  { "code": "A1_003_001_002", "lessonCode": "A1_003_001", "type": "WordScramble", "sortOrder": 2, "points": 15, "config": { "target_word": "Padre", "hint": "Spanish for 'father'", "scrambled_letters": ["e", "P", "a", "d", "r"] } },
+  { "code": "A1_003_001_003", "lessonCode": "A1_003_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Madre", "en": "Mother"}, {"target": "Padre", "en": "Father"}, {"target": "Hermano", "en": "Brother"}, {"target": "Hermana", "en": "Sister"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_003_002_001", "lessonCode": "A1_003_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which adjective means 'tall' in Spanish?", "options": ["Bajo", "Joven", "Alto", "Viejo"], "correct_index": 2 } },
+  { "code": "A1_003_002_002", "lessonCode": "A1_003_002", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Mi abuelo es muy ______.", "correct_answer": "viejo", "alternatives": ["Viejo", "VIEJO"] } },
+  { "code": "A1_003_002_003", "lessonCode": "A1_003_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Alto", "en": "Tall"}, {"target": "Bajo", "en": "Short"}, {"target": "Joven", "en": "Young"}, {"target": "Viejo", "en": "Old"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_003_003_001", "lessonCode": "A1_003_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you say 'my house' in Spanish?", "options": ["Tu casa", "Mi casa", "Su casa", "Nuestra casa"], "correct_index": 1 } },
+  { "code": "A1_003_003_002", "lessonCode": "A1_003_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "______ perro es grande.", "correct_answer": "Mi", "alternatives": ["mi", "MI"] } },
+  { "code": "A1_003_003_003", "lessonCode": "A1_003_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Mi", "en": "My"}, {"target": "Tu", "en": "Your"}, {"target": "Su", "en": "His/Her"}, {"target": "Nuestro", "en": "Our"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_004_001_001", "lessonCode": "A1_004_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the Spanish word for 'bread'?", "options": ["Leche", "Pan", "Carne", "Fruta"], "correct_index": 1 } },
+  { "code": "A1_004_001_002", "lessonCode": "A1_004_001", "type": "WordScramble", "sortOrder": 2, "points": 15, "config": { "target_word": "Manzana", "hint": "A common red or green fruit", "scrambled_letters": ["n", "z", "M", "a", "a", "a", "n"] } },
+  { "code": "A1_004_001_003", "lessonCode": "A1_004_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Pan", "en": "Bread"}, {"target": "Leche", "en": "Milk"}, {"target": "Huevo", "en": "Egg"}, {"target": "Queso", "en": "Cheese"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_004_002_001", "lessonCode": "A1_004_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you order 'a coffee please' in Spanish?", "options": ["Un café, gracias", "Un café, por favor", "Dame café", "Quiero el café"], "correct_index": 1 } },
+  { "code": "A1_004_002_002", "lessonCode": "A1_004_002", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Quisiera una ______, por favor.", "correct_answer": "agua", "alternatives": ["Agua", "AGUA"] } },
+  { "code": "A1_004_002_003", "lessonCode": "A1_004_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Quisiera", "en": "I would like"}, {"target": "La cuenta", "en": "The bill"}, {"target": "La carta", "en": "The menu"}, {"target": "¿Qué desea?", "en": "What would you like?"}], "time_limit_seconds": 60 } },
+
+  { "code": "A1_004_003_001", "lessonCode": "A1_004_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which word means 'breakfast' in Spanish?", "options": ["Almuerzo", "Cena", "Desayuno", "Merienda"], "correct_index": 2 } },
+  { "code": "A1_004_003_002", "lessonCode": "A1_004_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Por la noche comemos la ______.", "correct_answer": "cena", "alternatives": ["Cena", "CENA"] } },
+  { "code": "A1_004_003_003", "lessonCode": "A1_004_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Desayuno", "en": "Breakfast"}, {"target": "Almuerzo", "en": "Lunch"}, {"target": "Cena", "en": "Dinner"}, {"target": "Agua", "en": "Water"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_001_001_001", "lessonCode": "A2_001_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which sentence correctly uses a reflexive verb for 'I wake up'?", "options": ["Yo despierto", "Me despierto", "Despierto me", "Soy despierto"], "correct_index": 1 } },
+  { "code": "A2_001_001_002", "lessonCode": "A2_001_001", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Cada mañana me ______ a las siete.", "correct_answer": "levanto", "alternatives": ["Levanto", "LEVANTO"] } },
+  { "code": "A2_001_001_003", "lessonCode": "A2_001_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Levantarse", "en": "To get up"}, {"target": "Ducharse", "en": "To shower"}, {"target": "Desayunar", "en": "To have breakfast"}, {"target": "Acostarse", "en": "To go to bed"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_001_002_001", "lessonCode": "A2_001_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you say 'It is 3 o'clock' in Spanish?", "options": ["Son las tres", "Es las tres", "Son tres", "Tiene las tres"], "correct_index": 0 } },
+  { "code": "A2_001_002_002", "lessonCode": "A2_001_002", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "La clase empieza ______ las nueve de la mañana.", "correct_answer": "a", "alternatives": ["A"] } },
+  { "code": "A2_001_002_003", "lessonCode": "A2_001_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Por la mañana", "en": "In the morning"}, {"target": "Por la tarde", "en": "In the afternoon"}, {"target": "Por la noche", "en": "At night"}, {"target": "A mediodía", "en": "At noon"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_001_003_001", "lessonCode": "A2_001_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which phrase means 'on weekends' in Spanish?", "options": ["Durante la semana", "Los fines de semana", "Los días laborables", "Cada día"], "correct_index": 1 } },
+  { "code": "A2_001_003_002", "lessonCode": "A2_001_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Los ______ voy al gimnasio.", "correct_answer": "lunes", "alternatives": ["Lunes", "LUNES"] } },
+  { "code": "A2_001_003_003", "lessonCode": "A2_001_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Lunes", "en": "Monday"}, {"target": "Miércoles", "en": "Wednesday"}, {"target": "Viernes", "en": "Friday"}, {"target": "Domingo", "en": "Sunday"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_002_001_001", "lessonCode": "A2_002_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you ask 'How much does it cost?' in Spanish?", "options": ["¿Qué precio tiene?", "¿Cuánto cuesta?", "¿Es barato?", "¿Cuánto es?"], "correct_index": 1 } },
+  { "code": "A2_002_001_002", "lessonCode": "A2_002_001", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Este libro es muy ______; solo cuesta dos euros.", "correct_answer": "barato", "alternatives": ["Barato", "BARATO"] } },
+  { "code": "A2_002_001_003", "lessonCode": "A2_002_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Barato", "en": "Cheap"}, {"target": "Caro", "en": "Expensive"}, {"target": "El precio", "en": "The price"}, {"target": "El descuento", "en": "The discount"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_002_002_001", "lessonCode": "A2_002_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the Spanish word for 'shirt'?", "options": ["Pantalón", "Zapato", "Camisa", "Chaqueta"], "correct_index": 2 } },
+  { "code": "A2_002_002_002", "lessonCode": "A2_002_002", "type": "WordScramble", "sortOrder": 2, "points": 15, "config": { "target_word": "Vestido", "hint": "A garment often worn to formal events", "scrambled_letters": ["e", "V", "i", "t", "d", "s", "o"] } },
+  { "code": "A2_002_002_003", "lessonCode": "A2_002_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Camisa", "en": "Shirt"}, {"target": "Pantalón", "en": "Trousers"}, {"target": "Zapatos", "en": "Shoes"}, {"target": "Abrigo", "en": "Coat"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_002_003_001", "lessonCode": "A2_002_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which phrase means 'the receipt' in Spanish?", "options": ["El cambio", "El precio", "El recibo", "La tarjeta"], "correct_index": 2 } },
+  { "code": "A2_002_003_002", "lessonCode": "A2_002_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "¿Puedo pagar con ______?", "correct_answer": "tarjeta", "alternatives": ["Tarjeta", "TARJETA"] } },
+  { "code": "A2_002_003_003", "lessonCode": "A2_002_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Pagar", "en": "To pay"}, {"target": "El recibo", "en": "The receipt"}, {"target": "El cambio", "en": "The change"}, {"target": "En efectivo", "en": "In cash"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_003_001_001", "lessonCode": "A2_003_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you say 'It is raining' in Spanish?", "options": ["Hace frío", "Llueve", "Nieva", "Hay sol"], "correct_index": 1 } },
+  { "code": "A2_003_001_002", "lessonCode": "A2_003_001", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Hoy hace mucho ______.", "correct_answer": "calor", "alternatives": ["Calor", "CALOR"] } },
+  { "code": "A2_003_001_003", "lessonCode": "A2_003_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Hace calor", "en": "It is hot"}, {"target": "Hace frío", "en": "It is cold"}, {"target": "Llueve", "en": "It rains"}, {"target": "Hay niebla", "en": "It is foggy"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_003_002_001", "lessonCode": "A2_003_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "Which season comes after winter in Spanish?", "options": ["Verano", "Otoño", "Primavera", "Invierno"], "correct_index": 2 } },
+  { "code": "A2_003_002_002", "lessonCode": "A2_003_002", "type": "WordScramble", "sortOrder": 2, "points": 15, "config": { "target_word": "Octubre", "hint": "The tenth month of the year", "scrambled_letters": ["b", "O", "t", "u", "e", "r", "c"] } },
+  { "code": "A2_003_002_003", "lessonCode": "A2_003_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "Primavera", "en": "Spring"}, {"target": "Verano", "en": "Summer"}, {"target": "Otoño", "en": "Autumn"}, {"target": "Invierno", "en": "Winter"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_003_003_001", "lessonCode": "A2_003_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What does 'el pronóstico del tiempo' mean?", "options": ["The weather station", "The storm warning", "The weather forecast", "The temperature"], "correct_index": 2 } },
+  { "code": "A2_003_003_002", "lessonCode": "A2_003_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "La ______ máxima hoy será de 35 grados.", "correct_answer": "temperatura", "alternatives": ["Temperatura", "TEMPERATURA"] } },
+  { "code": "A2_003_003_003", "lessonCode": "A2_003_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "El pronóstico", "en": "The forecast"}, {"target": "La temperatura", "en": "The temperature"}, {"target": "La tormenta", "en": "The storm"}, {"target": "Despejado", "en": "Clear/Sunny"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_004_001_001", "lessonCode": "A2_004_001", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What is the Spanish word for 'subway/underground'?", "options": ["Autobús", "Tren", "Metro", "Taxi"], "correct_index": 2 } },
+  { "code": "A2_004_001_002", "lessonCode": "A2_004_001", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Voy al trabajo en ______.", "correct_answer": "metro", "alternatives": ["Metro", "METRO"] } },
+  { "code": "A2_004_001_003", "lessonCode": "A2_004_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "El autobús", "en": "The bus"}, {"target": "El metro", "en": "The subway"}, {"target": "El tren", "en": "The train"}, {"target": "El taxi", "en": "The taxi"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_004_002_001", "lessonCode": "A2_004_002", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "How do you say 'Turn right' in Spanish?", "options": ["Todo recto", "Gire a la izquierda", "Gire a la derecha", "Cruce la calle"], "correct_index": 2 } },
+  { "code": "A2_004_002_002", "lessonCode": "A2_004_002", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "Siga ______ recto hasta el semáforo.", "correct_answer": "todo", "alternatives": ["Todo", "TODO"] } },
+  { "code": "A2_004_002_003", "lessonCode": "A2_004_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "A la derecha", "en": "To the right"}, {"target": "A la izquierda", "en": "To the left"}, {"target": "Todo recto", "en": "Straight ahead"}, {"target": "Cruzar", "en": "To cross"}], "time_limit_seconds": 60 } },
+
+  { "code": "A2_004_003_001", "lessonCode": "A2_004_003", "type": "MultipleChoice", "sortOrder": 1, "points": 10, "config": { "question": "What does 'un billete de ida y vuelta' mean?", "options": ["A one-way ticket", "A season ticket", "A return ticket", "A monthly pass"], "correct_index": 2 } },
+  { "code": "A2_004_003_002", "lessonCode": "A2_004_003", "type": "FillBlank", "sortOrder": 2, "points": 10, "config": { "sentence": "El tren sale del ______ número tres.", "correct_answer": "andén", "alternatives": ["Andén", "ANDÉN"] } },
+  { "code": "A2_004_003_003", "lessonCode": "A2_004_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 20, "config": { "pairs": [{"target": "El billete", "en": "The ticket"}, {"target": "El andén", "en": "The platform"}, {"target": "La salida", "en": "The departure"}, {"target": "La llegada", "en": "The arrival"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_001_001_001", "lessonCode": "B1_001_001", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "Which word means 'engineer' in Spanish?", "options": ["Abogado", "Médico", "Ingeniero", "Contable"], "correct_index": 2 } },
+  { "code": "B1_001_001_002", "lessonCode": "B1_001_001", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "Mi jefa trabaja en una empresa de ______.", "correct_answer": "tecnología", "alternatives": ["Tecnología", "TECNOLOGÍA"] } },
+  { "code": "B1_001_001_003", "lessonCode": "B1_001_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "Médico", "en": "Doctor"}, {"target": "Abogado", "en": "Lawyer"}, {"target": "Maestro", "en": "Teacher"}, {"target": "Ingeniero", "en": "Engineer"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_001_002_001", "lessonCode": "B1_001_002", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "What does 'una reunión de equipo' mean?", "options": ["A team lunch", "A team meeting", "A team project", "A team bonus"], "correct_index": 1 } },
+  { "code": "B1_001_002_002", "lessonCode": "B1_001_002", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "El ______ del proyecto es el próximo viernes.", "correct_answer": "plazo", "alternatives": ["Plazo", "PLAZO"] } },
+  { "code": "B1_001_002_003", "lessonCode": "B1_001_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "La reunión", "en": "The meeting"}, {"target": "El plazo", "en": "The deadline"}, {"target": "El informe", "en": "The report"}, {"target": "El presupuesto", "en": "The budget"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_001_003_001", "lessonCode": "B1_001_003", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "What is a 'currículum vitae' in English?", "options": ["Cover letter", "Job offer", "CV / résumé", "Work contract"], "correct_index": 2 } },
+  { "code": "B1_001_003_002", "lessonCode": "B1_001_003", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "La ______ de trabajo es el próximo martes.", "correct_answer": "entrevista", "alternatives": ["Entrevista", "ENTREVISTA"] } },
+  { "code": "B1_001_003_003", "lessonCode": "B1_001_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "El currículum", "en": "The CV/résumé"}, {"target": "La entrevista", "en": "The interview"}, {"target": "El contrato", "en": "The contract"}, {"target": "El salario", "en": "The salary"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_002_001_001", "lessonCode": "B1_002_001", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "Which verb means 'to book' or 'to reserve' in Spanish?", "options": ["Viajar", "Reservar", "Planear", "Comprar"], "correct_index": 1 } },
+  { "code": "B1_002_001_002", "lessonCode": "B1_002_001", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "Quiero visitar un ______ exótico este verano.", "correct_answer": "destino", "alternatives": ["Destino", "DESTINO"] } },
+  { "code": "B1_002_001_003", "lessonCode": "B1_002_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "El destino", "en": "The destination"}, {"target": "El itinerario", "en": "The itinerary"}, {"target": "El vuelo", "en": "The flight"}, {"target": "El pasaporte", "en": "The passport"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_002_002_001", "lessonCode": "B1_002_002", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "How do you ask for a room with a sea view in Spanish?", "options": ["Una habitación con vista al mar", "Una habitación sin mar", "Una habitación del mar", "Un mar en la habitación"], "correct_index": 0 } },
+  { "code": "B1_002_002_002", "lessonCode": "B1_002_002", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "El ______ está incluido en el precio de la habitación.", "correct_answer": "desayuno", "alternatives": ["Desayuno", "DESAYUNO"] } },
+  { "code": "B1_002_002_003", "lessonCode": "B1_002_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "La recepción", "en": "The reception"}, {"target": "La habitación", "en": "The room"}, {"target": "El check-in", "en": "Check-in"}, {"target": "La llave", "en": "The key"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_002_003_001", "lessonCode": "B1_002_003", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "What is 'una visita guiada' in English?", "options": ["A private tour", "A guided tour", "A self-guided tour", "A virtual tour"], "correct_index": 1 } },
+  { "code": "B1_002_003_002", "lessonCode": "B1_002_003", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "La ______ al museo cuesta diez euros.", "correct_answer": "entrada", "alternatives": ["Entrada", "ENTRADA"] } },
+  { "code": "B1_002_003_003", "lessonCode": "B1_002_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "El monumento", "en": "The monument"}, {"target": "La entrada", "en": "The ticket/entry"}, {"target": "El turista", "en": "The tourist"}, {"target": "El mapa", "en": "The map"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_003_001_001", "lessonCode": "B1_003_001", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "What is 'la rodilla' in English?", "options": ["The shoulder", "The elbow", "The knee", "The ankle"], "correct_index": 2 } },
+  { "code": "B1_003_001_002", "lessonCode": "B1_003_001", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "Me duele la ______ cuando corro.", "correct_answer": "espalda", "alternatives": ["Espalda", "ESPALDA"] } },
+  { "code": "B1_003_001_003", "lessonCode": "B1_003_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "La cabeza", "en": "The head"}, {"target": "El hombro", "en": "The shoulder"}, {"target": "La rodilla", "en": "The knee"}, {"target": "La espalda", "en": "The back"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_003_002_001", "lessonCode": "B1_003_002", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "How do you tell a doctor 'I have a headache' in Spanish?", "options": ["Tengo fiebre", "Me duele la cabeza", "Estoy resfriado", "Tengo tos"], "correct_index": 1 } },
+  { "code": "B1_003_002_002", "lessonCode": "B1_003_002", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "El médico me dio una ______ para los antibióticos.", "correct_answer": "receta", "alternatives": ["Receta", "RECETA"] } },
+  { "code": "B1_003_002_003", "lessonCode": "B1_003_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "Me duele", "en": "It hurts / I have a pain in"}, {"target": "La receta", "en": "The prescription"}, {"target": "El síntoma", "en": "The symptom"}, {"target": "La fiebre", "en": "The fever"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_003_003_001", "lessonCode": "B1_003_003", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "Which phrase means 'a balanced diet' in Spanish?", "options": ["Una dieta pesada", "Una dieta equilibrada", "Una dieta ligera", "Una dieta rápida"], "correct_index": 1 } },
+  { "code": "B1_003_003_002", "lessonCode": "B1_003_003", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "Hago ______ tres veces a la semana para mantenerme en forma.", "correct_answer": "ejercicio", "alternatives": ["Ejercicio", "EJERCICIO"] } },
+  { "code": "B1_003_003_003", "lessonCode": "B1_003_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "El ejercicio", "en": "Exercise"}, {"target": "La dieta", "en": "Diet"}, {"target": "El descanso", "en": "Rest"}, {"target": "El bienestar", "en": "Wellbeing"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_004_001_001", "lessonCode": "B1_004_001", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "How do you say 'I play football' in Spanish?", "options": ["Juego al tenis", "Hago natación", "Juego al fútbol", "Practico atletismo"], "correct_index": 2 } },
+  { "code": "B1_004_001_002", "lessonCode": "B1_004_001", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "Me gusta mucho la ______ porque me relaja.", "correct_answer": "natación", "alternatives": ["Natación", "NATACIÓN"] } },
+  { "code": "B1_004_001_003", "lessonCode": "B1_004_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "El fútbol", "en": "Football/Soccer"}, {"target": "La natación", "en": "Swimming"}, {"target": "El ciclismo", "en": "Cycling"}, {"target": "El atletismo", "en": "Athletics"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_004_002_001", "lessonCode": "B1_004_002", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "Which phrase expresses a strong preference in Spanish?", "options": ["No me importa", "Me da igual", "Me encanta", "Está bien"], "correct_index": 2 } },
+  { "code": "B1_004_002_002", "lessonCode": "B1_004_002", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "______ el cine al teatro porque las películas son más emocionantes.", "correct_answer": "Prefiero", "alternatives": ["prefiero", "PREFIERO"] } },
+  { "code": "B1_004_002_003", "lessonCode": "B1_004_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "Me encanta", "en": "I love it"}, {"target": "Prefiero", "en": "I prefer"}, {"target": "No soporto", "en": "I can't stand"}, {"target": "Me da igual", "en": "I don't mind"}], "time_limit_seconds": 60 } },
+
+  { "code": "B1_004_003_001", "lessonCode": "B1_004_003", "type": "MultipleChoice", "sortOrder": 1, "points": 15, "config": { "question": "How would you suggest getting together on Saturday?", "options": ["Ya hemos quedado", "¿Quedamos el sábado?", "Quedemos el domingo", "Nos vemos mañana"], "correct_index": 1 } },
+  { "code": "B1_004_003_002", "lessonCode": "B1_004_003", "type": "FillBlank", "sortOrder": 2, "points": 15, "config": { "sentence": "¿Te ______ ir al cine esta tarde?", "correct_answer": "apetece", "alternatives": ["Apetece", "APETECE"] } },
+  { "code": "B1_004_003_003", "lessonCode": "B1_004_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 25, "config": { "pairs": [{"target": "¿Quedamos?", "en": "Shall we meet up?"}, {"target": "Lo siento, no puedo", "en": "Sorry, I can't"}, {"target": "¡Genial!", "en": "Great!"}, {"target": "La semana que viene", "en": "Next week"}], "time_limit_seconds": 60 } },
+
+  { "code": "B2_001_001_001", "lessonCode": "B2_001_001", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What does 'el titular' refer to in journalism?", "options": ["The journalist", "The newspaper", "The headline", "The editorial"], "correct_index": 2 } },
+  { "code": "B2_001_001_002", "lessonCode": "B2_001_001", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "Según el ______, el gobierno aprobó nuevas medidas económicas.", "correct_answer": "reportaje", "alternatives": ["Reportaje", "REPORTAJE"] } },
+  { "code": "B2_001_001_003", "lessonCode": "B2_001_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "El titular", "en": "The headline"}, {"target": "El reportaje", "en": "The report/feature"}, {"target": "La fuente", "en": "The source"}, {"target": "El editorial", "en": "The editorial"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_001_002_001", "lessonCode": "B2_001_002", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "Which phrase best introduces a personal opinion formally?", "options": ["Pienso que sí", "Bueno, yo creo", "Desde mi punto de vista", "A mí me parece"], "correct_index": 2 } },
+  { "code": "B2_001_002_002", "lessonCode": "B2_001_002", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "Hay que tener en ______ todos los factores antes de juzgar.", "correct_answer": "cuenta", "alternatives": ["Cuenta", "CUENTA"] } },
+  { "code": "B2_001_002_003", "lessonCode": "B2_001_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "Desde mi punto de vista", "en": "From my point of view"}, {"target": "Hay que tener en cuenta", "en": "One must take into account"}, {"target": "Sin duda alguna", "en": "Without any doubt"}, {"target": "Cabe destacar que", "en": "It is worth noting that"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_001_003_001", "lessonCode": "B2_001_003", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What is 'la huella digital' in the context of social media?", "options": ["A fingerprint reader", "A digital footprint", "A social media account", "A digital signature"], "correct_index": 1 } },
+  { "code": "B2_001_003_002", "lessonCode": "B2_001_003", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "Esta ______ se ha vuelto viral en las redes sociales.", "correct_answer": "publicación", "alternatives": ["Publicación", "PUBLICACIÓN"] } },
+  { "code": "B2_001_003_003", "lessonCode": "B2_001_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "La red social", "en": "Social network"}, {"target": "La tendencia", "en": "The trend"}, {"target": "El algoritmo", "en": "The algorithm"}, {"target": "La privacidad", "en": "Privacy"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_002_001_001", "lessonCode": "B2_002_001", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What does 'la desigualdad social' mean?", "options": ["Social equality", "Social inequality", "Social mobility", "Social security"], "correct_index": 1 } },
+  { "code": "B2_002_001_002", "lessonCode": "B2_002_001", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "La ______ de género sigue siendo un problema en muchos países.", "correct_answer": "discriminación", "alternatives": ["Discriminación", "DISCRIMINACIÓN"] } },
+  { "code": "B2_002_001_003", "lessonCode": "B2_002_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "La desigualdad", "en": "Inequality"}, {"target": "La pobreza", "en": "Poverty"}, {"target": "La discriminación", "en": "Discrimination"}, {"target": "La inclusión", "en": "Inclusion"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_002_002_001", "lessonCode": "B2_002_002", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What is 'la Semana Santa' in Spanish-speaking countries?", "options": ["New Year celebrations", "Holy Week / Easter", "Summer festival", "Independence Day"], "correct_index": 1 } },
+  { "code": "B2_002_002_002", "lessonCode": "B2_002_002", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "Las ______ culturales de México son distintas a las de España.", "correct_answer": "tradiciones", "alternatives": ["Tradiciones", "TRADICIONES"] } },
+  { "code": "B2_002_002_003", "lessonCode": "B2_002_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "La Semana Santa", "en": "Holy Week"}, {"target": "El Día de los Muertos", "en": "Day of the Dead"}, {"target": "La Feria de Abril", "en": "April Fair (Seville)"}, {"target": "El Carnaval", "en": "Carnival"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_002_003_001", "lessonCode": "B2_002_003", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "Which phrase introduces a contrasting argument in Spanish?", "options": ["Además de eso", "Por lo tanto", "Sin embargo", "Es decir"], "correct_index": 2 } },
+  { "code": "B2_002_003_002", "lessonCode": "B2_002_003", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "Por un lado tiene ventajas; ______ otro, presenta riesgos.", "correct_answer": "por", "alternatives": ["Por"] } },
+  { "code": "B2_002_003_003", "lessonCode": "B2_002_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "Sin embargo", "en": "However"}, {"target": "No obstante", "en": "Nevertheless"}, {"target": "Por otro lado", "en": "On the other hand"}, {"target": "A pesar de", "en": "Despite"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_003_001_001", "lessonCode": "B2_003_001", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What is 'el calentamiento global' in English?", "options": ["Air pollution", "Global warming", "Ozone depletion", "Acid rain"], "correct_index": 1 } },
+  { "code": "B2_003_001_002", "lessonCode": "B2_003_001", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "La ______ del aire afecta la salud de millones de personas.", "correct_answer": "contaminación", "alternatives": ["Contaminación", "CONTAMINACIÓN"] } },
+  { "code": "B2_003_001_003", "lessonCode": "B2_003_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "El calentamiento global", "en": "Global warming"}, {"target": "La contaminación", "en": "Pollution"}, {"target": "La deforestación", "en": "Deforestation"}, {"target": "El efecto invernadero", "en": "The greenhouse effect"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_003_002_001", "lessonCode": "B2_003_002", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What does 'la energía renovable' mean?", "options": ["Nuclear energy", "Renewable energy", "Fossil fuel energy", "Hydroelectric energy"], "correct_index": 1 } },
+  { "code": "B2_003_002_002", "lessonCode": "B2_003_002", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "Reducir nuestra ______ de carbono es una responsabilidad colectiva.", "correct_answer": "huella", "alternatives": ["Huella", "HUELLA"] } },
+  { "code": "B2_003_002_003", "lessonCode": "B2_003_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "El reciclaje", "en": "Recycling"}, {"target": "La energía solar", "en": "Solar energy"}, {"target": "La huella de carbono", "en": "Carbon footprint"}, {"target": "El desarrollo sostenible", "en": "Sustainable development"}], "time_limit_seconds": 90 } },
+
+  { "code": "B2_003_003_001", "lessonCode": "B2_003_003", "type": "MultipleChoice", "sortOrder": 1, "points": 20, "config": { "question": "What is 'la biodiversidad' in English?", "options": ["Biofuel", "Biodegradation", "Biodiversity", "Biological warfare"], "correct_index": 2 } },
+  { "code": "B2_003_003_002", "lessonCode": "B2_003_003", "type": "FillBlank", "sortOrder": 2, "points": 20, "config": { "sentence": "El ______ amazónico es el pulmón del planeta.", "correct_answer": "bosque", "alternatives": ["Bosque", "BOSQUE"] } },
+  { "code": "B2_003_003_003", "lessonCode": "B2_003_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 30, "config": { "pairs": [{"target": "El ecosistema", "en": "The ecosystem"}, {"target": "La biodiversidad", "en": "Biodiversity"}, {"target": "El océano", "en": "The ocean"}, {"target": "La especie en peligro", "en": "The endangered species"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_001_001_001", "lessonCode": "C1_001_001", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "In a business negotiation, what does 'llegar a un acuerdo' mean?", "options": ["To break off negotiations", "To reach an agreement", "To make an offer", "To sign a contract"], "correct_index": 1 } },
+  { "code": "C1_001_001_002", "lessonCode": "C1_001_001", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "Estamos dispuestos a ______ en el precio si aumentan el volumen del pedido.", "correct_answer": "negociar", "alternatives": ["Negociar", "NEGOCIAR"] } },
+  { "code": "C1_001_001_003", "lessonCode": "C1_001_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "La negociación", "en": "The negotiation"}, {"target": "El acuerdo", "en": "The agreement"}, {"target": "La cláusula", "en": "The clause"}, {"target": "El contrato", "en": "The contract"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_001_002_001", "lessonCode": "C1_001_002", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "What does 'la tasa de inflación' measure?", "options": ["Unemployment rate", "Rate of price increases", "GDP growth", "Interest rate"], "correct_index": 1 } },
+  { "code": "C1_001_002_002", "lessonCode": "C1_001_002", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "El banco central subió los tipos de ______ para controlar la inflación.", "correct_answer": "interés", "alternatives": ["Interés", "INTERÉS"] } },
+  { "code": "C1_001_002_003", "lessonCode": "C1_001_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "La inflación", "en": "Inflation"}, {"target": "El PIB", "en": "GDP"}, {"target": "El mercado de valores", "en": "The stock market"}, {"target": "La recesión", "en": "The recession"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_001_003_001", "lessonCode": "C1_001_003", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "What is the correct formal opening for a business letter in Spanish?", "options": ["Hola,", "Estimado señor García:", "Buenos días señor:", "A quien corresponda,"], "correct_index": 1 } },
+  { "code": "C1_001_003_002", "lessonCode": "C1_001_003", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "En ______ a su consulta del día 5 de marzo, les informamos que...", "correct_answer": "respuesta", "alternatives": ["Respuesta", "RESPUESTA"] } },
+  { "code": "C1_001_003_003", "lessonCode": "C1_001_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "En respuesta a", "en": "In response to"}, {"target": "Les comunico que", "en": "I hereby inform you that"}, {"target": "En espera de su respuesta", "en": "Awaiting your reply"}, {"target": "Atentamente", "en": "Sincerely/Yours faithfully"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_002_001_001", "lessonCode": "C1_002_001", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "Who wrote 'Don Quijote de la Mancha'?", "options": ["Lope de Vega", "Francisco de Quevedo", "Miguel de Cervantes", "Calderón de la Barca"], "correct_index": 2 } },
+  { "code": "C1_002_001_002", "lessonCode": "C1_002_001", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "La poesía de Pablo Neruda se caracteriza por sus ______ metáforas sobre el amor.", "correct_answer": "intensas", "alternatives": ["Intensas", "INTENSAS"] } },
+  { "code": "C1_002_001_003", "lessonCode": "C1_002_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "Cervantes", "en": "Author of Don Quijote"}, {"target": "García Lorca", "en": "Poet of the Generation of '27"}, {"target": "Pablo Neruda", "en": "Chilean Nobel laureate poet"}, {"target": "Isabel Allende", "en": "Chilean magical realist novelist"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_002_002_001", "lessonCode": "C1_002_002", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "In literary criticism, what does 'el narrador omnisciente' mean?", "options": ["A first-person narrator", "An omniscient narrator", "An unreliable narrator", "A second-person narrator"], "correct_index": 1 } },
+  { "code": "C1_002_002_002", "lessonCode": "C1_002_002", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "La película recibió una ______ muy positiva por su dirección innovadora.", "correct_answer": "reseña", "alternatives": ["Reseña", "RESEÑA"] } },
+  { "code": "C1_002_002_003", "lessonCode": "C1_002_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "La reseña", "en": "The review/critique"}, {"target": "El movimiento artístico", "en": "The artistic movement"}, {"target": "El protagonista", "en": "The protagonist"}, {"target": "El simbolismo", "en": "Symbolism"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_002_003_001", "lessonCode": "C1_002_003", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "What does 'el contexto histórico' help us understand in cultural analysis?", "options": ["The grammar of a text", "The vocabulary used", "The circumstances shaping a work", "The author's biography only"], "correct_index": 2 } },
+  { "code": "C1_002_003_002", "lessonCode": "C1_002_003", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "El ______ cultural de Gaudí se enmarca en el modernismo catalán.", "correct_answer": "legado", "alternatives": ["Legado", "LEGADO"] } },
+  { "code": "C1_002_003_003", "lessonCode": "C1_002_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "El legado", "en": "The legacy"}, {"target": "La influencia", "en": "The influence"}, {"target": "El contexto histórico", "en": "The historical context"}, {"target": "La corriente literaria", "en": "The literary movement"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_003_001_001", "lessonCode": "C1_003_001", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "Which element is essential to a well-structured academic argument?", "options": ["Metaphors and imagery", "Thesis, evidence, and conclusion", "Colloquial language", "Short sentences only"], "correct_index": 1 } },
+  { "code": "C1_003_001_002", "lessonCode": "C1_003_001", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "Es fundamental presentar un ______ sólido antes de refutar la posición contraria.", "correct_answer": "argumento", "alternatives": ["Argumento", "ARGUMENTO"] } },
+  { "code": "C1_003_001_003", "lessonCode": "C1_003_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "La tesis", "en": "The thesis"}, {"target": "El argumento", "en": "The argument"}, {"target": "El contraargumento", "en": "The counter-argument"}, {"target": "La conclusión", "en": "The conclusion"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_003_002_001", "lessonCode": "C1_003_002", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "Which word best conveys subtle understatement in formal Spanish?", "options": ["Increíble", "Ciertamente", "Más o menos", "Algo"], "correct_index": 3 } },
+  { "code": "C1_003_002_002", "lessonCode": "C1_003_002", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "Su comentario, aunque ______, revelaba una profunda crítica social.", "correct_answer": "sutil", "alternatives": ["Sutil", "SUTIL"] } },
+  { "code": "C1_003_002_003", "lessonCode": "C1_003_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "El matiz", "en": "The nuance"}, {"target": "La ambigüedad", "en": "The ambiguity"}, {"target": "La ironía", "en": "Irony"}, {"target": "Lo implícito", "en": "The implied meaning"}], "time_limit_seconds": 90 } },
+
+  { "code": "C1_003_003_001", "lessonCode": "C1_003_003", "type": "MultipleChoice", "sortOrder": 1, "points": 25, "config": { "question": "What does 'la hipótesis de trabajo' mean in academic writing?", "options": ["The final conclusion", "The working hypothesis", "The bibliography", "The abstract"], "correct_index": 1 } },
+  { "code": "C1_003_003_002", "lessonCode": "C1_003_003", "type": "FillBlank", "sortOrder": 2, "points": 25, "config": { "sentence": "Los datos analizados corroboran la ______ inicial del estudio.", "correct_answer": "hipótesis", "alternatives": ["Hipótesis", "HIPÓTESIS"] } },
+  { "code": "C1_003_003_003", "lessonCode": "C1_003_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 35, "config": { "pairs": [{"target": "La hipótesis", "en": "The hypothesis"}, {"target": "La metodología", "en": "The methodology"}, {"target": "Los resultados", "en": "The results"}, {"target": "Las conclusiones", "en": "The conclusions"}], "time_limit_seconds": 90 } },
+
+  { "code": "C2_001_001_001", "lessonCode": "C2_001_001", "type": "MultipleChoice", "sortOrder": 1, "points": 30, "config": { "question": "In rhetoric, what is 'la anáfora'?", "options": ["A metaphor comparing two unlike things", "Repetition of a word or phrase at the start of successive clauses", "An understatement for ironic effect", "An appeal to authority"], "correct_index": 1 } },
+  { "code": "C2_001_001_002", "lessonCode": "C2_001_001", "type": "FillBlank", "sortOrder": 2, "points": 30, "config": { "sentence": "El uso de la ______ crea ritmo y énfasis en el discurso político.", "correct_answer": "anáfora", "alternatives": ["Anáfora", "ANÁFORA"] } },
+  { "code": "C2_001_001_003", "lessonCode": "C2_001_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 40, "config": { "pairs": [{"target": "La metáfora", "en": "Metaphor"}, {"target": "La anáfora", "en": "Anaphora"}, {"target": "El eufemismo", "en": "Euphemism"}, {"target": "La hipérbole", "en": "Hyperbole"}], "time_limit_seconds": 120 } },
+
+  { "code": "C2_001_002_001", "lessonCode": "C2_001_002", "type": "MultipleChoice", "sortOrder": 1, "points": 30, "config": { "question": "Which phrase is the most appropriate in a formal legal document?", "options": ["En virtud de lo anterior", "Básicamente porque", "O sea", "Como ya dijimos"], "correct_index": 0 } },
+  { "code": "C2_001_002_002", "lessonCode": "C2_001_002", "type": "FillBlank", "sortOrder": 2, "points": 30, "config": { "sentence": "______ lo dispuesto en el artículo 5, queda prohibida dicha práctica.", "correct_answer": "Conforme", "alternatives": ["conforme", "CONFORME"] } },
+  { "code": "C2_001_002_003", "lessonCode": "C2_001_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 40, "config": { "pairs": [{"target": "En virtud de", "en": "By virtue of / Pursuant to"}, {"target": "Cabe destacar", "en": "It is worth noting"}, {"target": "No obstante", "en": "Nevertheless"}, {"target": "A tenor de", "en": "In accordance with"}], "time_limit_seconds": 120 } },
+
+  { "code": "C2_001_003_001", "lessonCode": "C2_001_003", "type": "MultipleChoice", "sortOrder": 1, "points": 30, "config": { "question": "What does 'captar la atención del auditorio' mean in oratory?", "options": ["To read a prepared text", "To capture the audience's attention", "To memorize a speech", "To project your voice"], "correct_index": 1 } },
+  { "code": "C2_001_003_002", "lessonCode": "C2_001_003", "type": "FillBlank", "sortOrder": 2, "points": 30, "config": { "sentence": "Un buen orador adapta su ______ al perfil de su audiencia.", "correct_answer": "discurso", "alternatives": ["Discurso", "DISCURSO"] } },
+  { "code": "C2_001_003_003", "lessonCode": "C2_001_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 40, "config": { "pairs": [{"target": "El discurso", "en": "The speech"}, {"target": "La oratoria", "en": "Oratory/Public speaking"}, {"target": "El auditorio", "en": "The audience"}, {"target": "La retórica", "en": "Rhetoric"}], "time_limit_seconds": 120 } },
+
+  { "code": "C2_002_001_001", "lessonCode": "C2_002_001", "type": "MultipleChoice", "sortOrder": 1, "points": 30, "config": { "question": "What does the idiom 'no hay mal que por bien no venga' mean?", "options": ["Every dark cloud has a silver lining", "All good things must come to an end", "Better late than never", "Actions speak louder than words"], "correct_index": 0 } },
+  { "code": "C2_002_001_002", "lessonCode": "C2_002_001", "type": "MultipleChoice", "sortOrder": 2, "points": 30, "config": { "question": "What does 'costar un ojo de la cara' mean?", "options": ["To be very easy", "To require great effort", "To cost a fortune", "To need medical attention"], "correct_index": 2 } },
+  { "code": "C2_002_001_003", "lessonCode": "C2_002_001", "type": "FlashcardMatch", "sortOrder": 3, "points": 40, "config": { "pairs": [{"target": "No hay mal que por bien no venga", "en": "Every cloud has a silver lining"}, {"target": "Costar un ojo de la cara", "en": "To cost an arm and a leg"}, {"target": "Estar en las nubes", "en": "To have one's head in the clouds"}, {"target": "Meter la pata", "en": "To put one's foot in it"}], "time_limit_seconds": 120 } },
+
+  { "code": "C2_002_002_001", "lessonCode": "C2_002_002", "type": "MultipleChoice", "sortOrder": 1, "points": 30, "config": { "question": "Which expression is used exclusively in Argentina to mean 'cool/great'?", "options": ["Guay", "Chévere", "Copado", "Bacán"], "correct_index": 2 } },
+  { "code": "C2_002_002_002", "lessonCode": "C2_002_002", "type": "MultipleChoice", "sortOrder": 2, "points": 30, "config": { "question": "In Spain, 'vosotros' is used for the second-person plural. What is the equivalent form used across Latin America?", "options": ["Ellos", "Ustedes", "Vosotros", "Usted"], "correct_index": 1 } },
+  { "code": "C2_002_002_003", "lessonCode": "C2_002_002", "type": "FlashcardMatch", "sortOrder": 3, "points": 40, "config": { "pairs": [{"target": "Guay (Spain)", "en": "Cool/Great"}, {"target": "Chévere (Colombia/Venezuela)", "en": "Cool/Great"}, {"target": "Copado (Argentina)", "en": "Cool/Awesome"}, {"target": "Órale (Mexico)", "en": "Alright!/Come on!"}], "time_limit_seconds": 120 } },
+
+  { "code": "C2_002_003_001", "lessonCode": "C2_002_003", "type": "MultipleChoice", "sortOrder": 1, "points": 30, "config": { "question": "What does the proverb 'más vale tarde que nunca' mean?", "options": ["It is never too late to start", "Better late than never", "Time waits for no one", "Early to bed, early to rise"], "correct_index": 1 } },
+  { "code": "C2_002_003_002", "lessonCode": "C2_002_003", "type": "MultipleChoice", "sortOrder": 2, "points": 30, "config": { "question": "Which proverb is the Spanish equivalent of 'actions speak louder than words'?", "options": ["Camarón que se duerme, se lo lleva la corriente", "A palabras necias, oídos sordos", "Del dicho al hecho, hay mucho trecho", "Obras son amores y no buenas razones"], "correct_index": 3 } },
+  { "code": "C2_002_003_003", "lessonCode": "C2_002_003", "type": "FlashcardMatch", "sortOrder": 3, "points": 40, "config": { "pairs": [{"target": "Más vale tarde que nunca", "en": "Better late than never"}, {"target": "A quien madruga, Dios le ayuda", "en": "The early bird catches the worm"}, {"target": "En boca cerrada no entran moscas", "en": "Silence is golden / If in doubt, say nothing"}, {"target": "No todo lo que brilla es oro", "en": "All that glitters is not gold"}], "time_limit_seconds": 120 } }
 ]

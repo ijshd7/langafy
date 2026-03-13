@@ -1,0 +1,20 @@
+{
+  "name": "langafy",
+  "version": "0.1.0",
+  "description": "A language learning platform with CEFR-aligned lessons, conversational AI practice, and mini-games",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/mobile",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm -w web run dev",
+    "dev:mobile": "npm -w mobile run dev",
+    "dev:api": "cd apps/api/LangafyApi && dotnet run",
+    "lint": "npm -w web run lint && npm -w mobile run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\" --ignore-path .gitignore",
+    "docker:up": "docker compose -f docker/docker-compose.yml up",
+    "docker:down": "docker compose -f docker/docker-compose.yml down"
+  }
+}

@@ -1,24 +1,300 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
+import { apiClient } from '@/lib/api'
+import Link from 'next/link'
+import { ChevronRight, BookOpen, Lock, CheckCircle2 } from 'lucide-react'
+
+interface Unit {
+  id: string
+  name: string
+  description: string
+  lessons: Lesson[]
+}
+
+interface Lesson {
+  id: string
+  title: string
+  description: string
+  objective: string
+  completionPercentage: number
+  exerciseCount: number
+}
+
+function UnitsSkeleton() {
+  return (
+    <div className="animate-pulse space-y-6">
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="rounded-xl bg-linear-to-br from-slate-800/50 to-slate-700/30 p-6 space-y-4">
+          <div className="h-6 w-48 rounded bg-slate-700" />
+          <div className="h-4 w-full rounded bg-slate-700" />
+          <div className="space-y-3">
+            {[...Array(2)].map((_, j) => (
+              <div key={j} className="h-12 rounded-lg bg-slate-700" />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function LessonCard({ lesson, onLessonClick }: { lesson: Lesson; onLessonClick: () => void }) {
+  const isCompleted = lesson.completionPercentage === 100
+
+  return (
+    <button
+      onClick={onLessonClick}
+      className="group w-full text-left rounded-lg bg-gradient-to-r from-slate-700/40 to-slate-600/30 border border-slate-600/50 p-4 hover:from-slate-700/60 hover:to-slate-600/50 hover:border-slate-500 transition-all duration-200"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-slate-100 group-hover:text-cyan-300 transition-colors truncate">
+            {lesson.title}
+          </h3>
+          <p className="text-sm text-slate-400 mt-1 line-clamp-2">{lesson.description}</p>
+          <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
+            <span>{lesson.exerciseCount} exercises</span>
+            <span>{Math.round(lesson.completionPercentage)}% Complete</span>
+          </div>
+        </div>
+        <div className="shrink-0 flex items-center gap-2">
+          {isCompleted ? (
+            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+          ) : (
+            <ChevronRight className="h-5 w-5 text-slate-500 group-hover:text-cyan-400 transform group-hover:translate-x-1 transition-all" />
+          )}
+        </div>
+      </div>
+
+      {lesson.completionPercentage > 0 && (
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-slate-700/40">
+          <div
+            className="h-full rounded-full bg-linear-to-r from-cyan-400 to-emerald-400 transition-all duration-500"
+            style={{ width: `${lesson.completionPercentage}%` }}
+          />
+        </div>
+      )}
+    </button>
+  )
+}
+
+function UnitSection({ unit, onLessonClick }: { unit: Unit; onLessonClick: (lessonId: string) => void }) {
+  const completedLessons = unit.lessons.filter((l) => l.completionPercentage === 100).length
+  const totalLessons = unit.lessons.length
+  const completionPercentage = (completedLessons / totalLessons) * 100
+
+  return (
+    <div className="rounded-xl bg-linear-to-br from-slate-800/40 to-slate-700/20 border border-slate-700/40 p-6 space-y-4">
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold text-slate-100">{unit.name}</h2>
+        <p className="text-sm text-slate-400">{unit.description}</p>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-400">Unit Progress</span>
+          <span className="text-slate-300 font-medium">
+            {completedLessons} of {totalLessons} Lessons
+          </span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700/40">
+          <div
+            className="h-full rounded-full bg-linear-to-r from-cyan-400 to-emerald-400 transition-all duration-500"
+            style={{ width: `${completionPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-3 mt-6">
+        {unit.lessons.map((lesson) => (
+          <LessonCard
+            key={lesson.id}
+            lesson={lesson}
+            onLessonClick={() => onLessonClick(lesson.id)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 type LevelPageProps = {
   params: Promise<{ levelId: string }>
 }
 
-export default async function LevelPage(props: LevelPageProps) {
-  const params = await props.params
-  const { levelId } = params
+export default function LevelPage(props: LevelPageProps) {
+  const router = useRouter()
+  const user = useCurrentUser()
+  const authLoading = useAuthLoading()
+  const [units, setUnits] = useState<Unit[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [levelId, setLevelId] = useState<string>('')
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-slate-900 mb-2">Level {levelId}</h1>
-        <p className="text-slate-600 mb-8">Browse units and lessons</p>
+  useEffect(() => {
+    const initTokenProvider = async () => {
+      const { getAuth } = await import('firebase/auth')
+      const auth = getAuth()
 
-        {/* Level content will be implemented in Step 3.7 */}
-        <div className="rounded-lg bg-white border border-slate-200 p-8">
-          <p className="text-slate-600">
-            Units and lessons for level {levelId} coming soon.
-          </p>
+      apiClient.setTokenProvider(async () => {
+        const currentUser = auth.currentUser
+        if (currentUser) {
+          return await currentUser.getIdToken()
+        }
+        return null
+      })
+    }
+
+    initTokenProvider()
+    props.params.then((p) => setLevelId(p.levelId))
+  }, [props.params])
+
+  useEffect(() => {
+    const fetchUnits = async () => {
+      if (!user || authLoading || !levelId) return
+
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Mock data for demo - replace with API call once endpoint is available
+        const mockUnits: Unit[] = [
+          {
+            id: 'unit-1',
+            name: 'Greetings & Introductions',
+            description: 'Learn how to greet people and introduce yourself in Spanish',
+            lessons: [
+              {
+                id: 'lesson-1',
+                title: 'Basic Greetings',
+                description: 'Learn common Spanish greetings like hola, buenos días, and buenas noches',
+                objective: 'Understand and use basic greetings',
+                completionPercentage: 100,
+                exerciseCount: 5,
+              },
+              {
+                id: 'lesson-2',
+                title: 'Introductions',
+                description: 'Learn how to introduce yourself and ask others their names',
+                objective: 'Introduce yourself and others in Spanish',
+                completionPercentage: 60,
+                exerciseCount: 6,
+              },
+            ],
+          },
+          {
+            id: 'unit-2',
+            name: 'Numbers & Colors',
+            description: 'Master numbers and color vocabulary in Spanish',
+            lessons: [
+              {
+                id: 'lesson-3',
+                title: 'Numbers 1-20',
+                description: 'Learn to count from 1 to 20 in Spanish',
+                objective: 'Count and recognize numbers 1-20',
+                completionPercentage: 40,
+                exerciseCount: 7,
+              },
+              {
+                id: 'lesson-4',
+                title: 'Basic Colors',
+                description: 'Learn primary and secondary colors in Spanish',
+                objective: 'Name colors and describe objects',
+                completionPercentage: 0,
+                exerciseCount: 6,
+              },
+            ],
+          },
+        ]
+
+        setUnits(mockUnits)
+      } catch (err) {
+        console.error('Failed to fetch units:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load units')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUnits()
+  }, [user, authLoading, levelId])
+
+  const handleLessonClick = (lessonId: string) => {
+    router.push(`/lessons/${lessonId}`)
+  }
+
+  const getLevelName = () => {
+    const levelNames: Record<string, string> = {
+      A1: 'Beginner',
+      A2: 'Elementary',
+      B1: 'Intermediate',
+      B2: 'Upper-Intermediate',
+      C1: 'Advanced',
+      C2: 'Mastery',
+    }
+    return levelNames[levelId.toUpperCase()] || levelId
+  }
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-700">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+          <UnitsSkeleton />
         </div>
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <main className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-700 text-slate-100">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-32 left-1/3 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-12">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors mb-6"
+          >
+            <ChevronRight className="h-4 w-4 rotate-180" />
+            Back to Dashboard
+          </Link>
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-cyan-500 to-emerald-500">
+                <BookOpen className="h-6 w-6 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold text-slate-50">{levelId.toUpperCase()} - {getLevelName()}</h1>
+            </div>
+            <p className="text-slate-400">Learn Spanish at the {getLevelName()} level. Browse units and complete lessons to progress.</p>
+          </div>
+        </div>
+
+        {error && (
+          <div className="rounded-xl bg-red-500/10 border border-red-500/50 p-6 mb-8">
+            <p className="text-red-300">{error}</p>
+          </div>
+        )}
+
+        <div className="space-y-6">
+          {units.length === 0 ? (
+            <div className="rounded-xl bg-slate-800/50 border border-slate-700/50 p-12 text-center">
+              <Lock className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+              <p className="text-slate-400">No units available for this level yet.</p>
+            </div>
+          ) : (
+            units.map((unit) => (
+              <UnitSection key={unit.id} unit={unit} onLessonClick={handleLessonClick} />
+            ))
+          )}
+        </div>
+      </div>
+    </main>
   )
 }

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using LangafyApi.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,11 @@ public class DbSeeder
     private readonly AppDbContext _context;
     private readonly ILogger<DbSeeder> _logger;
     private readonly string _seedDataPath;
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     public DbSeeder(AppDbContext context, ILogger<DbSeeder> logger, IWebHostEnvironment env)
     {
@@ -40,8 +46,9 @@ public class DbSeeder
 
             await SeedLanguagesAsync();
             await SeedCefrLevelsAsync();
-            await SeedLanguageContentAsync();
+            await _context.SaveChangesAsync();
 
+            await SeedLanguageContentAsync();
             await _context.SaveChangesAsync();
             _logger.LogInformation("Database seeding completed successfully.");
         }
@@ -65,7 +72,7 @@ public class DbSeeder
         }
 
         var json = await File.ReadAllTextAsync(filePath);
-        var languageSeedData = JsonSerializer.Deserialize<List<LanguageSeedDto>>(json)
+        var languageSeedData = JsonSerializer.Deserialize<List<LanguageSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException("Failed to deserialize languages.json");
 
         foreach (var lang in languageSeedData)
@@ -106,7 +113,7 @@ public class DbSeeder
         }
 
         var json = await File.ReadAllTextAsync(filePath);
-        var cefrSeedData = JsonSerializer.Deserialize<List<CefrLevelSeedDto>>(json)
+        var cefrSeedData = JsonSerializer.Deserialize<List<CefrLevelSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException("Failed to deserialize cefr-levels.json");
 
         foreach (var cefr in cefrSeedData)
@@ -159,7 +166,11 @@ public class DbSeeder
             }
 
             await SeedUnitsAsync(language, langCodeDir);
+            await _context.SaveChangesAsync();
+
             await SeedLessonsAsync(language, langCodeDir);
+            await _context.SaveChangesAsync();
+
             await SeedExercisesAsync(language, langCodeDir);
             await SeedVocabularyAsync(language, langCodeDir);
         }
@@ -175,7 +186,7 @@ public class DbSeeder
             return;
 
         var json = await File.ReadAllTextAsync(filePath);
-        var unitSeedData = JsonSerializer.Deserialize<List<UnitSeedDto>>(json)
+        var unitSeedData = JsonSerializer.Deserialize<List<UnitSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Failed to deserialize units.json for {language.Code}");
 
         var cefrLevels = await _context.CefrLevels.ToListAsync();
@@ -217,7 +228,7 @@ public class DbSeeder
             return;
 
         var json = await File.ReadAllTextAsync(filePath);
-        var lessonSeedData = JsonSerializer.Deserialize<List<LessonSeedDto>>(json)
+        var lessonSeedData = JsonSerializer.Deserialize<List<LessonSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Failed to deserialize lessons.json for {language.Code}");
 
         var units = await _context.Units
@@ -261,7 +272,7 @@ public class DbSeeder
             return;
 
         var json = await File.ReadAllTextAsync(filePath);
-        var exerciseSeedData = JsonSerializer.Deserialize<List<ExerciseSeedDto>>(json)
+        var exerciseSeedData = JsonSerializer.Deserialize<List<ExerciseSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Failed to deserialize exercises.json for {language.Code}");
 
         var lessons = await _context.Lessons
@@ -306,7 +317,7 @@ public class DbSeeder
             return;
 
         var json = await File.ReadAllTextAsync(filePath);
-        var vocabSeedData = JsonSerializer.Deserialize<List<VocabularySeedDto>>(json)
+        var vocabSeedData = JsonSerializer.Deserialize<List<VocabularySeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Failed to deserialize vocabulary.json for {language.Code}");
 
         var cefrLevels = await _context.CefrLevels.ToListAsync();

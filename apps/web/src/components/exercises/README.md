@@ -58,6 +58,59 @@ After submission, the component displays:
 - Correct answer highlighted in green
 - Wrong selection highlighted in red
 
+### FillInTheBlank
+
+A fill-in-the-blank exercise component with text input.
+
+**Features:**
+- Displays a sentence with a visual blank to fill in
+- Text input for entering the answer
+- Submit via button click or Enter key
+- Real-time feedback showing correct/incorrect status
+- Displays correct answer if user is wrong
+- Optional explanation text
+- Case-insensitive answer matching
+- Auto-advances after correct answer (2-second delay)
+- Dark mode support
+
+**Props:**
+```typescript
+interface FillInTheBlankProps {
+  exercise: Exercise                           // Exercise data with config
+  onComplete: (result: ExerciseResult) => void // Callback when exercise is done
+  isLoading?: boolean                          // Optional loading state
+}
+```
+
+**Example Usage:**
+```tsx
+<FillInTheBlank
+  exercise={exercise}
+  onComplete={(result) => {
+    console.log(`Score: ${result.score}/${result.maxScore}`)
+    // Advance to next exercise
+  }}
+/>
+```
+
+**Configuration (FillBlankConfig):**
+```typescript
+{
+  sentence: string           // Sentence with _____ placeholder
+  correctAnswers: string[]   // Array of acceptable answers (case-insensitive)
+  alternatives?: string[]    // Alternative correct answers (e.g., contractions)
+  explanation?: string       // Optional explanation shown after submission
+}
+```
+
+**Result Feedback:**
+After submission, the component displays:
+- ✓ Correct / ✗ Incorrect status
+- Points earned (e.g., 10/10)
+- The correct answer (if incorrect)
+- Optional explanation (if provided)
+- Input field highlighted in green (correct) or red (incorrect)
+
 ## Styling
 
 All components use **Tailwind CSS v4** with:
@@ -106,7 +159,6 @@ Components handle:
 ## Next Steps
 
 Future exercise components to implement:
-- `FillInTheBlank.tsx` — Fill-in-the-blank input exercise
 - `WordScramble.tsx` — Letter rearrangement game
 - `FlashcardMatch.tsx` — Card matching mini-game
 - `FreeResponse.tsx` — Open-ended text response

@@ -188,8 +188,9 @@ public static class LessonEndpoints
 
     /// <summary>
     /// Gets full lesson details including all exercises in sequence.
+    /// If the user is authenticated, includes their progress per exercise.
     /// </summary>
-    private static async Task<IResult> GetLessonDetail(int id, AppDbContext dbContext)
+    private static async Task<IResult> GetLessonDetail(int id, HttpContext context, AppDbContext dbContext)
     {
         try
         {
@@ -202,6 +203,25 @@ public static class LessonEndpoints
             if (lesson == null)
             {
                 return Results.NotFound($"Lesson with ID {id} not found.");
+            }
+
+            // Optionally load user progress if authenticated
+            Dictionary<int, Data.Entities.UserProgress>? progressByExercise = null;
+            var firebaseUid = context.User.FindFirst("sub")?.Value;
+            if (!string.IsNullOrEmpty(firebaseUid))
+            {
+                var user = await dbContext.Users
+                    .FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
+
+                if (user != null)
+                {
+                    var exerciseIds = lesson.Exercises.Select(e => e.Id).ToList();
+                    var progressList = await dbContext.UserProgress
+                        .Where(up => up.UserId == user.Id && exerciseIds.Contains(up.ExerciseId))
+                        .ToListAsync();
+
+                    progressByExercise = progressList.ToDictionary(p => p.ExerciseId);
+                }
             }
 
             var lessonDetail = new LessonDetailDto
@@ -227,13 +247,29 @@ public static class LessonEndpoints
                 },
                 Exercises = lesson.Exercises
                     .OrderBy(e => e.SortOrder)
-                    .Select(e => new ExerciseDto
+                    .Select(e =>
                     {
-                        Id = e.Id,
-                        Type = e.Type.ToString(),
-                        Config = e.Config,
-                        Points = e.Points,
-                        SortOrder = e.SortOrder
+                        var dto = new ExerciseDto
+                        {
+                            Id = e.Id,
+                            Type = e.Type.ToString(),
+                            Config = e.Config,
+                            Points = e.Points,
+                            SortOrder = e.SortOrder
+                        };
+
+                        if (progressByExercise != null &&
+                            progressByExercise.TryGetValue(e.Id, out var progress))
+                        {
+                            dto.Progress = new ExerciseProgressDto
+                            {
+                                Completed = progress.Completed,
+                                Score = progress.Score,
+                                Attempts = progress.Attempts
+                            };
+                        }
+
+                        return dto;
                     })
                     .ToList()
             };

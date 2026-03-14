@@ -124,6 +124,32 @@ public class ExerciseDto
     /// Display order within the lesson.
     /// </summary>
     public int SortOrder { get; set; }
+
+    /// <summary>
+    /// User's progress on this exercise. Null if not authenticated or no progress recorded.
+    /// </summary>
+    public ExerciseProgressDto? Progress { get; set; }
+}
+
+/// <summary>
+/// User's progress on a specific exercise.
+/// </summary>
+public class ExerciseProgressDto
+{
+    /// <summary>
+    /// Whether the user has completed this exercise successfully.
+    /// </summary>
+    public bool Completed { get; set; }
+
+    /// <summary>
+    /// Best score achieved (0-100).
+    /// </summary>
+    public int Score { get; set; }
+
+    /// <summary>
+    /// Number of attempts made.
+    /// </summary>
+    public int Attempts { get; set; }
 }
 
 /// <summary>

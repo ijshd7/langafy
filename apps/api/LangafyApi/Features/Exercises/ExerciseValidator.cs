@@ -167,6 +167,8 @@ public class ExerciseValidator
 
     /// <summary>
     /// Validates a flashcard matching submission.
+    /// Matches submitted pairs against config pairs using target/en string values.
+    /// Config format: { "pairs": [{"target": "Hola", "en": "Hello"}, ...] }
     /// </summary>
     public ExerciseResultDto ValidateFlashcardMatch(
         Exercise exercise,
@@ -182,61 +184,52 @@ public class ExerciseValidator
                 return CreateErrorResult("Exercise configuration is invalid.");
             }
 
-            var pairs = pairsElement.EnumerateArray().ToList();
+            var configPairs = pairsElement.EnumerateArray().ToList();
+            int totalPairs = configPairs.Count;
 
-            // Validate all pairs are matched correctly
-            bool allCorrect = true;
+            if (totalPairs == 0)
+            {
+                return CreateErrorResult("Exercise configuration has no pairs.");
+            }
+
+            // Validate each submitted match against config pairs
             int correctMatches = 0;
+            var matchedConfigIndices = new HashSet<int>();
 
             foreach (var match in submission.Matches)
             {
-                if (match.Length != 2)
-                {
-                    allCorrect = false;
-                    break;
-                }
+                string submittedTarget = match.Target.Trim();
+                string submittedEn = match.En.Trim();
 
-                int leftIndex = match[0];
-                int rightIndex = match[1];
-
-                // Check if this match exists in the pairs
-                bool matchFound = false;
-                foreach (var pair in pairs)
+                // Find a config pair that matches both target and en values
+                for (int i = 0; i < configPairs.Count; i++)
                 {
-                    if (pair.TryGetProperty("left", out var leftProp) &&
-                        pair.TryGetProperty("right", out var rightProp))
+                    if (matchedConfigIndices.Contains(i))
+                        continue;
+
+                    var pair = configPairs[i];
+                    string configTarget = pair.TryGetProperty("target", out var t) ? t.GetString() ?? "" : "";
+                    string configEn = pair.TryGetProperty("en", out var e) ? e.GetString() ?? "" : "";
+
+                    if (string.Equals(submittedTarget, configTarget, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(submittedEn, configEn, StringComparison.OrdinalIgnoreCase))
                     {
-                        // Check if indices match any pair in either direction
-                        // (left-right or right-left for some games)
-                        if ((pair.TryGetProperty("left_index", out var liProp) && liProp.GetInt32() == leftIndex &&
-                             pair.TryGetProperty("right_index", out var riProp) && riProp.GetInt32() == rightIndex))
-                        {
-                            matchFound = true;
-                            correctMatches++;
-                            break;
-                        }
+                        correctMatches++;
+                        matchedConfigIndices.Add(i);
+                        break;
                     }
                 }
-
-                if (!matchFound)
-                {
-                    allCorrect = false;
-                }
             }
 
-            // Check if all pairs were matched
-            if (correctMatches != pairs.Count)
-            {
-                allCorrect = false;
-            }
+            bool allCorrect = correctMatches == totalPairs;
 
             // Calculate score based on correct matches
-            int score = Math.Min(100, (correctMatches * 100) / pairs.Count);
+            int score = (correctMatches * 100) / totalPairs;
 
-            // Optionally factor in time for bonus (faster = more points)
+            // Time bonus for perfect matches (faster = more points, up to 20 bonus)
             if (allCorrect && submission.TimeSpentMs > 0)
             {
-                int timeBonus = Math.Max(0, 20 - (submission.TimeSpentMs / 1000)); // Up to 20 bonus points for < 20 seconds
+                int timeBonus = Math.Max(0, 20 - (submission.TimeSpentMs / 1000));
                 score = Math.Min(100, score + timeBonus);
             }
 
@@ -244,10 +237,12 @@ public class ExerciseValidator
             {
                 IsCorrect = allCorrect,
                 Score = score,
-                PointsEarned = allCorrect ? exercise.Points : Math.Max(1, (exercise.Points * correctMatches) / pairs.Count),
+                PointsEarned = allCorrect
+                    ? exercise.Points
+                    : Math.Max(1, (exercise.Points * correctMatches) / totalPairs),
                 Feedback = allCorrect
-                    ? $"Perfect! You matched all {pairs.Count} pairs correctly."
-                    : $"You matched {correctMatches} of {pairs.Count} pairs correctly."
+                    ? $"Perfect! You matched all {totalPairs} pairs correctly."
+                    : $"You matched {correctMatches} of {totalPairs} pairs correctly."
             };
 
             return result;

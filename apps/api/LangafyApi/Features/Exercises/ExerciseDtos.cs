@@ -52,9 +52,26 @@ public class WordScrambleSubmission : ExerciseSubmissionRequest
 public class FlashcardMatchSubmission : ExerciseSubmissionRequest
 {
     /// <summary>
-    /// Array of matched pairs, each containing [leftIndex, rightIndex].
+    /// List of matched pairs submitted by the user.
+    /// Each pair contains the target language word and its English translation.
     /// </summary>
-    public int[][] Matches { get; set; } = [];
+    public List<FlashcardMatchPair> Matches { get; set; } = new();
+}
+
+/// <summary>
+/// A single matched pair in a flashcard matching exercise.
+/// </summary>
+public class FlashcardMatchPair
+{
+    /// <summary>
+    /// The target language word (e.g., "Hola").
+    /// </summary>
+    public string Target { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The English translation (e.g., "Hello").
+    /// </summary>
+    public string En { get; set; } = string.Empty;
 }
 
 /// <summary>

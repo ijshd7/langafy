@@ -5,7 +5,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["*"],
-      "@langafy/shared-types": ["../../packages/shared-types/dist/index.d.ts"]
+      "@langafy/shared-types": ["../../packages/shared-types/dist/index.d.ts"],
+      "@langafy/shared-game-logic": ["../../packages/shared-game-logic/dist/index.d.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]

@@ -1,0 +1,19 @@
+{
+  "name": "@langafy/shared-game-logic",
+  "version": "0.1.0",
+  "description": "Shared game state logic as React hooks for Langafy mini-games",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^4.9"
+  }
+}

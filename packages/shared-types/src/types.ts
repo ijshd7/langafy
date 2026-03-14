@@ -311,3 +311,42 @@ export interface ProgressSummaryEnhanced {
   levelProgress: LevelProgress[];
   unitProgress: UnitProgress[];
 }
+
+// ========== Game-Specific Types ==========
+
+/**
+ * Game state for all mini-games
+ */
+export type GameState = 'idle' | 'playing' | 'paused' | 'completed';
+
+/**
+ * Game scoring result with breakdown
+ */
+export interface GameScore {
+  basePoints: number; // points for completing the game
+  timeBonus: number; // bonus/penalty based on speed
+  accuracyMultiplier: number; // 0.5-1.0 based on mistakes
+  finalScore: number; // basePoints * (1 + timeBonus/100) * accuracyMultiplier
+}
+
+/**
+ * Events that occur during gameplay for analytics/tracking
+ */
+export type GameEvent = 'card-flip' | 'match' | 'mismatch' | 'hint-used' | 'timeout';
+
+/**
+ * Time bonus calculation result
+ */
+export interface TimeBonus {
+  bonus: number; // percentage bonus/penalty (e.g., +20, -10)
+  label: string; // human-readable label (e.g., "Excellent speed", "Perfect time")
+}
+
+/**
+ * Accuracy multiplier based on mistake count
+ */
+export interface AccuracyMultiplier {
+  multiplier: number; // 0.5-1.0
+  mistakes: number; // number of mistakes made
+  label: string; // human-readable label (e.g., "Flawless", "Good")
+}

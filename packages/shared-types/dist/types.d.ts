@@ -281,4 +281,36 @@ export interface ProgressSummaryEnhanced {
     levelProgress: LevelProgress[];
     unitProgress: UnitProgress[];
 }
+/**
+ * Game state for all mini-games
+ */
+export type GameState = 'idle' | 'playing' | 'paused' | 'completed';
+/**
+ * Game scoring result with breakdown
+ */
+export interface GameScore {
+    basePoints: number;
+    timeBonus: number;
+    accuracyMultiplier: number;
+    finalScore: number;
+}
+/**
+ * Events that occur during gameplay for analytics/tracking
+ */
+export type GameEvent = 'card-flip' | 'match' | 'mismatch' | 'hint-used' | 'timeout';
+/**
+ * Time bonus calculation result
+ */
+export interface TimeBonus {
+    bonus: number;
+    label: string;
+}
+/**
+ * Accuracy multiplier based on mistake count
+ */
+export interface AccuracyMultiplier {
+    multiplier: number;
+    mistakes: number;
+    label: string;
+}
 //# sourceMappingURL=types.d.ts.map

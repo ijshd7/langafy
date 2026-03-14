@@ -17,8 +17,8 @@
     "seed:help": "node scripts/seed.js --help",
     "lint": "npm -w web run lint && npm -w mobile run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\" --ignore-path .gitignore",
-    "docker:up": "docker compose -f docker/docker-compose.yml up",
-    "docker:rebuild": "docker compose -f docker/docker-compose.yml up --build",
-    "docker:down": "docker compose -f docker/docker-compose.yml down"
+    "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",
+    "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env up --build",
+    "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down"
   }
 }

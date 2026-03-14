@@ -71,10 +71,67 @@ export enum ExerciseType {
 }
 
 /**
+ * Language code type alias
+ */
+export type LanguageCode = 'es' | 'fr' | 'de' | 'it' | 'pt' | 'ja' | 'zh';
+
+/**
  * Base exercise configuration (type-agnostic)
  */
 export interface ExerciseConfig {
   [key: string]: unknown;
+}
+
+/**
+ * Multiple choice exercise configuration
+ */
+export interface MultipleChoiceConfig extends ExerciseConfig {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation?: string;
+}
+
+/**
+ * Fill-in-the-blank exercise configuration
+ */
+export interface FillBlankConfig extends ExerciseConfig {
+  sentence: string; // sentence with _____ placeholder
+  correctAnswers: string[]; // multiple acceptable answers (case-insensitive)
+  alternatives?: string[]; // alternative correct answers (e.g., contractions)
+  explanation?: string;
+}
+
+/**
+ * Word scramble exercise configuration
+ */
+export interface WordScrambleConfig extends ExerciseConfig {
+  targetWord: string; // the correct answer
+  hint?: string; // optional hint (e.g., English translation or description)
+  scrambledLetters?: string[]; // pre-scrambled letters (optional, can be generated at runtime)
+  explanation?: string;
+}
+
+/**
+ * Flashcard matching game configuration
+ */
+export interface FlashcardMatchConfig extends ExerciseConfig {
+  pairs: Array<{
+    id: string;
+    target: string; // word in target language
+    english: string; // English translation
+  }>;
+  timeLimit?: number; // optional time limit in seconds
+  explanation?: string;
+}
+
+/**
+ * Free response exercise configuration
+ */
+export interface FreeResponseConfig extends ExerciseConfig {
+  prompt: string; // the question or prompt
+  expectedKeywords?: string[]; // keywords to look for in response (for auto-grading hints)
+  explanation?: string;
 }
 
 /**
@@ -175,4 +232,82 @@ export interface UserVocabulary {
   intervalDays: number;
   repetitions: number;
   nextReviewAt: string;
+}
+
+/**
+ * Exercise submission - discriminated union by exercise type
+ */
+export type ExerciseSubmission =
+  | {
+      type: ExerciseType.MultipleChoice;
+      selectedIndex: number;
+    }
+  | {
+      type: ExerciseType.FillBlank;
+      answer: string;
+    }
+  | {
+      type: ExerciseType.WordScramble;
+      answer: string;
+    }
+  | {
+      type: ExerciseType.FlashcardMatch;
+      completedAt: number; // completion time in milliseconds
+      mistakes: number; // number of mismatches
+    }
+  | {
+      type: ExerciseType.FreeResponse;
+      answer: string;
+    };
+
+/**
+ * Exercise result/feedback after submission
+ */
+export interface ExerciseResult {
+  correct: boolean;
+  score: number; // points earned (0 if incorrect)
+  maxScore: number; // total points possible for this exercise
+  correctAnswer?: string; // show correct answer if user was incorrect
+  explanation?: string; // detailed explanation of the answer
+  timeTaken?: number; // time spent on this exercise in milliseconds (optional, for games)
+}
+
+/**
+ * Progress breakdown by CEFR level
+ */
+export interface LevelProgress {
+  cefrLevel: CefrLevel;
+  levelCode: string;
+  completionPercentage: number;
+  completedUnits: number;
+  totalUnits: number;
+  pointsEarned: number;
+}
+
+/**
+ * Progress breakdown by unit
+ */
+export interface UnitProgress {
+  unitId: string;
+  unitTitle: string;
+  cefrLevel: CefrLevel;
+  completionPercentage: number;
+  completedLessons: number;
+  totalLessons: number;
+  pointsEarned: number;
+}
+
+/**
+ * Enhanced progress summary with language context
+ */
+export interface ProgressSummaryEnhanced {
+  languageCode: LanguageCode;
+  currentLevel: CefrLevel;
+  totalPoints: number;
+  currentStreak: number; // consecutive days of activity
+  exercisesCompleted: number;
+  lessonsCompleted: number;
+  lastActivityAt: string;
+  levelProgress: LevelProgress[];
+  unitProgress: UnitProgress[];
 }

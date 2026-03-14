@@ -65,10 +65,61 @@ export declare enum ExerciseType {
     FreeResponse = "FreeResponse"
 }
 /**
+ * Language code type alias
+ */
+export type LanguageCode = 'es' | 'fr' | 'de' | 'it' | 'pt' | 'ja' | 'zh';
+/**
  * Base exercise configuration (type-agnostic)
  */
 export interface ExerciseConfig {
     [key: string]: unknown;
+}
+/**
+ * Multiple choice exercise configuration
+ */
+export interface MultipleChoiceConfig extends ExerciseConfig {
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation?: string;
+}
+/**
+ * Fill-in-the-blank exercise configuration
+ */
+export interface FillBlankConfig extends ExerciseConfig {
+    sentence: string;
+    correctAnswers: string[];
+    alternatives?: string[];
+    explanation?: string;
+}
+/**
+ * Word scramble exercise configuration
+ */
+export interface WordScrambleConfig extends ExerciseConfig {
+    targetWord: string;
+    hint?: string;
+    scrambledLetters?: string[];
+    explanation?: string;
+}
+/**
+ * Flashcard matching game configuration
+ */
+export interface FlashcardMatchConfig extends ExerciseConfig {
+    pairs: Array<{
+        id: string;
+        target: string;
+        english: string;
+    }>;
+    timeLimit?: number;
+    explanation?: string;
+}
+/**
+ * Free response exercise configuration
+ */
+export interface FreeResponseConfig extends ExerciseConfig {
+    prompt: string;
+    expectedKeywords?: string[];
+    explanation?: string;
 }
 /**
  * Exercise lesson component
@@ -161,5 +212,73 @@ export interface UserVocabulary {
     intervalDays: number;
     repetitions: number;
     nextReviewAt: string;
+}
+/**
+ * Exercise submission - discriminated union by exercise type
+ */
+export type ExerciseSubmission = {
+    type: ExerciseType.MultipleChoice;
+    selectedIndex: number;
+} | {
+    type: ExerciseType.FillBlank;
+    answer: string;
+} | {
+    type: ExerciseType.WordScramble;
+    answer: string;
+} | {
+    type: ExerciseType.FlashcardMatch;
+    completedAt: number;
+    mistakes: number;
+} | {
+    type: ExerciseType.FreeResponse;
+    answer: string;
+};
+/**
+ * Exercise result/feedback after submission
+ */
+export interface ExerciseResult {
+    correct: boolean;
+    score: number;
+    maxScore: number;
+    correctAnswer?: string;
+    explanation?: string;
+    timeTaken?: number;
+}
+/**
+ * Progress breakdown by CEFR level
+ */
+export interface LevelProgress {
+    cefrLevel: CefrLevel;
+    levelCode: string;
+    completionPercentage: number;
+    completedUnits: number;
+    totalUnits: number;
+    pointsEarned: number;
+}
+/**
+ * Progress breakdown by unit
+ */
+export interface UnitProgress {
+    unitId: string;
+    unitTitle: string;
+    cefrLevel: CefrLevel;
+    completionPercentage: number;
+    completedLessons: number;
+    totalLessons: number;
+    pointsEarned: number;
+}
+/**
+ * Enhanced progress summary with language context
+ */
+export interface ProgressSummaryEnhanced {
+    languageCode: LanguageCode;
+    currentLevel: CefrLevel;
+    totalPoints: number;
+    currentStreak: number;
+    exercisesCompleted: number;
+    lessonsCompleted: number;
+    lastActivityAt: string;
+    levelProgress: LevelProgress[];
+    unitProgress: UnitProgress[];
 }
 //# sourceMappingURL=types.d.ts.map

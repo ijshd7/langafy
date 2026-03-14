@@ -5,14 +5,17 @@ import { useRouter } from 'next/navigation'
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
 import Link from 'next/link'
-import { ChevronRight, BookOpen, CheckCircle2, Clock, Zap } from 'lucide-react'
+import { ChevronRight, CheckCircle2, Zap } from 'lucide-react'
+import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
+import { ExerciseRenderer } from '@/components/exercises'
 
-interface Exercise {
-  id: string
-  type: string
+interface ApiLesson {
+  id: number
   title: string
   description: string
-  question?: string
+  objective: string
+  unit: { id: number; title: string; cefrLevel: { code: string } }
+  exercises: Array<{ id: number; type: string; config: Record<string, unknown>; points: number; sortOrder: number }>
 }
 
 interface Lesson {
@@ -46,38 +49,30 @@ function LessonSkeleton() {
 function ExerciseCard({
   exercise,
   index,
-  totalExercises,
   isCompleted,
 }: {
   exercise: Exercise
   index: number
-  totalExercises: number
   isCompleted: boolean
 }) {
+  const typeLabel = exercise.type.replace(/([A-Z])/g, ' $1').trim()
+
   return (
     <div
-      className={`rounded-lg border p-6 transition-all ${
+      className={`rounded-lg border p-4 transition-all ${
         isCompleted
           ? 'bg-emerald-500/10 border-emerald-500/50'
           : 'bg-slate-700/40 border-slate-600/50 hover:border-slate-500'
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500/30 text-cyan-300 text-sm font-semibold">
-              {index + 1}
-            </span>
-            <h3 className="text-lg font-semibold text-slate-100">{exercise.title}</h3>
-          </div>
-          <p className="text-slate-400 text-sm">{exercise.description}</p>
-          <div className="flex items-center gap-2 mt-3 text-xs text-slate-500">
-            <span className="capitalize bg-slate-700/50 px-2 py-1 rounded">
-              {exercise.type.replace('_', ' ')}
-            </span>
-          </div>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500/30 text-cyan-300 text-sm font-semibold">
+            {index + 1}
+          </span>
+          <span className="capitalize text-sm font-medium text-slate-200">{typeLabel}</span>
         </div>
-        {isCompleted && <CheckCircle2 className="h-6 w-6 text-emerald-400 shrink-0 mt-1" />}
+        {isCompleted && <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />}
       </div>
     </div>
   )
@@ -96,6 +91,7 @@ export default function LessonPage(props: LessonPageProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lessonId, setLessonId] = useState<string>('')
+  const [completedResults, setCompletedResults] = useState<ExerciseResult[]>([])
 
   useEffect(() => {
     const initTokenProvider = async () => {
@@ -123,49 +119,26 @@ export default function LessonPage(props: LessonPageProps) {
         setLoading(true)
         setError(null)
 
-        // Mock data for demo
-        const mockLesson: Lesson = {
-          id: lessonId,
-          title: 'Basic Greetings in Spanish',
-          description: 'Learn how to greet people in Spanish with common phrases and expressions',
-          objective:
-            'Master fundamental Spanish greetings and understand when to use formal vs informal greetings',
-          unitName: 'Greetings & Introductions',
-          levelCode: 'A1',
+        const data = await apiClient.get<ApiLesson>(`/lessons/${lessonId}`)
+        const mappedLesson: Lesson = {
+          id: data.id.toString(),
+          title: data.title,
+          description: data.description,
+          objective: data.objective,
+          unitName: data.unit.title,
+          levelCode: data.unit.cefrLevel.code,
           completionPercentage: 0,
-          exercises: [
-            {
-              id: 'ex-1',
-              type: 'multiple_choice',
-              title: 'Greeting Selection',
-              description: 'Choose the correct greeting for different situations',
-              question: 'What do you say when greeting someone in the morning?',
-            },
-            {
-              id: 'ex-2',
-              type: 'fill_blank',
-              title: 'Fill in the Blank',
-              description: 'Complete the Spanish greeting',
-              question: 'Hola, ¿cómo _____?',
-            },
-            {
-              id: 'ex-3',
-              type: 'word_scramble',
-              title: 'Unscramble the Word',
-              description: 'Rearrange letters to form a Spanish greeting',
-              question: 'unscramble: s-a-d-a-n-o-b',
-            },
-            {
-              id: 'ex-4',
-              type: 'flashcard_match',
-              title: 'Match Greetings',
-              description: 'Match Spanish greetings with their English translations',
-              question: 'Match pairs of greetings',
-            },
-          ],
+          exercises: data.exercises.map((ex) => ({
+            id: ex.id.toString(),
+            lessonId: data.id.toString(),
+            type: ex.type as ExerciseType,
+            config: ex.config,
+            sortOrder: ex.sortOrder,
+            points: ex.points,
+          })),
         }
 
-        setLesson(mockLesson)
+        setLesson(mappedLesson)
       } catch (err) {
         console.error('Failed to fetch lesson:', err)
         setError(err instanceof Error ? err.message : 'Failed to load lesson')
@@ -177,10 +150,9 @@ export default function LessonPage(props: LessonPageProps) {
     fetchLesson()
   }, [user, authLoading, lessonId])
 
-  const handleCompleteExercise = () => {
-    if (currentExerciseIndex < (lesson?.exercises.length || 0) - 1) {
-      setCurrentExerciseIndex(currentExerciseIndex + 1)
-    }
+  const handleExerciseComplete = (result: ExerciseResult) => {
+    setCompletedResults((prev) => [...prev, result])
+    setCurrentExerciseIndex((prev) => prev + 1)
   }
 
   const handleReturnToDashboard = () => {
@@ -214,7 +186,6 @@ export default function LessonPage(props: LessonPageProps) {
   }
 
   const currentExercise = lesson.exercises[currentExerciseIndex]
-  const isLastExercise = currentExerciseIndex === lesson.exercises.length - 1
   const progressPercentage = ((currentExerciseIndex + 1) / lesson.exercises.length) * 100
 
   return (
@@ -270,66 +241,57 @@ export default function LessonPage(props: LessonPageProps) {
           </div>
         )}
 
-        {/* Current exercise display */}
-        <div className="mb-8 rounded-xl bg-slate-800/40 border border-slate-700/40 p-8">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/30 text-cyan-300 text-lg font-bold">
-                  {currentExerciseIndex + 1}
-                </span>
-                <h2 className="text-2xl font-bold text-slate-100">{currentExercise.title}</h2>
+        {/* Current exercise display or completion screen */}
+        {currentExerciseIndex >= lesson.exercises.length ? (
+          <div className="mb-8 rounded-xl bg-emerald-500/10 border border-emerald-500/50 p-8">
+            <div className="text-center space-y-6">
+              <CheckCircle2 className="h-16 w-16 text-emerald-400 mx-auto" />
+              <div>
+                <h2 className="text-3xl font-bold text-slate-100 mb-2">Lesson Complete!</h2>
+                <p className="text-slate-300">
+                  Score: {completedResults.reduce((s, r) => s + r.score, 0)} /{' '}
+                  {completedResults.reduce((s, r) => s + r.maxScore, 0)} points
+                </p>
               </div>
-              <p className="text-slate-400 ml-13">{currentExercise.description}</p>
-            </div>
-            <span className="inline-flex items-center gap-1 rounded-lg bg-cyan-500/20 px-3 py-1 text-sm text-cyan-300 capitalize">
-              <Zap className="h-4 w-4" />
-              {currentExercise.type.replace('_', ' ')}
-            </span>
-          </div>
-
-          {/* Exercise content placeholder */}
-          <div className="rounded-lg bg-gradient-to-br from-slate-700/40 to-slate-600/30 border border-slate-600/50 p-8 my-8">
-            <div className="text-center space-y-4">
-              <BookOpen className="h-12 w-12 text-slate-500 mx-auto" />
-              <p className="text-slate-400">
-                <span className="font-semibold">{currentExercise.question}</span>
-              </p>
-              <p className="text-sm text-slate-500">
-                Exercise component will be implemented in Phase 5 (Step 5.2-5.7)
-              </p>
-            </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex gap-4 mt-8">
-            <button
-              onClick={handleCompleteExercise}
-              className="flex-1 rounded-lg bg-linear-to-r from-cyan-500 to-emerald-500 px-6 py-3 font-semibold text-slate-900 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
-            >
-              {isLastExercise ? 'Complete Lesson' : 'Next Exercise'}
-            </button>
-            {isLastExercise && (
               <button
                 onClick={handleReturnToDashboard}
-                className="flex-1 rounded-lg border border-slate-600 px-6 py-3 font-semibold text-slate-100 hover:border-slate-500 hover:bg-slate-700/50 transition-all"
+                className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-500 to-emerald-500 px-6 py-3 font-semibold text-slate-900 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
               >
                 Return to Dashboard
               </button>
-            )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mb-8 rounded-xl bg-slate-800/40 border border-slate-700/40 p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/30 text-cyan-300 text-lg font-bold">
+                  {currentExerciseIndex + 1}
+                </span>
+                <h2 className="text-2xl font-bold text-slate-100">Exercise {currentExerciseIndex + 1}</h2>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-lg bg-cyan-500/20 px-3 py-1 text-sm text-cyan-300 capitalize">
+                <Zap className="h-4 w-4" />
+                {currentExercise.type.replace(/([A-Z])/g, ' $1').trim()}
+              </span>
+            </div>
+
+            {/* Exercise renderer */}
+            <div className="mt-8">
+              <ExerciseRenderer exercise={currentExercise} onComplete={handleExerciseComplete} />
+            </div>
+          </div>
+        )}
 
         {/* Exercise list */}
         <div className="mb-8">
           <h3 className="text-lg font-semibold text-slate-200 mb-4">All Exercises</h3>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {lesson.exercises.map((exercise, index) => (
               <ExerciseCard
                 key={exercise.id}
                 exercise={exercise}
                 index={index}
-                totalExercises={lesson.exercises.length}
                 isCompleted={index < currentExerciseIndex}
               />
             ))}

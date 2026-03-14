@@ -111,6 +111,48 @@ After submission, the component displays:
 - Optional explanation (if provided)
 - Input field highlighted in green (correct) or red (incorrect)
 
+### ExerciseRenderer
+
+A router component that delegates to the correct exercise component by type.
+
+**Features:**
+- Accepts an `Exercise` object with any config type
+- Switches on `exercise.type` to render the appropriate component
+- Passes through `onComplete` callback unchanged
+- Graceful fallback UI for unimplemented exercise types
+- Handles unknown/invalid exercise types with error message
+
+**Props:**
+```typescript
+interface ExerciseRendererProps {
+  exercise: Exercise                           // Exercise data with any config type
+  onComplete: (result: ExerciseResult) => void // Callback when exercise is done
+  isLoading?: boolean                          // Optional loading state
+}
+```
+
+**Example Usage:**
+```tsx
+<ExerciseRenderer
+  exercise={exercise}
+  onComplete={(result) => {
+    // Handle exercise completion (advance to next, update progress, etc)
+  }}
+/>
+```
+
+**Component Coverage:**
+- ✓ `MultipleChoice` — Fully implemented
+- ✓ `FillBlank` — Fully implemented
+- ⏳ `WordScramble` — Coming soon (shows friendly placeholder)
+- ⏳ `FlashcardMatch` — Coming soon (shows friendly placeholder)
+- ⏳ `FreeResponse` — Coming soon (shows friendly placeholder)
+
+**Error Handling:**
+- Unknown exercise types show an error message with the unrecognized type
+- Placeholders for unimplemented types appear in-flow during lessons
+- All fallback UI matches the overall exercise styling (dark mode compatible)
+
 ## Styling
 
 All components use **Tailwind CSS v4** with:
@@ -162,4 +204,5 @@ Future exercise components to implement:
 - `WordScramble.tsx` — Letter rearrangement game
 - `FlashcardMatch.tsx` — Card matching mini-game
 - `FreeResponse.tsx` — Open-ended text response
-- `ExerciseRenderer.tsx` — Router component that delegates to correct component by type
+
+The `ExerciseRenderer.tsx` router component now delegates to exercise components by type and gracefully handles unimplemented types with friendly placeholder UI.

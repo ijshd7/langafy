@@ -1,14 +1,14 @@
-# Authentication Middleware
+# Authentication Proxy
 
 ## Overview
 
-The middleware in `src/middleware.ts` enforces authentication on protected routes and redirects authenticated users away from login/signup pages.
+The proxy in `src/proxy.ts` enforces authentication on protected routes and redirects authenticated users away from login/signup pages.
 
 ## How It Works
 
 ### 1. Authentication Detection
 
-The middleware checks for an `auth-token` cookie to determine if a user is authenticated:
+The proxy checks for an `auth-token` cookie to determine if a user is authenticated:
 
 ```typescript
 const hasAuthCookie = request.cookies.has('auth-token')
@@ -75,7 +75,7 @@ function clearAuthCookie() {
    - `signOut()` - Clears cookie before sign out
    - `initializeAuth()` - Sets/clears cookie when Firebase auth state changes
 
-2. **`middleware.ts`**:
+2. **`proxy.ts`**:
    - Checks for auth cookie on every request
    - Redirects accordingly
 
@@ -88,11 +88,11 @@ function clearAuthCookie() {
 4. Firebase authenticates user
 5. `setAuthCookie()` is called (sets `auth-token` cookie)
 6. User is redirected to `/dashboard`
-7. Middleware allows access (cookie present)
+7. Proxy allows access (cookie present)
 
 ### Protected Route Access
 1. User visits `/dashboard` (authenticated)
-2. Middleware checks for `auth-token` cookie
+2. Proxy checks for `auth-token` cookie
 3. Cookie found → request proceeds
 4. Dashboard page is rendered
 
@@ -105,7 +105,7 @@ function clearAuthCookie() {
 
 ## Testing
 
-To test the middleware:
+To test the proxy:
 
 1. **Login**: Sign in and verify redirects to `/dashboard`
 2. **Protected Route**: Try accessing `/dashboard` without logging in → redirects to `/login`
@@ -116,13 +116,6 @@ To test the middleware:
 ## Security Notes
 
 - Cookies use `SameSite=Lax` to prevent CSRF attacks
-- The `auth-token` cookie is just a flag for the middleware
+- The `auth-token` cookie is just a flag for the proxy
 - Actual authentication is validated by Firebase (token verification happens client-side and on the API)
-- The middleware acts as a first-pass guard; API routes require proper Firebase JWT tokens
-
-## Future Enhancements
-
-- Use Next.js's new `proxy` convention instead of deprecated `middleware` (as suggested by build warning)
-- Add rate limiting on login attempts
-- Add session timeout with automatic logout
-- Store actual Firebase token verification for more robust middleware checks
+- The proxy acts as a first-pass guard; API routes require proper Firebase JWT tokens

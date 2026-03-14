@@ -72,7 +72,16 @@ function ExerciseCard({
           </span>
           <span className="capitalize text-sm font-medium text-slate-200">{typeLabel}</span>
         </div>
-        {isCompleted && <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />}
+        <div className="flex items-center gap-2">
+          {isCompleted ? (
+            <>
+              <span className="text-xs text-emerald-300 font-medium">{exercise.points} pts</span>
+              <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+            </>
+          ) : (
+            <span className="text-xs text-slate-500">{exercise.points} pts</span>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -92,6 +101,8 @@ export default function LessonPage(props: LessonPageProps) {
   const [error, setError] = useState<string | null>(null)
   const [lessonId, setLessonId] = useState<string>('')
   const [completedResults, setCompletedResults] = useState<ExerciseResult[]>([])
+  const [lastEarnedPoints, setLastEarnedPoints] = useState<number | null>(null)
+  const [showPointsToast, setShowPointsToast] = useState(false)
 
   useEffect(() => {
     const initTokenProvider = async () => {
@@ -151,6 +162,11 @@ export default function LessonPage(props: LessonPageProps) {
   }, [user, authLoading, lessonId])
 
   const handleExerciseComplete = (result: ExerciseResult) => {
+    if (result.score > 0) {
+      setLastEarnedPoints(result.score)
+      setShowPointsToast(true)
+      setTimeout(() => setShowPointsToast(false), 1500)
+    }
     setCompletedResults((prev) => [...prev, result])
     setCurrentExerciseIndex((prev) => prev + 1)
   }
@@ -220,9 +236,17 @@ export default function LessonPage(props: LessonPageProps) {
             <h2 className="text-sm font-semibold text-slate-200 uppercase tracking-wider">
               Lesson Progress
             </h2>
-            <span className="text-sm font-bold text-cyan-300">
-              {currentExerciseIndex + 1} of {lesson.exercises.length}
-            </span>
+            <div className="flex items-center gap-4">
+              {completedResults.length > 0 && (
+                <span className="text-sm font-bold text-emerald-300 flex items-center gap-1">
+                  <Zap className="h-3.5 w-3.5" />
+                  {completedResults.reduce((s, r) => s + r.score, 0)} pts
+                </span>
+              )}
+              <span className="text-sm font-bold text-cyan-300">
+                {currentExerciseIndex + 1} of {lesson.exercises.length}
+              </span>
+            </div>
           </div>
 
           <div className="h-3 w-full overflow-hidden rounded-full bg-slate-700/40">
@@ -243,15 +267,52 @@ export default function LessonPage(props: LessonPageProps) {
 
         {/* Current exercise display or completion screen */}
         {currentExerciseIndex >= lesson.exercises.length ? (
-          <div className="mb-8 rounded-xl bg-emerald-500/10 border border-emerald-500/50 p-8">
-            <div className="text-center space-y-6">
-              <CheckCircle2 className="h-16 w-16 text-emerald-400 mx-auto" />
+          <div className="relative mb-8 rounded-xl bg-emerald-500/10 border border-emerald-500/50 p-8 overflow-hidden">
+            {/* Confetti particles */}
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 rounded-sm pointer-events-none"
+                style={{
+                  left: `${10 + i * 11}%`,
+                  top: '-8px',
+                  backgroundColor: ['#22d3ee', '#34d399', '#fbbf24', '#f87171', '#a78bfa'][i % 5],
+                  animation: `confetti-drop ${0.8 + i * 0.15}s ease-in ${i * 0.08}s both`,
+                }}
+              />
+            ))}
+
+            <div className="text-center space-y-6" style={{ animation: 'fade-in-up 0.5s ease-out' }}>
+              <div style={{ animation: 'celebration-pop 0.6s cubic-bezier(0.22,1,0.36,1) 0.2s both' }}>
+                <CheckCircle2 className="h-16 w-16 text-emerald-400 mx-auto" />
+              </div>
               <div>
                 <h2 className="text-3xl font-bold text-slate-100 mb-2">Lesson Complete!</h2>
-                <p className="text-slate-300">
-                  Score: {completedResults.reduce((s, r) => s + r.score, 0)} /{' '}
-                  {completedResults.reduce((s, r) => s + r.maxScore, 0)} points
-                </p>
+                <div className="flex items-center justify-center gap-4 mt-4">
+                  <div className="rounded-lg bg-slate-700/50 px-4 py-2 text-center">
+                    <p className="text-xs text-slate-400 uppercase tracking-wider">Score</p>
+                    <p className="text-2xl font-bold text-emerald-300">
+                      {completedResults.reduce((s, r) => s + r.score, 0)}
+                      <span className="text-slate-400 text-sm font-normal">
+                        {' '}
+                        /{completedResults.reduce((s, r) => s + r.maxScore, 0)}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-slate-700/50 px-4 py-2 text-center">
+                    <p className="text-xs text-slate-400 uppercase tracking-wider">Accuracy</p>
+                    <p className="text-2xl font-bold text-cyan-300">
+                      {completedResults.reduce((s, r) => s + r.maxScore, 0) > 0
+                        ? Math.round(
+                            (completedResults.reduce((s, r) => s + r.score, 0) /
+                              completedResults.reduce((s, r) => s + r.maxScore, 0)) *
+                              100
+                          )
+                        : 0}
+                      %
+                    </p>
+                  </div>
+                </div>
               </div>
               <button
                 onClick={handleReturnToDashboard}
@@ -262,7 +323,17 @@ export default function LessonPage(props: LessonPageProps) {
             </div>
           </div>
         ) : (
-          <div className="mb-8 rounded-xl bg-slate-800/40 border border-slate-700/40 p-8">
+          <div className="relative mb-8 rounded-xl bg-slate-800/40 border border-slate-700/40 p-8">
+            {showPointsToast && lastEarnedPoints !== null && (
+              <div
+                className="absolute top-4 right-4 z-10 flex items-center gap-1 rounded-full bg-emerald-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/30"
+                style={{ animation: 'points-float 1.5s ease-out forwards' }}
+              >
+                <Zap className="h-3.5 w-3.5" />
+                +{lastEarnedPoints} pts
+              </div>
+            )}
+
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-3">
                 <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/30 text-cyan-300 text-lg font-bold">

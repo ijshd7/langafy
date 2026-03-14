@@ -11,6 +11,7 @@ import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import { useLesson } from '@/hooks/useLesson';
 import { AlertCircleIcon, CheckCircleIcon } from 'lucide-react-native';
+import { ExerciseRenderer } from '@/components/exercises/ExerciseRenderer';
 
 const { width } = Dimensions.get('window');
 
@@ -31,24 +32,6 @@ function ProgressBar({ percentage }: { percentage: number }) {
   );
 }
 
-/**
- * Exercise placeholder card
- */
-function ExercisePlaceholder({ exerciseType, points }: { exerciseType: string; points: number }) {
-  return (
-    <View className="rounded-xl border border-border bg-card p-6 gap-4">
-      <View className="flex-row items-center justify-between">
-        <Text className="font-semibold text-foreground text-lg">{exerciseType}</Text>
-        <View className="rounded-full bg-cyan-100 px-3 py-1">
-          <Text className="text-sm font-bold text-cyan-700">{points} pts</Text>
-        </View>
-      </View>
-      <Text className="text-muted-foreground text-center py-8">
-        Exercise placeholder — detailed exercise components coming in Phase 5
-      </Text>
-    </View>
-  );
-}
 
 /**
  * Lesson completion screen
@@ -153,31 +136,12 @@ export default function LessonDetailScreen() {
 
             {/* Current exercise */}
             {currentExercise && (
-              <ExercisePlaceholder
-                exerciseType={currentExercise.type}
-                points={currentExercise.points}
+              <ExerciseRenderer
+                exercise={currentExercise}
+                onComplete={() => setCurrentIndex(currentIndex + 1)}
+                isLoading={loading}
               />
             )}
-
-            {/* Action buttons */}
-            <View className="gap-3">
-              {currentIndex < lesson.exercises.length - 1 && (
-                <Button
-                  onPress={() => setCurrentIndex(currentIndex + 1)}
-                  className="bg-cyan-500 py-4 rounded-xl"
-                >
-                  <Text className="font-semibold text-white">Next Exercise</Text>
-                </Button>
-              )}
-              {currentIndex === lesson.exercises.length - 1 && (
-                <Button
-                  onPress={() => setCurrentIndex(currentIndex + 1)}
-                  className="bg-green-500 py-4 rounded-xl"
-                >
-                  <Text className="font-semibold text-white">Complete Lesson</Text>
-                </Button>
-              )}
-            </View>
           </View>
         )}
       </ScrollView>

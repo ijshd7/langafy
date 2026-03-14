@@ -2,6 +2,8 @@ import { View } from 'react-native'
 import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
 import { MultipleChoice } from './MultipleChoice'
 import { FillInTheBlank } from './FillInTheBlank'
+import { WordScramble } from '../games/WordScramble'
+import { FlashcardMatch } from '../games/FlashcardMatch'
 import { AlertCircle } from 'lucide-react-native'
 import { Text } from '@/components/ui/text'
 
@@ -43,42 +45,20 @@ export function ExerciseRenderer({
 
     case ExerciseType.WordScramble:
       return (
-        <View className="rounded-xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950 p-6 gap-3">
-          <View className="flex-row gap-3">
-            <AlertCircle
-              size={24}
-              className="text-yellow-600 dark:text-yellow-400 flex-shrink-0"
-            />
-            <View className="flex-1">
-              <Text className="font-semibold text-yellow-900 dark:text-yellow-100">
-                Word Scramble Coming Soon
-              </Text>
-              <Text className="text-sm text-yellow-800 dark:text-yellow-200 mt-1">
-                This exercise type will be available in an upcoming update.
-              </Text>
-            </View>
-          </View>
-        </View>
+        <WordScramble
+          exercise={exercise}
+          onComplete={onComplete}
+          basePoints={exercise.points}
+        />
       )
 
     case ExerciseType.FlashcardMatch:
       return (
-        <View className="rounded-xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950 p-6 gap-3">
-          <View className="flex-row gap-3">
-            <AlertCircle
-              size={24}
-              className="text-yellow-600 dark:text-yellow-400 flex-shrink-0"
-            />
-            <View className="flex-1">
-              <Text className="font-semibold text-yellow-900 dark:text-yellow-100">
-                Flashcard Matching Coming Soon
-              </Text>
-              <Text className="text-sm text-yellow-800 dark:text-yellow-200 mt-1">
-                This exercise type will be available in an upcoming update.
-              </Text>
-            </View>
-          </View>
-        </View>
+        <FlashcardMatch
+          exercise={exercise}
+          onComplete={onComplete}
+          basePoints={exercise.points}
+        />
       )
 
     case ExerciseType.FreeResponse:

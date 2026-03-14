@@ -3080,19 +3080,19 @@
     ]
   },
   "packageFolders": {
-    "/home/isherrill/.nuget/packages/": {}
+    "/Users/isherrill/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/isherrill/langafy/apps/api/LangafyApi/LangafyApi.csproj",
+      "projectUniqueName": "/Users/isherrill/Projects/langafy/apps/api/LangafyApi/LangafyApi.csproj",
       "projectName": "LangafyApi",
-      "projectPath": "/home/isherrill/langafy/apps/api/LangafyApi/LangafyApi.csproj",
-      "packagesPath": "/home/isherrill/.nuget/packages/",
-      "outputPath": "/home/isherrill/langafy/apps/api/LangafyApi/obj/",
+      "projectPath": "/Users/isherrill/Projects/langafy/apps/api/LangafyApi/LangafyApi.csproj",
+      "packagesPath": "/Users/isherrill/.nuget/packages/",
+      "outputPath": "/Users/isherrill/Projects/langafy/apps/api/LangafyApi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/isherrill/.nuget/NuGet/NuGet.Config"
+        "/Users/isherrill/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3115,7 +3115,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -3157,6 +3158,20 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.24, 8.0.24]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.osx-arm64",
+            "version": "[8.0.24, 8.0.24]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.24, 8.0.24]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -3165,7 +3180,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.418/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.103/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

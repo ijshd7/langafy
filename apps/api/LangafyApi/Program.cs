@@ -4,6 +4,7 @@ using LangafyApi.Features.Exercises;
 using LangafyApi.Features.Languages;
 using LangafyApi.Features.Lessons;
 using LangafyApi.Features.Progress;
+using LangafyApi.Features.Vocabulary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -194,5 +195,6 @@ app.MapLanguageEndpoints();
 app.MapLessonEndpoints();
 app.MapExerciseEndpoints();
 app.MapProgressEndpoints();
+app.MapVocabularyEndpoints();
 
 app.Run();

@@ -140,7 +140,7 @@ try {
 
 ## Environment Configuration
 
-Set `NEXT_PUBLIC_API_URL` in `.env.local` to point to your API:
+Set `NEXT_PUBLIC_API_URL` in `.env` to point to your API:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000/api

@@ -32,7 +32,7 @@ API Client (Token Injection)
 
 3. **Set Environment Variables**
    ```bash
-   # .env.local
+   # .env
    NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
@@ -185,7 +185,7 @@ These pages will use the `useAuth()` hook to handle sign in/up and show loading/
 
 ### "Firebase configuration incomplete" warning
 
-Make sure all `NEXT_PUBLIC_FIREBASE_*` environment variables are set in `.env.local`.
+Make sure all `NEXT_PUBLIC_FIREBASE_*` environment variables are set in `.env`.
 
 ### Tokens not being sent to API
 

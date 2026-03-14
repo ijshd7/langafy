@@ -6,10 +6,10 @@ import type { GameScore } from './useGameScoring'
 
 export interface FlashcardPair {
   target: string
-  en: string
+  english: string
 }
 
-export type CardSide = 'target' | 'en'
+export type CardSide = 'target' | 'english'
 
 export interface FlashcardGameCard {
   id: string
@@ -44,7 +44,7 @@ export interface FlashcardGameHook {
 /**
  * Flashcard matching game state machine.
  *
- * Each pair from the config is split into two cards (target and en).
+ * Each pair from the config is split into two cards (target and english).
  * The player flips two cards at a time; if both sides of the same pair are selected,
  * it's a match. Otherwise it's a mismatch (mistake recorded) and cards flip back.
  *
@@ -83,9 +83,9 @@ export function useFlashcardGame(
         isMatched: false,
       })
       all.push({
-        id: `${index}-en`,
-        text: pair.en,
-        side: 'en',
+        id: `${index}-english`,
+        text: pair.english,
+        side: 'english',
         pairIndex: index,
         isFlipped: false,
         isMatched: false,

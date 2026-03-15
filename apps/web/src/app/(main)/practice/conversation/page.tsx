@@ -19,6 +19,10 @@ import {
   Lightbulb,
   BookPlus,
   Check,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
 } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
@@ -144,6 +148,21 @@ const CEFR_COLORS: Record<string, string> = {
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+
+/** Maps language codes to BCP-47 locales for STT / TTS. */
+function toSttLocale(langCode: string): string {
+  const map: Record<string, string> = {
+    es: 'es-ES',
+    fr: 'fr-FR',
+    de: 'de-DE',
+    it: 'it-IT',
+    pt: 'pt-BR',
+    ja: 'ja-JP',
+    ko: 'ko-KR',
+    zh: 'zh-CN',
+  }
+  return map[langCode] ?? langCode
+}
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -461,6 +480,99 @@ export default function ConversationPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  // ── Voice input ───────────────────────────────────────────────────────────
+  const [micSupported, setMicSupported] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
+  const [interimTranscript, setInterimTranscript] = useState('')
+  const [ttsEnabled, setTtsEnabled] = useState(false)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const ttsCountRef = useRef(0)
+
+  // Check browser mic support once on mount
+  useEffect(() => {
+    setMicSupported('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
+  }, [])
+
+  // Cancel recognition / speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort()
+      window.speechSynthesis?.cancel()
+    }
+  }, [])
+
+  // Speak the last AI message once streaming completes (if TTS is on)
+  useEffect(() => {
+    if (!ttsEnabled || messages.length === 0) return
+    const last = messages[messages.length - 1]
+    if (last.role !== 'assistant' || last.isStreaming) return
+    if (messages.length <= ttsCountRef.current) return
+    ttsCountRef.current = messages.length
+
+    // Strip [CORRECTION] markup — speak the corrected forms, not raw tags
+    const plain = last.content.replace(
+      /\[CORRECTION\]([\s\S]*?)\[\/CORRECTION\]/g,
+      (_, inner) => inner.split('|')[1]?.trim() ?? ''
+    )
+    const utterance = new SpeechSynthesisUtterance(plain)
+    utterance.lang = toSttLocale(activeConversation?.languageCode ?? 'es')
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(utterance)
+  }, [messages, ttsEnabled, activeConversation])
+
+  const startRecording = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Ctor: (new () => SpeechRecognition) | undefined =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition
+    if (!Ctor) return
+
+    const recognition = new Ctor()
+    recognition.lang = toSttLocale(activeConversation?.languageCode ?? 'es')
+    recognition.continuous = false
+    recognition.interimResults = true
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let interim = ''
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i]
+        if (result.isFinal) {
+          setInputValue((prev) => prev + result[0].transcript)
+          setInterimTranscript('')
+        } else {
+          interim += result[0].transcript
+        }
+      }
+      if (interim) setInterimTranscript(interim)
+    }
+
+    recognition.onend = () => {
+      setIsRecording(false)
+      setInterimTranscript('')
+      recognitionRef.current = null
+    }
+
+    recognition.onerror = () => {
+      setIsRecording(false)
+      setInterimTranscript('')
+      recognitionRef.current = null
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+    setIsRecording(true)
+  }
+
+  const stopRecording = () => {
+    recognitionRef.current?.stop()
+    // State is cleared in onend
+  }
+
+  const toggleRecording = () => {
+    if (isRecording) stopRecording()
+    else startRecording()
+  }
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -884,23 +996,54 @@ export default function ConversationPage() {
 
               {/* Input area */}
               <div className="border-t border-slate-700/50 bg-slate-900/40 px-4 py-4 backdrop-blur-sm sm:px-6">
-                <div className="flex items-end gap-3">
+                <div className="flex items-end gap-2">
                   <div className="flex-1 rounded-2xl border border-slate-600/60 bg-slate-800/60 focus-within:border-cyan-500/60 focus-within:ring-1 focus-within:ring-cyan-500/30">
                     <textarea
                       ref={inputRef}
                       rows={1}
-                      value={inputValue}
-                      onChange={handleInput}
+                      value={isRecording ? inputValue + interimTranscript : inputValue}
+                      onChange={isRecording ? () => {} : handleInput}
                       onKeyDown={handleKeyDown}
-                      placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
+                      placeholder={isRecording ? 'Listening…' : 'Type a message… (Enter to send, Shift+Enter for new line)'}
                       disabled={isStreaming}
                       className="w-full resize-none rounded-2xl bg-transparent px-4 py-3 text-sm text-slate-100 placeholder-slate-500 outline-none disabled:opacity-50"
                       style={{ maxHeight: '160px' }}
                     />
                   </div>
+
+                  {/* Microphone button — hidden on unsupported browsers (e.g. Firefox) */}
+                  {micSupported && (
+                    <button
+                      onClick={toggleRecording}
+                      disabled={isStreaming}
+                      title={isRecording ? 'Stop recording' : 'Start voice input'}
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${
+                        isRecording
+                          ? 'animate-pulse bg-red-500 text-white shadow-lg shadow-red-500/25'
+                          : 'bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-slate-200'
+                      }`}
+                    >
+                      {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    </button>
+                  )}
+
+                  {/* TTS toggle — always visible */}
+                  <button
+                    onClick={() => setTtsEnabled((v) => !v)}
+                    title={ttsEnabled ? 'Disable voice responses' : 'Enable voice responses'}
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl transition-all active:scale-95 ${
+                      ttsEnabled
+                        ? 'bg-cyan-500/20 text-cyan-400 ring-1 ring-cyan-500/30 hover:bg-cyan-500/30'
+                        : 'bg-slate-700 text-slate-500 hover:bg-slate-600 hover:text-slate-300'
+                    }`}
+                  >
+                    {ttsEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                  </button>
+
+                  {/* Send button */}
                   <button
                     onClick={sendMessage}
-                    disabled={!inputValue.trim() || isStreaming}
+                    disabled={!inputValue.trim() || isStreaming || isRecording}
                     className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {isStreaming ? (

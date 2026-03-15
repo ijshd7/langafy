@@ -4,6 +4,7 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  Pressable,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
@@ -11,7 +12,16 @@ import {
   ScrollView,
   Alert,
 } from 'react-native'
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  cancelAnimation,
+} from 'react-native-reanimated'
 import {
   MessageSquareIcon,
   SendIcon,
@@ -21,10 +31,16 @@ import {
   TrashIcon,
   BotIcon,
   MessageCircleIcon,
+  MicIcon,
+  MicOffIcon,
+  Volume2Icon,
+  VolumeXIcon,
 } from 'lucide-react-native'
 import { Text } from '@/components/ui/text'
 import { Icon } from '@/components/ui/icon'
 import { apiClient } from '@/lib/api'
+import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition'
+import * as Speech from 'expo-speech'
 
 // --- Types ---
 
@@ -110,6 +126,23 @@ function parseMessageContent(content: string): CorrectionSegment[] {
   return segments.length > 0 ? segments : [{ type: 'text', content }]
 }
 
+// --- Helpers ---
+
+/** Maps language codes to BCP-47 locales for STT / TTS. */
+function toSttLocale(langCode: string): string {
+  const map: Record<string, string> = {
+    es: 'es-ES',
+    fr: 'fr-FR',
+    de: 'de-DE',
+    it: 'it-IT',
+    pt: 'pt-BR',
+    ja: 'ja-JP',
+    ko: 'ko-KR',
+    zh: 'zh-CN',
+  }
+  return map[langCode] ?? langCode
+}
+
 // --- Constants ---
 
 const TOPIC_SUGGESTIONS = [
@@ -133,6 +166,49 @@ const CEFR_COLORS: Record<string, string> = {
 }
 
 // --- Sub-components ---
+
+/** Three animated bars shown inside the mic button while recording. */
+function RecordingWaveform() {
+  const bar1 = useSharedValue(0.3)
+  const bar2 = useSharedValue(0.6)
+  const bar3 = useSharedValue(0.4)
+
+  useEffect(() => {
+    bar1.value = withRepeat(
+      withSequence(withTiming(1, { duration: 250 }), withTiming(0.3, { duration: 250 })),
+      -1,
+      true
+    )
+    bar2.value = withRepeat(
+      withSequence(withTiming(0.4, { duration: 350 }), withTiming(1, { duration: 350 })),
+      -1,
+      true
+    )
+    bar3.value = withRepeat(
+      withSequence(withTiming(0.7, { duration: 200 }), withTiming(0.2, { duration: 200 })),
+      -1,
+      true
+    )
+    return () => {
+      cancelAnimation(bar1)
+      cancelAnimation(bar2)
+      cancelAnimation(bar3)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const s1 = useAnimatedStyle(() => ({ height: bar1.value * 20 }))
+  const s2 = useAnimatedStyle(() => ({ height: bar2.value * 20 }))
+  const s3 = useAnimatedStyle(() => ({ height: bar3.value * 20 }))
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, height: 20 }}>
+      <Animated.View style={[s1, { width: 3, borderRadius: 2, backgroundColor: 'white' }]} />
+      <Animated.View style={[s2, { width: 3, borderRadius: 2, backgroundColor: 'white' }]} />
+      <Animated.View style={[s3, { width: 3, borderRadius: 2, backgroundColor: 'white' }]} />
+    </View>
+  )
+}
 
 function TypingIndicator() {
   return (
@@ -362,6 +438,40 @@ export default function PracticeScreen() {
   const [showNewModal, setShowNewModal] = useState(false)
   const flatListRef = useRef<FlatList>(null)
 
+  // ── Voice input ───────────────────────────────────────────────────────────
+  const [isRecording, setIsRecording] = useState(false)
+  const [interimTranscript, setInterimTranscript] = useState('')
+  const [ttsEnabled, setTtsEnabled] = useState(false)
+  const ttsCountRef = useRef(0)
+
+  // Speech recognition event handlers (hooks must be at top level, before early returns)
+  useSpeechRecognitionEvent('result', (event) => {
+    const transcript = event.results[0]?.transcript ?? ''
+    if (event.isFinal) {
+      setInputText((prev) => (prev ? prev + ' ' : '') + transcript)
+      setInterimTranscript('')
+    } else {
+      setInterimTranscript(transcript)
+    }
+  })
+
+  useSpeechRecognitionEvent('end', () => {
+    setIsRecording(false)
+    setInterimTranscript('')
+  })
+
+  useSpeechRecognitionEvent('error', () => {
+    setIsRecording(false)
+    setInterimTranscript('')
+  })
+
+  // Stop TTS when unmounting
+  useEffect(() => {
+    return () => {
+      Speech.stop()
+    }
+  }, [])
+
   const loadConversations = useCallback(async () => {
     try {
       setIsLoadingList(true)
@@ -476,6 +586,41 @@ export default function PracticeScreen() {
   const sendMessage = useCallback(async () => {
     await sendText(inputText.trim())
   }, [inputText, sendText])
+
+  // Speak last AI message when it arrives (if TTS is on)
+  useEffect(() => {
+    if (!ttsEnabled || isSending) return
+    const assistantMsgs = messages.filter((m) => m.role === 'assistant' && !m.isTyping)
+    if (assistantMsgs.length <= ttsCountRef.current) return
+    ttsCountRef.current = assistantMsgs.length
+
+    const last = assistantMsgs[assistantMsgs.length - 1]
+    // Strip [CORRECTION] markup — speak corrected forms
+    const plain = last.content.replace(
+      /\[CORRECTION\]([\s\S]*?)\[\/CORRECTION\]/g,
+      (_, inner) => inner.split('|')[1]?.trim() ?? ''
+    )
+    Speech.speak(plain, { language: toSttLocale(activeConversation?.languageCode ?? 'es') })
+  }, [messages, ttsEnabled, isSending, activeConversation])
+
+  const handleMicPressIn = async () => {
+    const { granted } = await ExpoSpeechRecognitionModule.requestPermissionsAsync()
+    if (!granted) {
+      setError('Microphone permission is required for voice input.')
+      return
+    }
+    ExpoSpeechRecognitionModule.start({
+      lang: toSttLocale(activeConversation?.languageCode ?? 'es'),
+      interimResults: true,
+      continuous: false,
+    })
+    setIsRecording(true)
+  }
+
+  const handleMicPressOut = () => {
+    ExpoSpeechRecognitionModule.stop()
+    // isRecording cleared by 'end' event
+  }
 
   const deleteConversation = (id: number) => {
     Alert.alert(
@@ -653,6 +798,19 @@ export default function PracticeScreen() {
             ) : null}
           </Text>
         </View>
+        {/* TTS toggle */}
+        <TouchableOpacity
+          onPress={() => setTtsEnabled((v) => !v)}
+          activeOpacity={0.7}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          className="p-1"
+        >
+          <Icon
+            as={ttsEnabled ? Volume2Icon : VolumeXIcon}
+            className={`size-5 ${ttsEnabled ? 'text-cyan-400' : 'text-muted-foreground'}`}
+          />
+        </TouchableOpacity>
+
         {activeConversation && (
           <TouchableOpacity
             onPress={() => deleteConversation(activeConversation.id)}
@@ -706,9 +864,10 @@ export default function PracticeScreen() {
       {/* Input area */}
       <View className="flex-row items-end gap-2 px-4 py-3 border-t border-border">
         <TextInput
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder="Type a message in Spanish..."
+          value={isRecording ? inputText + interimTranscript : inputText}
+          onChangeText={isRecording ? undefined : setInputText}
+          editable={!isRecording}
+          placeholder={isRecording ? 'Listening…' : 'Type a message in Spanish...'}
           placeholderTextColor="#64748B"
           multiline
           maxLength={1000}
@@ -716,14 +875,31 @@ export default function PracticeScreen() {
           style={{ color: '#F1F5F9', maxHeight: 120 }}
           returnKeyType="send"
           blurOnSubmit={false}
-          onSubmitEditing={sendMessage}
+          onSubmitEditing={isRecording ? undefined : sendMessage}
         />
+
+        {/* Hold-to-talk microphone button */}
+        <Pressable
+          onPressIn={handleMicPressIn}
+          onPressOut={handleMicPressOut}
+          disabled={isSending}
+          style={{ height: 44, width: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' }}
+          className={isRecording ? 'bg-red-500' : 'bg-slate-800'}
+        >
+          {isRecording ? (
+            <RecordingWaveform />
+          ) : (
+            <Icon as={MicIcon} className="size-5 text-slate-400" />
+          )}
+        </Pressable>
+
+        {/* Send button */}
         <TouchableOpacity
           onPress={sendMessage}
-          disabled={!inputText.trim() || isSending}
+          disabled={!inputText.trim() || isSending || isRecording}
           activeOpacity={0.7}
           className={`h-11 w-11 rounded-full items-center justify-center ${
-            inputText.trim() && !isSending ? 'bg-cyan-600' : 'bg-slate-800'
+            inputText.trim() && !isSending && !isRecording ? 'bg-cyan-600' : 'bg-slate-800'
           }`}
         >
           {isSending ? (
@@ -731,7 +907,7 @@ export default function PracticeScreen() {
           ) : (
             <Icon
               as={SendIcon}
-              className={`size-5 ${inputText.trim() ? 'text-white' : 'text-slate-500'}`}
+              className={`size-5 ${inputText.trim() && !isRecording ? 'text-white' : 'text-slate-500'}`}
             />
           )}
         </TouchableOpacity>

@@ -2,9 +2,12 @@ using LangafyApi.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
 using Testcontainers.PostgreSql;
 
 namespace LangafyApi.Tests.Integration;
@@ -75,6 +78,22 @@ public class IntegrationTestFactory : WebApplicationFactory<Program>, IAsyncLife
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(_postgres.GetConnectionString()));
+
+            // ── Disable rate limiting (all test requests share "unknown" IP) ───
+            // WebApplicationFactory TestServer sets RemoteIpAddress = null, so
+            // every call to /api/auth/sync shares the same "unknown" partition,
+            // exhausting the 10 req/min bucket across the entire test suite.
+            // Replace the registered IConfigureOptions<RateLimiterOptions> with
+            // a no-op limiter so tests never receive 429 responses.
+            var rateLimiterConfigs = services
+                .Where(d => d.ServiceType == typeof(IConfigureOptions<RateLimiterOptions>))
+                .ToList();
+            foreach (var d in rateLimiterConfigs)
+                services.Remove(d);
+
+            services.Configure<RateLimiterOptions>(options =>
+                options.AddPolicy("AuthSyncPolicy", _ =>
+                    RateLimitPartition.GetNoLimiter("no-limit")));
 
             // ── Replace Firebase JWT auth with a simple test scheme ───────────
             // PostConfigure changes the default scheme so our handler is invoked

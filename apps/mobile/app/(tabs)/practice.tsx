@@ -72,6 +72,44 @@ interface LocalMessage {
   isTyping?: boolean
 }
 
+// --- Correction parsing ---
+
+interface CorrectionSegment {
+  type: 'text' | 'correction'
+  content: string
+  original?: string
+  explanation?: string
+}
+
+function parseMessageContent(content: string): CorrectionSegment[] {
+  const segments: CorrectionSegment[] = []
+  const regex = /\[CORRECTION\]([\s\S]*?)\[\/CORRECTION\]/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+
+  while ((match = regex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: 'text', content: content.slice(lastIndex, match.index) })
+    }
+    const parts = match[1].split('|')
+    const original = parts[0]?.trim()
+    const corrected = parts[1]?.trim()
+    const explanation = parts[2]?.trim()
+    if (original && corrected) {
+      segments.push({ type: 'correction', content: corrected, original, explanation })
+    } else {
+      segments.push({ type: 'text', content: match[0] })
+    }
+    lastIndex = match.index + match[0].length
+  }
+
+  if (lastIndex < content.length) {
+    segments.push({ type: 'text', content: content.slice(lastIndex) })
+  }
+
+  return segments.length > 0 ? segments : [{ type: 'text', content }]
+}
+
 // --- Constants ---
 
 const TOPIC_SUGGESTIONS = [
@@ -112,11 +150,31 @@ function TypingIndicator() {
   )
 }
 
-function MessageBubble({ message }: { message: LocalMessage }) {
+function MessageBubble({
+  message,
+  onSendMessage,
+}: {
+  message: LocalMessage
+  onSendMessage?: (text: string) => void
+}) {
   const isUser = message.role === 'user'
+  const [addedWord, setAddedWord] = useState<string | null>(null)
 
   if (message.isTyping) {
     return <TypingIndicator />
+  }
+
+  // Parse corrections only on complete assistant messages
+  const segments =
+    !isUser && !message.isTyping
+      ? parseMessageContent(message.content)
+      : [{ type: 'text' as const, content: message.content }]
+
+  const corrections = segments.filter((s) => s.type === 'correction')
+
+  const handleAddVocab = (word: string) => {
+    setAddedWord(word)
+    setTimeout(() => setAddedWord(null), 2000)
   }
 
   return (
@@ -126,17 +184,68 @@ function MessageBubble({ message }: { message: LocalMessage }) {
           <Icon as={BotIcon} className="size-4 text-cyan-400" />
         </View>
       )}
-      <View
-        className={`rounded-2xl px-4 py-3 ${
-          isUser
-            ? 'bg-cyan-600 rounded-br-sm'
-            : 'bg-slate-800 border border-slate-700 rounded-bl-sm'
-        }`}
-        style={{ maxWidth: '78%' }}
-      >
-        <Text className={`text-sm leading-5 ${isUser ? 'text-white' : 'text-slate-100'}`}>
-          {message.content}
-        </Text>
+
+      {/* Content column */}
+      <View style={{ maxWidth: '78%' }} className="gap-1">
+        {/* Message bubble */}
+        <View
+          className={`rounded-2xl px-4 py-3 ${
+            isUser
+              ? 'bg-cyan-600 rounded-br-sm'
+              : 'bg-slate-800 border border-slate-700 rounded-bl-sm'
+          }`}
+        >
+          <Text className={`text-sm leading-5 ${isUser ? 'text-white' : 'text-slate-100'}`}>
+            {segments.map((seg, i) =>
+              seg.type === 'text' ? (
+                <Text key={i}>{seg.content}</Text>
+              ) : (
+                <Text key={i} className="text-amber-300 font-semibold">
+                  {seg.content}
+                </Text>
+              )
+            )}
+          </Text>
+        </View>
+
+        {/* Correction cards — shown below bubble once message is complete */}
+        {corrections.length > 0 &&
+          corrections.map((seg, i) => (
+            <View
+              key={i}
+              className="rounded-xl border border-amber-500/20 bg-amber-950/30 px-3 py-2.5 gap-1"
+            >
+              <View className="flex-row flex-wrap items-center gap-x-2">
+                <Text className="text-xs text-red-400 line-through">{seg.original}</Text>
+                <Text className="text-xs text-slate-500">→</Text>
+                <Text className="text-xs font-semibold text-amber-300">{seg.content}</Text>
+              </View>
+              {seg.explanation ? (
+                <Text className="text-xs text-slate-400">{seg.explanation}</Text>
+              ) : null}
+              <View className="flex-row items-center gap-3 mt-1">
+                <TouchableOpacity
+                  onPress={() =>
+                    onSendMessage?.(
+                      `Can you explain more about why "${seg.original}" should be "${seg.content}"?`
+                    )
+                  }
+                  activeOpacity={0.7}
+                >
+                  <Text className="text-xs text-cyan-400">Explain this</Text>
+                </TouchableOpacity>
+                <Text className="text-xs text-slate-600">·</Text>
+                <TouchableOpacity
+                  onPress={() => handleAddVocab(seg.content)}
+                  activeOpacity={0.7}
+                >
+                  <Text className="text-xs text-emerald-400">
+                    {addedWord === seg.content ? '✓ Added' : 'Add to vocabulary'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
       </View>
     </View>
   )
@@ -319,52 +428,54 @@ export default function PracticeScreen() {
     }
   }
 
-  const sendMessage = async () => {
-    if (!inputText.trim() || !activeConversation || isSending) return
+  // Core send function — accepts text directly so "Explain this" buttons can trigger it
+  const sendText = useCallback(
+    async (text: string) => {
+      if (!text || !activeConversation || isSending) return
 
-    const text = inputText.trim()
-    setInputText('')
-    setError(null)
+      setInputText('')
+      setError(null)
 
-    // Optimistically add user message + typing indicator
-    const userMsg: LocalMessage = { id: `user-${Date.now()}`, role: 'user', content: text }
-    const typingMsg: LocalMessage = {
-      id: 'typing',
-      role: 'assistant',
-      content: '',
-      isTyping: true,
-    }
-    setMessages((prev) => [...prev, userMsg, typingMsg])
-    setIsSending(true)
+      const userMsg: LocalMessage = { id: `user-${Date.now()}`, role: 'user', content: text }
+      const typingMsg: LocalMessage = { id: 'typing', role: 'assistant', content: '', isTyping: true }
+      setMessages((prev) => [...prev, userMsg, typingMsg])
+      setIsSending(true)
 
-    try {
-      const response = await apiClient.post<SendMessageResponse>(
-        `/conversations/${activeConversation.id}/messages`,
-        { message: text }
-      )
-      setMessages((prev) => {
-        const withoutTyping = prev.filter((m) => !m.isTyping)
-        return [
-          ...withoutTyping,
-          {
-            id: String(response.assistantMessage.id),
-            role: 'assistant',
-            content: response.assistantMessage.content,
-          },
-        ]
-      })
-    } catch (err: unknown) {
-      setMessages((prev) => prev.filter((m) => !m.isTyping))
-      const statusCode = (err as { statusCode?: number })?.statusCode
-      if (statusCode === 429) {
-        setError('Message limit reached. Please wait before sending more messages.')
-      } else {
-        setError('Failed to send message. Please try again.')
+      try {
+        const response = await apiClient.post<SendMessageResponse>(
+          `/conversations/${activeConversation.id}/messages`,
+          { message: text }
+        )
+        setMessages((prev) => {
+          const withoutTyping = prev.filter((m) => !m.isTyping)
+          return [
+            ...withoutTyping,
+            {
+              id: String(response.assistantMessage.id),
+              role: 'assistant',
+              content: response.assistantMessage.content,
+            },
+          ]
+        })
+      } catch (err: unknown) {
+        setMessages((prev) => prev.filter((m) => !m.isTyping))
+        const statusCode = (err as { statusCode?: number })?.statusCode
+        if (statusCode === 429) {
+          setError('Message limit reached. Please wait before sending more messages.')
+        } else {
+          setError('Failed to send message. Please try again.')
+        }
+      } finally {
+        setIsSending(false)
       }
-    } finally {
-      setIsSending(false)
-    }
-  }
+    },
+    [activeConversation, isSending]
+  )
+
+  // Wrapper that reads from the TextInput state
+  const sendMessage = useCallback(async () => {
+    await sendText(inputText.trim())
+  }, [inputText, sendText])
 
   const deleteConversation = (id: number) => {
     Alert.alert(
@@ -585,7 +696,7 @@ export default function PracticeScreen() {
           ref={flatListRef}
           data={[...messages].reverse()}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <MessageBubble message={item} />}
+          renderItem={({ item }) => <MessageBubble message={item} onSendMessage={sendText} />}
           inverted
           contentContainerStyle={{ paddingVertical: 8 }}
           showsVerticalScrollIndicator={false}

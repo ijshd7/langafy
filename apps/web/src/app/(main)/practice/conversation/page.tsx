@@ -16,6 +16,9 @@ import {
   Loader2,
   ChevronLeft,
   AlertCircle,
+  Lightbulb,
+  BookPlus,
+  Check,
 } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
@@ -64,6 +67,52 @@ interface LocalMessage {
   role: 'user' | 'assistant'
   content: string
   isStreaming?: boolean
+}
+
+// ---------------------------------------------------------------------------
+// Correction parsing
+// ---------------------------------------------------------------------------
+
+interface CorrectionSegment {
+  type: 'text' | 'correction'
+  content: string
+  original?: string
+  explanation?: string
+}
+
+/**
+ * Parses AI message content for [CORRECTION]original|corrected|explanation[/CORRECTION] tags.
+ * Returns an array of text and correction segments for inline rendering.
+ * Only called on complete (non-streaming) assistant messages.
+ */
+function parseMessageContent(content: string): CorrectionSegment[] {
+  const segments: CorrectionSegment[] = []
+  const regex = /\[CORRECTION\]([\s\S]*?)\[\/CORRECTION\]/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+
+  while ((match = regex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: 'text', content: content.slice(lastIndex, match.index) })
+    }
+    const parts = match[1].split('|')
+    const original = parts[0]?.trim()
+    const corrected = parts[1]?.trim()
+    const explanation = parts[2]?.trim()
+    if (original && corrected) {
+      segments.push({ type: 'correction', content: corrected, original, explanation })
+    } else {
+      // Malformed tag — treat as plain text
+      segments.push({ type: 'text', content: match[0] })
+    }
+    lastIndex = match.index + match[0].length
+  }
+
+  if (lastIndex < content.length) {
+    segments.push({ type: 'text', content: content.slice(lastIndex) })
+  }
+
+  return segments.length > 0 ? segments : [{ type: 'text', content }]
 }
 
 // ---------------------------------------------------------------------------
@@ -251,10 +300,30 @@ function NewConversationModal({ onClose, onStart, isLoading }: NewConversationMo
 
 interface MessageBubbleProps {
   message: LocalMessage
+  onSendMessage?: (text: string) => void
 }
 
-function MessageBubble({ message }: MessageBubbleProps) {
+function MessageBubble({ message, onSendMessage }: MessageBubbleProps) {
   const isUser = message.role === 'user'
+  const [copiedWord, setCopiedWord] = useState<string | null>(null)
+
+  // Parse corrections only on complete assistant messages
+  const segments =
+    !isUser && !message.isStreaming
+      ? parseMessageContent(message.content)
+      : [{ type: 'text' as const, content: message.content }]
+
+  const corrections = segments.filter((s) => s.type === 'correction')
+
+  const handleCopyWord = async (word: string) => {
+    try {
+      await navigator.clipboard.writeText(word)
+      setCopiedWord(word)
+      setTimeout(() => setCopiedWord(null), 2000)
+    } catch {
+      // Clipboard unavailable — ignore
+    }
+  }
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -273,17 +342,85 @@ function MessageBubble({ message }: MessageBubbleProps) {
         )}
       </div>
 
-      {/* Bubble */}
+      {/* Content column */}
       <div
-        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-          isUser
-            ? 'rounded-tr-sm bg-gradient-to-br from-cyan-600/80 to-emerald-600/80 text-white'
-            : 'rounded-tl-sm border border-slate-700/50 bg-slate-800/80 text-slate-100'
-        }`}
+        className={`flex max-w-[75%] flex-col gap-2 ${isUser ? 'items-end' : 'items-start'}`}
       >
-        {message.content}
-        {message.isStreaming && (
-          <span className="ml-1 inline-block h-4 w-0.5 animate-pulse bg-current opacity-70" />
+        {/* Message bubble */}
+        <div
+          className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+            isUser
+              ? 'rounded-tr-sm bg-gradient-to-br from-cyan-600/80 to-emerald-600/80 text-white'
+              : 'rounded-tl-sm border border-slate-700/50 bg-slate-800/80 text-slate-100'
+          }`}
+        >
+          {segments.map((seg, i) =>
+            seg.type === 'text' ? (
+              <span key={i}>{seg.content}</span>
+            ) : (
+              <span
+                key={i}
+                className="rounded bg-amber-500/20 px-1 py-0.5 font-medium text-amber-300 ring-1 ring-inset ring-amber-500/30"
+                title={`Was: ${seg.original}`}
+              >
+                {seg.content}
+              </span>
+            )
+          )}
+          {message.isStreaming && (
+            <span className="ml-1 inline-block h-4 w-0.5 animate-pulse bg-current opacity-70" />
+          )}
+        </div>
+
+        {/* Correction detail cards — shown below the bubble once streaming ends */}
+        {corrections.length > 0 && !message.isStreaming && (
+          <div className="w-full space-y-2">
+            {corrections.map((seg, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-amber-500/20 bg-amber-950/30 px-3 py-2.5"
+              >
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                  <span className="text-red-400/70 line-through">{seg.original}</span>
+                  <span className="text-slate-500">→</span>
+                  <span className="font-medium text-amber-300">{seg.content}</span>
+                </div>
+                {seg.explanation && (
+                  <p className="mt-1 text-xs text-slate-400">{seg.explanation}</p>
+                )}
+                <div className="mt-2 flex items-center gap-3 text-xs">
+                  <button
+                    onClick={() =>
+                      onSendMessage?.(
+                        `Can you explain more about why "${seg.original}" should be "${seg.content}"?`
+                      )
+                    }
+                    className="flex items-center gap-1 text-cyan-400 transition-colors hover:text-cyan-300"
+                  >
+                    <Lightbulb className="h-3 w-3" />
+                    Explain this
+                  </button>
+                  <span className="text-slate-600">·</span>
+                  <button
+                    onClick={() => handleCopyWord(seg.content)}
+                    className="flex items-center gap-1 text-emerald-400 transition-colors hover:text-emerald-300"
+                  >
+                    {copiedWord === seg.content ? (
+                      <>
+                        <Check className="h-3 w-3" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <BookPlus className="h-3 w-3" />
+                        Add to vocabulary
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
@@ -415,15 +552,14 @@ export default function ConversationPage() {
     }
   }, [activeId])
 
-  // Send a message via SSE streaming
-  const sendMessage = useCallback(async () => {
-    const text = inputValue.trim()
+  // Core send function — accepts text directly so "Explain this" buttons can trigger it
+  const sendText = useCallback(async (text: string) => {
     if (!text || isStreaming || !activeId) return
 
     setInputValue('')
     setError(null)
 
-    // Optimistically add user message
+    // Optimistically add user message + streaming placeholder
     const userMsg: LocalMessage = { id: null, role: 'user', content: text }
     const assistantMsg: LocalMessage = { id: null, role: 'assistant', content: '', isStreaming: true }
     setMessages((prev) => [...prev, userMsg, assistantMsg])
@@ -452,7 +588,6 @@ export default function ConversationPage() {
             ? `Rate limit reached. Try again in ${retryAfter}s.`
             : 'Rate limit reached. Try again later.'
         }
-        // Remove the optimistic assistant message
         setMessages((prev) => prev.slice(0, -1))
         setError(errMsg)
         return
@@ -480,26 +615,19 @@ export default function ConversationPage() {
           const snap = accumulated
           setMessages((prev) => {
             const updated = [...prev]
-            updated[updated.length - 1] = {
-              ...updated[updated.length - 1],
-              content: snap,
-            }
+            updated[updated.length - 1] = { ...updated[updated.length - 1], content: snap }
             return updated
           })
         }
       }
 
-      // Mark streaming complete
+      // Mark streaming complete — parseMessageContent will run on next render
       setMessages((prev) => {
         const updated = [...prev]
-        updated[updated.length - 1] = {
-          ...updated[updated.length - 1],
-          isStreaming: false,
-        }
+        updated[updated.length - 1] = { ...updated[updated.length - 1], isStreaming: false }
         return updated
       })
 
-      // Refresh the conversation list to update message counts
       loadConversations()
     } catch (err: unknown) {
       if (err instanceof Error && err.name === 'AbortError') return
@@ -510,7 +638,12 @@ export default function ConversationPage() {
       streamAbortRef.current = null
       inputRef.current?.focus()
     }
-  }, [inputValue, isStreaming, activeId, loadConversations])
+  }, [isStreaming, activeId, loadConversations])
+
+  // Wrapper that reads from the textarea input state
+  const sendMessage = useCallback(async () => {
+    await sendText(inputValue.trim())
+  }, [inputValue, sendText])
 
   // Handle Enter key in textarea
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -724,7 +857,11 @@ export default function ConversationPage() {
                 ) : (
                   <div className="space-y-5">
                     {messages.map((msg, idx) => (
-                      <MessageBubble key={msg.id ?? `local-${idx}`} message={msg} />
+                      <MessageBubble
+                        key={msg.id ?? `local-${idx}`}
+                        message={msg}
+                        onSendMessage={sendText}
+                      />
                     ))}
                     <div ref={messagesEndRef} />
                   </div>

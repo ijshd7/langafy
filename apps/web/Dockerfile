@@ -21,6 +21,7 @@ COPY packages/shared-game-logic/ ./packages/shared-game-logic/
 COPY apps/web/ ./apps/web/
 
 RUN npm run build --workspace=packages/shared-types
+RUN npm run build --workspace=@langafy/shared-game-logic
 
 ENV NEXT_TELEMETRY_DISABLED=1
 

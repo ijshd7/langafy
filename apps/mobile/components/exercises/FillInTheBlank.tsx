@@ -112,6 +112,8 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
               editable={!isDisabled}
               placeholder="Type your answer here..."
               placeholderTextColor="#888"
+              accessibilityLabel="Your answer"
+              accessibilityHint="Type the missing word to complete the sentence"
               className={`text-foreground rounded-lg border-2 px-4 py-3 ${
                 submitted
                   ? result?.correct
@@ -124,7 +126,7 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
 
           {/* Error Message */}
           {error && (
-            <Animated.View entering={FadeIn} exiting={FadeOut}>
+            <Animated.View entering={FadeIn} exiting={FadeOut} accessibilityLiveRegion="assertive">
               <View className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 dark:border-red-800 dark:bg-red-950">
                 <Text className="text-sm text-red-700 dark:text-red-300">{error}</Text>
               </View>
@@ -150,6 +152,7 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
             <Animated.View entering={FadeIn} className="space-y-4">
               {/* Result Message */}
               <View
+                accessibilityLiveRegion="polite"
                 className={`rounded-lg border p-4 ${
                   result.correct
                     ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950'
@@ -157,9 +160,9 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
                 }`}>
                 <View className="flex-row gap-3">
                   {result.correct ? (
-                    <CheckCircle size={24} className="mt-1 text-green-600 dark:text-green-400" />
+                    <CheckCircle size={24} className="mt-1 text-green-600 dark:text-green-400" accessible={false} />
                   ) : (
-                    <XCircle size={24} className="mt-1 text-red-600 dark:text-red-400" />
+                    <XCircle size={24} className="mt-1 text-red-600 dark:text-red-400" accessible={false} />
                   )}
                   <View className="flex-1">
                     <Text
@@ -203,6 +206,8 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
                 <TouchableOpacity
                   onPress={handleContinue}
                   activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel="Continue to next exercise"
                   className="rounded-lg bg-blue-600 px-4 py-3">
                   <Text className="text-center font-semibold text-white">Continue</Text>
                 </TouchableOpacity>
@@ -216,6 +221,9 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
               onPress={handleSubmit}
               disabled={!answer.trim() || isSubmitting || isLoading}
               activeOpacity={!answer.trim() || isSubmitting || isLoading ? 1 : 0.7}
+              accessibilityRole="button"
+              accessibilityLabel={isSubmitting ? 'Submitting answer' : 'Submit answer'}
+              accessibilityState={{ disabled: !answer.trim() || isSubmitting || isLoading }}
               className={`rounded-lg px-4 py-3 ${
                 !answer.trim() || isSubmitting || isLoading
                   ? 'bg-gray-300 dark:bg-gray-700'

@@ -118,17 +118,20 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
                 onPress={() => handleSelect(index)}
                 disabled={isDisabled}
                 activeOpacity={isDisabled ? 1 : 0.7}
+                accessibilityRole="button"
+                accessibilityLabel={option}
+                accessibilityState={{ selected: isSelected, disabled: isDisabled }}
                 className={`rounded-lg px-4 py-4 ${bgColor} ${borderColor} ${isDisabled && !isCorrect && !isWrong ? 'opacity-75' : ''}`}>
-                <View className="flex-row items-center justify-between">
+                <View accessible={false} className="flex-row items-center justify-between">
                   <Text className={`flex-1 font-medium ${textColor}`}>{option}</Text>
 
                   {/* Feedback Icons */}
                   {submitted && (
                     <View className="ml-3">
                       {isCorrect && (
-                        <CheckCircle size={20} className="text-green-600 dark:text-green-400" />
+                        <CheckCircle size={20} className="text-green-600 dark:text-green-400" accessible={false} />
                       )}
-                      {isWrong && <XCircle size={20} className="text-red-600 dark:text-red-400" />}
+                      {isWrong && <XCircle size={20} className="text-red-600 dark:text-red-400" accessible={false} />}
                     </View>
                   )}
 
@@ -150,6 +153,7 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
           <Animated.View
             entering={FadeIn}
             exiting={FadeOut}
+            accessibilityLiveRegion="assertive"
             className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 dark:border-red-800 dark:bg-red-950">
             <Text className="text-sm text-red-700 dark:text-red-300">{error}</Text>
           </Animated.View>
@@ -172,6 +176,7 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
           <Animated.View entering={FadeIn} className="space-y-4">
             {/* Result Message */}
             <View
+              accessibilityLiveRegion="polite"
               className={`rounded-lg border p-4 ${
                 result.correct
                   ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950'
@@ -179,9 +184,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
               }`}>
               <View className="flex-row gap-3">
                 {result.correct ? (
-                  <CheckCircle size={24} className="mt-1 text-green-600 dark:text-green-400" />
+                  <CheckCircle size={24} className="mt-1 text-green-600 dark:text-green-400" accessible={false} />
                 ) : (
-                  <XCircle size={24} className="mt-1 text-red-600 dark:text-red-400" />
+                  <XCircle size={24} className="mt-1 text-red-600 dark:text-red-400" accessible={false} />
                 )}
                 <View className="flex-1">
                   <Text
@@ -225,6 +230,8 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
               <TouchableOpacity
                 onPress={handleContinue}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Continue to next exercise"
                 className="rounded-lg bg-blue-600 px-4 py-3">
                 <Text className="text-center font-semibold text-white">Continue</Text>
               </TouchableOpacity>
@@ -238,6 +245,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
             onPress={handleSubmit}
             disabled={selectedIndex === null || isSubmitting || isLoading}
             activeOpacity={selectedIndex === null || isSubmitting || isLoading ? 1 : 0.7}
+            accessibilityRole="button"
+            accessibilityLabel={isSubmitting ? 'Submitting answer' : 'Submit answer'}
+            accessibilityState={{ disabled: selectedIndex === null || isSubmitting || isLoading }}
             className={`rounded-lg px-4 py-3 ${
               selectedIndex === null || isSubmitting || isLoading
                 ? 'bg-gray-300 dark:bg-gray-700'

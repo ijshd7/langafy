@@ -58,14 +58,14 @@ function SkeletonLine({
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="text-destructive size-12" />
+      <Icon as={AlertCircleIcon} className="text-destructive size-12" accessible={false} />
       <Text className="text-foreground text-center text-lg font-semibold">
         Couldn&apos;t load levels
       </Text>
       <Text className="text-muted-foreground text-center text-sm">
         Please check your connection and try again
       </Text>
-      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
+      <Button onPress={onRetry} variant="outline" accessibilityLabel="Retry loading levels" className="rounded-lg px-6 py-3">
         <Text className="text-foreground font-semibold">Retry</Text>
       </Button>
     </View>
@@ -88,8 +88,12 @@ function getLevelBadgeColor(code: string): string {
  */
 function LevelCard({ level, onPress }: { level: CefrLevel; onPress: () => void }) {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View className="border-border bg-card rounded-xl border p-4">
+    <TouchableOpacity
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${level.code}: ${level.name}`}
+      accessibilityHint="Navigate to this level's lessons">
+      <View accessible={false} className="border-border bg-card rounded-xl border p-4">
         <View className="mb-3 flex-row items-center gap-3">
           <View className={`${getLevelBadgeColor(level.code)} rounded-full px-3 py-1`}>
             <Text className="font-bold text-white">{level.code}</Text>

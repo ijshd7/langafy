@@ -50,6 +50,7 @@ function SkeletonLine({
 
   return (
     <Animated.View
+      accessible={false}
       className="bg-muted rounded-lg"
       style={{
         width: w,
@@ -70,7 +71,11 @@ function VocabularyCard({ item, onPress }: { item: VocabularyDto; onPress: () =>
   const isDueForReview = item.nextReviewAt && new Date(item.nextReviewAt) <= new Date();
 
   return (
-    <Pressable onPress={onPress} className="border-border bg-card mb-3 rounded-lg border p-4">
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.wordTarget}: ${item.wordEn}${isDueForReview ? ', due for review' : ''}`}
+      className="border-border bg-card mb-3 rounded-lg border p-4">
       <View className="mb-3 flex-row items-start justify-between">
         <View className="flex-1">
           <Text className="mb-1 text-lg font-bold text-cyan-400">{item.wordTarget}</Text>
@@ -138,7 +143,13 @@ function ReviewCard({
   return (
     <View className="flex-1 items-center justify-center gap-6 px-4">
       {/* Card */}
-      <TouchableOpacity onPress={handleFlip} activeOpacity={0.7} className="w-full">
+      <TouchableOpacity
+        onPress={handleFlip}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={isFlipped ? `Translation: ${item.wordEn}` : item.wordTarget}
+        accessibilityHint={isFlipped ? 'Tap to show the target word' : 'Tap to reveal the translation'}
+        className="w-full">
         {/* Front side */}
         <Animated.View
           className="min-h-64 items-center justify-center rounded-2xl border-2 border-cyan-500/30 bg-cyan-500/10 p-8"
@@ -204,6 +215,10 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(0)}
             disabled={isSubmitting}
+            accessibilityRole="button"
+            accessibilityLabel="Again"
+            accessibilityHint="I forgot this word — review it soon"
+            accessibilityState={{ disabled: isSubmitting }}
             className="flex-row items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 active:bg-red-500/20">
             <Text className="flex-1 font-semibold text-red-300">Again</Text>
             <Text className="text-xs text-red-300/70">Forgot it</Text>
@@ -212,6 +227,10 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(2)}
             disabled={isSubmitting}
+            accessibilityRole="button"
+            accessibilityLabel="Hard"
+            accessibilityHint="I found this word difficult"
+            accessibilityState={{ disabled: isSubmitting }}
             className="flex-row items-center gap-2 rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 active:bg-orange-500/20">
             <Text className="flex-1 font-semibold text-orange-300">Hard</Text>
             <Text className="text-xs text-orange-300/70">Difficult</Text>
@@ -220,6 +239,10 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(3)}
             disabled={isSubmitting}
+            accessibilityRole="button"
+            accessibilityLabel="Good"
+            accessibilityHint="I remembered this word correctly"
+            accessibilityState={{ disabled: isSubmitting }}
             className="flex-row items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-3 active:bg-blue-500/20">
             <Text className="flex-1 font-semibold text-blue-300">Good</Text>
             <Text className="text-xs text-blue-300/70">Correct response</Text>
@@ -228,6 +251,10 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(5)}
             disabled={isSubmitting}
+            accessibilityRole="button"
+            accessibilityLabel="Easy"
+            accessibilityHint="I remembered this word perfectly"
+            accessibilityState={{ disabled: isSubmitting }}
             className="flex-row items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 active:bg-emerald-500/20">
             <Text className="flex-1 font-semibold text-emerald-300">Easy</Text>
             <Text className="text-xs text-emerald-300/70">Perfect</Text>
@@ -307,8 +334,10 @@ export default function VocabularyScreen() {
             <Text className="text-foreground text-lg font-bold">Vocabulary Review</Text>
             <Pressable
               onPress={() => setViewMode('list')}
+              accessibilityRole="button"
+              accessibilityLabel="Close vocabulary review"
               className="active:bg-accent rounded-lg p-2">
-              <Icon as={X} className="text-muted-foreground size-5" />
+              <Icon as={X} className="text-muted-foreground size-5" accessible={false} />
             </Pressable>
           </View>
         </View>
@@ -342,17 +371,22 @@ export default function VocabularyScreen() {
 
           {/* Search input */}
           <View className="border-border bg-card flex-row items-center gap-3 rounded-lg border px-4 py-2">
-            <Icon as={SearchIcon} className="text-muted-foreground size-4" />
+            <Icon as={SearchIcon} className="text-muted-foreground size-4" accessible={false} />
             <TextInput
               className="text-foreground placeholder:text-muted-foreground flex-1 py-2"
               placeholder="Search words..."
               placeholderTextColor="#94A3B8"
               value={searchTerm}
               onChangeText={setSearchTerm}
+              accessibilityLabel="Search vocabulary"
             />
             {searchTerm && (
-              <Pressable onPress={() => setSearchTerm('')} className="p-1">
-                <Icon as={X} className="text-muted-foreground size-4" />
+              <Pressable
+                onPress={() => setSearchTerm('')}
+                accessibilityRole="button"
+                accessibilityLabel="Clear search"
+                className="p-1">
+                <Icon as={X} className="text-muted-foreground size-4" accessible={false} />
               </Pressable>
             )}
           </View>
@@ -363,6 +397,10 @@ export default function VocabularyScreen() {
             <View>
               <Pressable
                 onPress={() => setShowCefrDropdown(!showCefrDropdown)}
+                accessibilityRole="button"
+                accessibilityLabel={cefrFilter ? `Filter by level: ${cefrFilter}` : 'Filter by level: All Levels'}
+                accessibilityHint="Opens a dropdown to select a CEFR level filter"
+                accessibilityState={{ expanded: showCefrDropdown }}
                 className="border-border bg-card flex-row items-center justify-between rounded-lg border px-4 py-3">
                 <Text className="text-foreground text-sm font-medium">
                   {cefrFilter ? `Level: ${cefrFilter}` : 'All Levels'}
@@ -370,6 +408,7 @@ export default function VocabularyScreen() {
                 <Icon
                   as={ChevronDown}
                   className="text-muted-foreground size-4"
+                  accessible={false}
                   style={{ transform: [{ rotate: showCefrDropdown ? '180deg' : '0deg' }] }}
                 />
               </Pressable>
@@ -382,6 +421,9 @@ export default function VocabularyScreen() {
                       setShowCefrDropdown(false);
                       setPage(1);
                     }}
+                    accessibilityRole="button"
+                    accessibilityLabel="All levels"
+                    accessibilityState={{ selected: cefrFilter === null }}
                     className="border-border active:bg-accent border-b px-4 py-3">
                     <Text
                       className={`text-sm ${cefrFilter === null ? 'font-semibold text-cyan-400' : 'text-foreground'}`}>
@@ -397,6 +439,9 @@ export default function VocabularyScreen() {
                         setShowCefrDropdown(false);
                         setPage(1);
                       }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Level ${level}`}
+                      accessibilityState={{ selected: cefrFilter === level }}
                       className="border-border active:bg-accent border-b px-4 py-3 last:border-b-0">
                       <Text
                         className={`text-sm ${cefrFilter === level ? 'font-semibold text-cyan-400' : 'text-foreground'}`}>
@@ -437,7 +482,9 @@ export default function VocabularyScreen() {
 
           {/* Error state */}
           {listData.error && !listData.loading && (
-            <View className="border-destructive/50 bg-destructive/10 rounded-lg border p-4">
+            <View
+              accessibilityLiveRegion="assertive"
+              className="border-destructive/50 bg-destructive/10 rounded-lg border p-4">
               <Text className="text-destructive text-sm">{listData.error}</Text>
             </View>
           )}

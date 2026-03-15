@@ -79,6 +79,7 @@ export default function SignupScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
+            accessibilityLabel="Email address"
           />
         </View>
 
@@ -93,6 +94,7 @@ export default function SignupScreen() {
             editable={!loading}
             secureTextEntry
             autoComplete="password-new"
+            accessibilityLabel="New password"
           />
         </View>
 
@@ -107,11 +109,14 @@ export default function SignupScreen() {
             editable={!loading}
             secureTextEntry
             autoComplete="password-new"
+            accessibilityLabel="Confirm password"
           />
         </View>
 
         {(validationError || error) && (
-          <View className="bg-destructive/10 border-destructive mb-6 rounded-lg border px-4 py-3">
+          <View
+            accessibilityLiveRegion="assertive"
+            className="bg-destructive/10 border-destructive mb-6 rounded-lg border px-4 py-3">
             <Text className="text-destructive text-sm font-medium">{validationError || error}</Text>
           </View>
         )}
@@ -119,6 +124,9 @@ export default function SignupScreen() {
         <TouchableOpacity
           onPress={handleSignUp}
           disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel={loading ? 'Creating account' : 'Sign up'}
+          accessibilityState={{ disabled: loading }}
           className={`mb-6 rounded-lg py-3 ${loading ? 'bg-primary/50' : 'bg-primary'}`}>
           <Text className="text-primary-foreground text-center text-base font-semibold">
             {loading ? 'Creating account...' : 'Sign up'}
@@ -127,7 +135,11 @@ export default function SignupScreen() {
 
         <View className="flex-row justify-center">
           <Text className="text-muted-foreground text-sm">Already have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/login')} disabled={loading}>
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/login')}
+            disabled={loading}
+            accessibilityRole="link"
+            accessibilityLabel="Sign in - go to login">
             <Text className="text-primary text-sm font-semibold">Sign in</Text>
           </TouchableOpacity>
         </View>

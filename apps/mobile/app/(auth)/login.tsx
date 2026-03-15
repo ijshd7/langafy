@@ -74,6 +74,7 @@ export default function LoginScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
+            accessibilityLabel="Email address"
           />
         </View>
 
@@ -88,11 +89,14 @@ export default function LoginScreen() {
             editable={!loading}
             secureTextEntry
             autoComplete="password"
+            accessibilityLabel="Password"
           />
         </View>
 
         {(validationError || error) && (
-          <View className="bg-destructive/10 border-destructive mb-6 rounded-lg border px-4 py-3">
+          <View
+            accessibilityLiveRegion="assertive"
+            className="bg-destructive/10 border-destructive mb-6 rounded-lg border px-4 py-3">
             <Text className="text-destructive text-sm font-medium">{validationError || error}</Text>
           </View>
         )}
@@ -100,6 +104,9 @@ export default function LoginScreen() {
         <TouchableOpacity
           onPress={handleSignIn}
           disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel={loading ? 'Signing in' : 'Sign in'}
+          accessibilityState={{ disabled: loading }}
           className={`mb-6 rounded-lg py-3 ${loading ? 'bg-primary/50' : 'bg-primary'}`}>
           <Text className="text-primary-foreground text-center text-base font-semibold">
             {loading ? 'Signing in...' : 'Sign in'}
@@ -108,7 +115,11 @@ export default function LoginScreen() {
 
         <View className="flex-row justify-center">
           <Text className="text-muted-foreground text-sm">Don&apos;t have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/signup')} disabled={loading}>
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/signup')}
+            disabled={loading}
+            accessibilityRole="link"
+            accessibilityLabel="Sign up - go to registration">
             <Text className="text-primary text-sm font-semibold">Sign up</Text>
           </TouchableOpacity>
         </View>

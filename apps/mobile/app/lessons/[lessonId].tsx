@@ -15,13 +15,18 @@ const { width } = Dimensions.get('window');
 /**
  * Progress bar component
  */
-function ProgressBar({ percentage }: { percentage: number }) {
+function ProgressBar({ percentage, label }: { percentage: number; label?: string }) {
   const fillWidth = Math.min(Math.max(percentage, 0), 100);
   const filledWidth = ((width - 32) * fillWidth) / 100;
 
   return (
-    <View className="bg-muted h-2 overflow-hidden rounded-full">
+    <View
+      accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: 100, now: Math.round(fillWidth) }}
+      accessibilityLabel={label ?? `${Math.round(fillWidth)}% complete`}
+      className="bg-muted h-2 overflow-hidden rounded-full">
       <Animated.View
+        accessible={false}
         className="h-full rounded-full bg-cyan-500"
         style={{ width: Math.max(filledWidth, 4) }}
       />
@@ -43,28 +48,32 @@ function ExerciseIndicators({
 }) {
   return (
     <View className="flex-row gap-2 px-4 py-3">
-      {Array.from({ length: totalExercises }).map((_, index) => (
-        <View
-          key={index}
-          className={`h-10 flex-1 items-center justify-center rounded-lg ${
-            completedIndices.has(index)
-              ? 'bg-green-500'
-              : index === currentIndex
-                ? 'bg-cyan-500'
-                : 'bg-muted'
-          }`}>
-          {completedIndices.has(index) ? (
-            <Icon as={CheckIcon} className="size-5 text-white" />
-          ) : (
-            <Text
-              className={`font-semibold ${
-                index === currentIndex ? 'text-white' : 'text-muted-foreground'
-              }`}>
-              {index + 1}
-            </Text>
-          )}
-        </View>
-      ))}
+      {Array.from({ length: totalExercises }).map((_, index) => {
+        const isCompleted = completedIndices.has(index);
+        const isCurrent = index === currentIndex;
+        const label = isCompleted
+          ? `Exercise ${index + 1}: completed`
+          : isCurrent
+            ? `Exercise ${index + 1}: current`
+            : `Exercise ${index + 1}: upcoming`;
+        return (
+          <View
+            key={index}
+            accessibilityLabel={label}
+            className={`h-10 flex-1 items-center justify-center rounded-lg ${
+              isCompleted ? 'bg-green-500' : isCurrent ? 'bg-cyan-500' : 'bg-muted'
+            }`}>
+            {isCompleted ? (
+              <Icon as={CheckIcon} className="size-5 text-white" accessible={false} />
+            ) : (
+              <Text
+                className={`font-semibold ${isCurrent ? 'text-white' : 'text-muted-foreground'}`}>
+                {index + 1}
+              </Text>
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -112,17 +121,21 @@ function CompletionScreen({
   }, [scaleAnim]);
 
   return (
-    <View className="flex-1 items-center justify-center gap-6 px-4 pb-8">
+    <View
+      accessibilityLiveRegion="polite"
+      accessibilityLabel={`Lesson complete! You earned ${earnedPoints} out of ${totalPoints} points`}
+      className="flex-1 items-center justify-center gap-6 px-4 pb-8">
       <Animated.View
+        accessible={false}
         style={{
           transform: [{ scale: scaleAnim }],
         }}>
-        <Icon as={CheckCircleIcon} className="size-16 text-green-500" />
+        <Icon as={CheckCircleIcon} className="size-16 text-green-500" accessible={false} />
       </Animated.View>
 
       <Text className="text-foreground text-center text-2xl font-bold">Lesson Complete!</Text>
 
-      <View className="bg-card border-border items-center gap-2 rounded-lg border p-6">
+      <View accessible={false} className="bg-card border-border items-center gap-2 rounded-lg border p-6">
         <Text className="text-muted-foreground text-sm">Points Earned</Text>
         <Text className="text-5xl font-bold text-cyan-500">{earnedPoints}</Text>
         <Text className="text-muted-foreground mt-2 text-xs">
@@ -130,7 +143,7 @@ function CompletionScreen({
         </Text>
       </View>
 
-      <Button onPress={onBack} className="rounded-lg bg-cyan-500 px-8 py-3">
+      <Button onPress={onBack} accessibilityLabel="Back to lessons" className="rounded-lg bg-cyan-500 px-8 py-3">
         <Text className="font-semibold text-white">Back to Lessons</Text>
       </Button>
     </View>
@@ -143,14 +156,14 @@ function CompletionScreen({
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="text-destructive size-12" />
+      <Icon as={AlertCircleIcon} className="text-destructive size-12" accessible={false} />
       <Text className="text-foreground text-center text-lg font-semibold">
         Couldn&apos;t load lesson
       </Text>
       <Text className="text-muted-foreground text-center text-sm">
         Please check your connection and try again
       </Text>
-      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
+      <Button onPress={onRetry} variant="outline" accessibilityLabel="Retry loading lesson" className="rounded-lg px-6 py-3">
         <Text className="text-foreground font-semibold">Retry</Text>
       </Button>
     </View>
@@ -228,7 +241,10 @@ export default function LessonDetailScreen() {
 
             {/* Progress bar and counter */}
             <View className="gap-3">
-              <ProgressBar percentage={(currentIndex / lesson.exercises.length) * 100} />
+              <ProgressBar
+                percentage={(currentIndex / lesson.exercises.length) * 100}
+                label={`Lesson progress: exercise ${currentIndex + 1} of ${lesson.exercises.length}`}
+              />
               <Text className="text-muted-foreground text-center text-sm">
                 Exercise {currentIndex + 1} of {lesson.exercises.length}
               </Text>

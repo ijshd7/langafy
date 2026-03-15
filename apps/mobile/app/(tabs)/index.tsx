@@ -48,6 +48,7 @@ function SkeletonLine({
 
   return (
     <Animated.View
+      accessible={false}
       className="bg-muted rounded-lg"
       style={{
         width: w,
@@ -143,9 +144,12 @@ function StatsRow({ data, loading }: { data?: ProgressSummary; loading: boolean 
   return (
     <View className="flex-row gap-3 px-4 py-4">
       {stats.map((stat, idx) => (
-        <View key={idx} className="border-border bg-card flex-1 rounded-xl border p-4">
+        <View
+          key={idx}
+          accessibilityLabel={`${stat.label}: ${stat.value}${stat.suffix ? ' ' + stat.suffix : ''}`}
+          className="border-border bg-card flex-1 rounded-xl border p-4">
           <View className="mb-2 flex-row items-center gap-2">
-            <Icon as={stat.icon} className="size-5 text-cyan-500" />
+            <Icon as={stat.icon} className="size-5 text-cyan-500" accessible={false} />
             <Text className="text-muted-foreground text-xs">{stat.label}</Text>
           </View>
           <Text className="text-foreground text-2xl font-bold">
@@ -161,13 +165,18 @@ function StatsRow({ data, loading }: { data?: ProgressSummary; loading: boolean 
 /**
  * Progress bar component
  */
-function ProgressBar({ percentage }: { percentage: number }) {
+function ProgressBar({ percentage, label }: { percentage: number; label?: string }) {
   const fillWidth = Math.min(Math.max(percentage, 0), 100);
   const filledWidth = ((width - 32) * fillWidth) / 100; // Account for padding
 
   return (
-    <View className="bg-muted h-2 overflow-hidden rounded-full">
+    <View
+      accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: 100, now: Math.round(fillWidth) }}
+      accessibilityLabel={label ?? `${Math.round(fillWidth)}% complete`}
+      className="bg-muted h-2 overflow-hidden rounded-full">
       <Animated.View
+        accessible={false}
         className="h-full rounded-full bg-cyan-500"
         style={{ width: Math.max(filledWidth, 4) }} // Minimum visible width
       />
@@ -212,11 +221,14 @@ function ProgressSection({ data, loading }: { data?: ProgressSummary; loading: b
                 {unit.completedLessons} / {unit.totalLessons} lessons
               </Text>
             </View>
-            <View className="bg-muted rounded-full px-2 py-1">
+            <View accessible={false} className="bg-muted rounded-full px-2 py-1">
               <Text className="text-foreground text-xs font-medium">{unit.cefrLevel}</Text>
             </View>
           </View>
-          <ProgressBar percentage={unit.percentage} />
+          <ProgressBar
+            percentage={unit.percentage}
+            label={`${unit.unitTitle}: ${unit.completedLessons} of ${unit.totalLessons} lessons complete`}
+          />
         </View>
       ))}
     </View>
@@ -250,9 +262,11 @@ function ContinueLearningButton({ data, loading }: { data?: ProgressSummary; loa
     <View className="gap-3 px-4 py-4">
       <Button
         onPress={handlePress}
+        accessibilityLabel={`Continue learning: ${nextLessonTitle}`}
+        accessibilityHint="Opens the next lesson"
         className="flex-row items-center justify-center gap-2 rounded-xl bg-cyan-500 py-4">
         <Text className="font-semibold text-white">Continue: {nextLessonTitle}</Text>
-        <Icon as={ArrowRightIcon} className="size-5 text-white" />
+        <Icon as={ArrowRightIcon} className="size-5 text-white" accessible={false} />
       </Button>
     </View>
   );
@@ -264,14 +278,14 @@ function ContinueLearningButton({ data, loading }: { data?: ProgressSummary; loa
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="text-destructive size-12" />
+      <Icon as={AlertCircleIcon} className="text-destructive size-12" accessible={false} />
       <Text className="text-foreground text-center text-lg font-semibold">
         Couldn&apos;t load progress
       </Text>
       <Text className="text-muted-foreground text-center text-sm">
         Please check your connection and try again
       </Text>
-      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
+      <Button onPress={onRetry} variant="outline" accessibilityLabel="Retry loading progress" className="rounded-lg px-6 py-3">
         <Text className="text-foreground font-semibold">Retry</Text>
       </Button>
     </View>

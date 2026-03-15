@@ -1,0 +1,201 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel any in-progress run for the same branch so pushes don't queue up
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Build shared packages first — web and mobile depend on shared-types dist
+  # ──────────────────────────────────────────────────────────────────────────
+  shared-packages:
+    name: Build & test shared packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared-types
+        run: npm run build --workspace=@langafy/shared-types
+
+      - name: Test shared-game-logic
+        run: npm run test --workspace=@langafy/shared-game-logic
+
+      - name: Upload shared-types dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-types-dist
+          path: packages/shared-types/dist
+          retention-days: 1
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # .NET API: build → test → format check
+  # Testcontainers.PostgreSql spins up a real Postgres container automatically;
+  # ubuntu-latest runners have Docker pre-installed.
+  # ──────────────────────────────────────────────────────────────────────────
+  api:
+    name: API (build, test, format)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Build (includes code style enforcement)
+        run: dotnet build apps/api/LangafyApi.Tests/LangafyApi.Tests.csproj
+
+      - name: Test
+        run: dotnet test apps/api/LangafyApi.Tests/LangafyApi.Tests.csproj --no-build --logger "console;verbosity=normal"
+
+      - name: Format check
+        run: dotnet format apps/api/LangafyApi/LangafyApi.csproj --verify-no-changes
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Next.js web: lint → build → unit tests
+  # Requires shared-types dist so Next.js can resolve @langafy/shared-types.
+  # ──────────────────────────────────────────────────────────────────────────
+  web:
+    name: Web (lint, build, test)
+    runs-on: ubuntu-latest
+    needs: shared-packages
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download shared-types dist
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-types-dist
+          path: packages/shared-types/dist
+
+      - name: Lint
+        run: npm run lint --workspace=web
+
+      - name: Build
+        run: npm run build --workspace=web
+        env:
+          # NEXT_PUBLIC_* vars are inlined at build time; use placeholders for CI
+          NEXT_PUBLIC_FIREBASE_API_KEY: ci-placeholder
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ci-placeholder.firebaseapp.com
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ci-placeholder
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ci-placeholder.appspot.com
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '000000000000'
+          NEXT_PUBLIC_FIREBASE_APP_ID: 1:000000000000:web:ci-placeholder
+          NEXT_PUBLIC_API_URL: http://localhost:5000
+
+      - name: Test
+        run: npm run test --workspace=web
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # React Native mobile: lint → unit tests
+  # No build step — Expo native builds require device targets/credentials.
+  # ──────────────────────────────────────────────────────────────────────────
+  mobile:
+    name: Mobile (lint, test)
+    runs-on: ubuntu-latest
+    needs: shared-packages
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --workspace=mobile
+
+      - name: Test
+        run: npm run test --workspace=mobile
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Docker: verify both images build successfully
+  # Runs independently — no need to wait for JS/TS jobs.
+  # ──────────────────────────────────────────────────────────────────────────
+  docker:
+    name: Docker build validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build API image
+        run: |
+          docker build \
+            -f apps/api/LangafyApi/Dockerfile \
+            -t langafy-api:ci \
+            .
+
+      - name: Build web image
+        run: |
+          docker build \
+            -f apps/web/Dockerfile \
+            --build-arg NEXT_PUBLIC_FIREBASE_API_KEY=ci-placeholder \
+            --build-arg NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=ci-placeholder.firebaseapp.com \
+            --build-arg NEXT_PUBLIC_FIREBASE_PROJECT_ID=ci-placeholder \
+            --build-arg NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=ci-placeholder.appspot.com \
+            --build-arg NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=000000000000 \
+            --build-arg NEXT_PUBLIC_FIREBASE_APP_ID=1:000000000000:web:ci-placeholder \
+            --build-arg NEXT_PUBLIC_API_URL=http://localhost:5000 \
+            -t langafy-web:ci \
+            .
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Security: npm audit + dotnet vulnerable package scan
+  # ──────────────────────────────────────────────────────────────────────────
+  security:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm audit (high and above)
+        run: npm audit --audit-level=high
+
+      - name: dotnet vulnerable package scan
+        run: dotnet list apps/api/LangafyApi/LangafyApi.csproj package --vulnerable --include-transitive

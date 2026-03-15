@@ -256,4 +256,5 @@ app.MapConversationEndpoints();
 app.Run();
 
 // Expose Program to the test assembly for WebApplicationFactory<Program>
+/// <inheritdoc/>
 public partial class Program { }

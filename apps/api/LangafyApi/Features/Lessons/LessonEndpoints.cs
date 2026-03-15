@@ -18,7 +18,6 @@ public static class LessonEndpoints
 
         group.MapGet("/levels", GetLevels)
             .WithName("GetLevels")
-            .WithOpenApi()
             .WithSummary("List all CEFR levels")
             .WithDescription("Returns all CEFR proficiency levels (A1 through C2) available on the platform.")
             .Produces<List<CefrLevelDto>>(StatusCodes.Status200OK)
@@ -26,7 +25,6 @@ public static class LessonEndpoints
 
         group.MapGet("/languages/{code}/levels/{levelId}/units", GetUnitsByLanguageAndLevel)
             .WithName("GetUnitsByLanguageAndLevel")
-            .WithOpenApi()
             .WithSummary("List units for a language and CEFR level")
             .WithDescription("Returns all units for a specified language and CEFR level.")
             .Produces<List<UnitDto>>(StatusCodes.Status200OK)
@@ -36,7 +34,6 @@ public static class LessonEndpoints
 
         group.MapGet("/units/{id}/lessons", GetLessonsByUnit)
             .WithName("GetLessonsByUnit")
-            .WithOpenApi()
             .WithSummary("List lessons within a unit")
             .WithDescription("Returns all lessons in a specified unit, ordered by display sequence.")
             .Produces<List<LessonDto>>(StatusCodes.Status200OK)
@@ -45,7 +42,6 @@ public static class LessonEndpoints
 
         group.MapGet("/lessons/{id}", GetLessonDetail)
             .WithName("GetLessonDetail")
-            .WithOpenApi()
             .WithSummary("Get lesson detail with exercises")
             .WithDescription("Returns full lesson details including all exercises in sequence.")
             .Produces<LessonDetailDto>(StatusCodes.Status200OK)

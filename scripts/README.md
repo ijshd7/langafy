@@ -66,7 +66,7 @@ Starts the API in development mode. The database will be seeded automatically if
 **Requirements**:
 
 - PostgreSQL database running (use `npm run docker:up`)
-- .NET 8 SDK installed
+- .NET 10 SDK installed
 - Entity Framework Core tools
 
 ### `npm run seed:reset`

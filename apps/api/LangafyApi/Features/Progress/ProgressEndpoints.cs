@@ -20,7 +20,6 @@ public static class ProgressEndpoints
 
         group.MapGet("", GetProgress)
             .WithName("GetProgress")
-            .WithOpenApi()
             .WithSummary("Get user's learning progress")
             .WithDescription("Returns completion percentages per level, per unit, per lesson for the authenticated user's active language or a specified language. Includes total points and current streak.")
             .Produces<ProgressSummaryDto>(StatusCodes.Status200OK)
@@ -210,8 +209,8 @@ public static class ProgressEndpoints
 
             // Calculate streaks
             var userProgressOrdered = userProgress.OrderByDescending(p => p.CompletedAt).ToList();
-            int currentStreak = CalculateStreak(userProgressOrdered, DateTime.UtcNow, true);
-            int longestStreak = CalculateLongestStreak(userProgressOrdered);
+            int currentStreak = ProgressCalculator.CalculateStreak(userProgress, DateTime.UtcNow);
+            int longestStreak = ProgressCalculator.CalculateLongestStreak(userProgress);
 
             // Calculate overall completion percentage
             int overallCompletionPercentage = totalMaxPoints > 0
@@ -245,84 +244,4 @@ public static class ProgressEndpoints
         }
     }
 
-    /// <summary>
-    /// Calculates the current streak in days.
-    /// </summary>
-    private static int CalculateStreak(List<Data.Entities.UserProgress> progressList, DateTime today, bool isCurrent)
-    {
-        if (progressList.Count == 0)
-        {
-            return 0;
-        }
-
-        int streak = 0;
-        DateTime? expectedDate = today.Date;
-
-        foreach (var progress in progressList.Where(p => p.CompletedAt.HasValue))
-        {
-            var completedDate = progress.CompletedAt!.Value.Date;
-
-            if (expectedDate == null)
-            {
-                break;
-            }
-
-            if (completedDate == expectedDate.Value)
-            {
-                streak++;
-                expectedDate = expectedDate.Value.AddDays(-1);
-            }
-            else if (completedDate < expectedDate.Value)
-            {
-                // Gap in streak
-                break;
-            }
-        }
-
-        return streak;
-    }
-
-    /// <summary>
-    /// Calculates the longest streak ever achieved.
-    /// </summary>
-    private static int CalculateLongestStreak(List<Data.Entities.UserProgress> progressList)
-    {
-        if (progressList.Count == 0)
-        {
-            return 0;
-        }
-
-        var sortedProgress = progressList
-            .Where(p => p.CompletedAt.HasValue)
-            .OrderByDescending(p => p.CompletedAt)
-            .ToList();
-
-        int longestStreak = 0;
-        int currentStreak = 0;
-        DateTime? previousDate = null;
-
-        foreach (var progress in sortedProgress)
-        {
-            var completedDate = progress.CompletedAt!.Value.Date;
-
-            if (previousDate == null)
-            {
-                currentStreak = 1;
-            }
-            else if (previousDate?.AddDays(-1) == completedDate)
-            {
-                currentStreak++;
-            }
-            else
-            {
-                longestStreak = Math.Max(longestStreak, currentStreak);
-                currentStreak = 1;
-            }
-
-            previousDate = completedDate;
-        }
-
-        longestStreak = Math.Max(longestStreak, currentStreak);
-        return longestStreak;
-    }
 }

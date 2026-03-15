@@ -21,7 +21,6 @@ public static class VocabularyEndpoints
 
         group.MapGet("", GetVocabulary)
             .WithName("GetVocabulary")
-            .WithOpenApi()
             .WithSummary("List vocabulary with pagination, filtering, and search")
             .WithDescription("Returns a paginated list of vocabulary items. Supports filtering by CEFR level and language, and searching by word.")
             .Produces<PaginatedVocabularyResponse>(StatusCodes.Status200OK)
@@ -31,7 +30,6 @@ public static class VocabularyEndpoints
 
         group.MapPost("/{id}/review", RecordVocabularyReview)
             .WithName("RecordVocabularyReview")
-            .WithOpenApi()
             .WithSummary("Record a spaced repetition review")
             .WithDescription("Records a vocabulary review using the SM-2 (Supermemo 2) algorithm and updates the next review date.")
             .Accepts<VocabularyReviewRequest>("application/json")
@@ -43,7 +41,6 @@ public static class VocabularyEndpoints
 
         group.MapGet("/due", GetDueForReview)
             .WithName("GetVocabularyDueForReview")
-            .WithOpenApi()
             .WithSummary("Get vocabulary items due for review")
             .WithDescription("Returns vocabulary items that are due for review for the user's active language.")
             .Produces<PaginatedVocabularyResponse>(StatusCodes.Status200OK)

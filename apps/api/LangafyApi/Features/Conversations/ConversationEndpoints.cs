@@ -29,7 +29,6 @@ public static class ConversationEndpoints
 
         group.MapPost("/", StartConversation)
             .WithName("StartConversation")
-            .WithOpenApi()
             .WithSummary("Start a new AI conversation")
             .WithDescription("Creates a new conversation for the authenticated user, scoped to a language and optionally tied to a lesson context.")
             .Produces<StartConversationResponse>(StatusCodes.Status201Created)
@@ -39,7 +38,6 @@ public static class ConversationEndpoints
 
         group.MapPost("/{id:int}/messages", SendMessage)
             .WithName("SendMessage")
-            .WithOpenApi()
             .WithSummary("Send a message and receive a complete AI response")
             .WithDescription("Sends a user message, generates the full AI response, persists both, and returns them as a JSON object.")
             .Produces<SendMessageResponse>(StatusCodes.Status200OK)
@@ -50,7 +48,6 @@ public static class ConversationEndpoints
 
         group.MapPost("/{id:int}/messages/stream", StreamMessage)
             .WithName("StreamMessage")
-            .WithOpenApi()
             .WithSummary("Send a message and stream the AI response via SSE")
             .WithDescription(
                 "Sends a user message and streams the AI response token-by-token as Server-Sent Events (Content-Type: text/event-stream). " +
@@ -59,7 +56,6 @@ public static class ConversationEndpoints
 
         group.MapGet("/{id:int}", GetConversation)
             .WithName("GetConversation")
-            .WithOpenApi()
             .WithSummary("Get conversation with full message history")
             .WithDescription("Returns conversation details and all user/assistant messages in chronological order.")
             .Produces<ConversationDetailDto>(StatusCodes.Status200OK)
@@ -69,7 +65,6 @@ public static class ConversationEndpoints
 
         group.MapGet("/", ListConversations)
             .WithName("ListConversations")
-            .WithOpenApi()
             .WithSummary("List the authenticated user's conversations")
             .WithDescription("Returns a paginated list of conversations ordered newest first, optionally filtered by language code.")
             .Produces<ConversationListResponse>(StatusCodes.Status200OK)
@@ -78,7 +73,6 @@ public static class ConversationEndpoints
 
         group.MapDelete("/{id:int}", DeleteConversation)
             .WithName("DeleteConversation")
-            .WithOpenApi()
             .WithSummary("Delete a conversation")
             .WithDescription("Permanently deletes a conversation and all its messages.")
             .Produces(StatusCodes.Status204NoContent)

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LangafyApi.Tests/LangafyApi.Tests.csproj" />
+  <Project Path="LangafyApi/LangafyApi.csproj" />
+</Solution>

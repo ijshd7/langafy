@@ -21,7 +21,6 @@ public static class ExerciseEndpoints
 
         group.MapPost("/{id}/submit", SubmitExercise)
             .WithName("SubmitExercise")
-            .WithOpenApi()
             .WithSummary("Submit an exercise answer")
             .WithDescription("Submits an exercise answer, validates it, records progress, and returns feedback with score.")
             .Accepts<MultipleChoiceSubmission>("application/json")

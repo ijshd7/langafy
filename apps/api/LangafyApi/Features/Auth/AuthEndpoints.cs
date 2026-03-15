@@ -20,7 +20,6 @@ public static class AuthEndpoints
 
         group.MapPost("/sync", SyncAuth)
             .WithName("SyncAuth")
-            .WithOpenApi()
             .WithSummary("Sync Firebase user to database")
             .WithDescription("Extracts Firebase UID and email from JWT claims, creates/updates AppUser, and ensures user has at least one language. New users are assigned Spanish at A1 level.")
             .Produces<SyncAuthResponse>(StatusCodes.Status200OK)

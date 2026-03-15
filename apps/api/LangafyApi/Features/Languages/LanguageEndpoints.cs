@@ -20,7 +20,6 @@ public static class LanguageEndpoints
 
         group.MapGet("/languages", GetLanguages)
             .WithName("GetLanguages")
-            .WithOpenApi()
             .WithSummary("List all active languages")
             .WithDescription("Returns a list of all languages currently available for study.")
             .Produces<List<LanguageDto>>(StatusCodes.Status200OK)
@@ -31,7 +30,6 @@ public static class LanguageEndpoints
 
         userGroup.MapPost("", AddUserLanguage)
             .WithName("AddUserLanguage")
-            .WithOpenApi()
             .WithSummary("Add a language to user's study list")
             .WithDescription("Adds a new language to the authenticated user's list of languages being studied.")
             .Accepts<AddUserLanguageRequest>("application/json")
@@ -43,7 +41,6 @@ public static class LanguageEndpoints
 
         userGroup.MapPut("/{code}/primary", SetPrimaryLanguage)
             .WithName("SetPrimaryLanguage")
-            .WithOpenApi()
             .WithSummary("Set active/primary language")
             .WithDescription("Sets the specified language as the user's primary/active language.")
             .Produces<UserLanguageDto>(StatusCodes.Status200OK)

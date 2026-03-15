@@ -1,14 +1,15 @@
 /**
  * CEFR (Common European Framework of Reference for Languages) proficiency levels
  */
-export enum CefrLevel {
-  A1 = 'A1',
-  A2 = 'A2',
-  B1 = 'B1',
-  B2 = 'B2',
-  C1 = 'C1',
-  C2 = 'C2',
-}
+export const CefrLevel = {
+  A1: 'A1',
+  A2: 'A2',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+} as const;
+export type CefrLevel = (typeof CefrLevel)[keyof typeof CefrLevel];
 
 /**
  * Supported language in the platform
@@ -62,13 +63,15 @@ export interface UserLanguage {
 /**
  * Exercise type enumeration
  */
-export enum ExerciseType {
-  MultipleChoice = 'MultipleChoice',
-  FillBlank = 'FillBlank',
-  WordScramble = 'WordScramble',
-  FlashcardMatch = 'FlashcardMatch',
-  FreeResponse = 'FreeResponse',
-}
+// Using const object instead of enum to avoid IIFE initialization issues with Turbopack
+export const ExerciseType = {
+  MultipleChoice: 'MultipleChoice',
+  FillBlank: 'FillBlank',
+  WordScramble: 'WordScramble',
+  FlashcardMatch: 'FlashcardMatch',
+  FreeResponse: 'FreeResponse',
+} as const;
+export type ExerciseType = (typeof ExerciseType)[keyof typeof ExerciseType];
 
 /**
  * Language code type alias
@@ -239,24 +242,24 @@ export interface UserVocabulary {
  */
 export type ExerciseSubmission =
   | {
-      type: ExerciseType.MultipleChoice;
+      type: typeof ExerciseType.MultipleChoice;
       selectedIndex: number;
     }
   | {
-      type: ExerciseType.FillBlank;
+      type: typeof ExerciseType.FillBlank;
       answer: string;
     }
   | {
-      type: ExerciseType.WordScramble;
+      type: typeof ExerciseType.WordScramble;
       answer: string;
     }
   | {
-      type: ExerciseType.FlashcardMatch;
+      type: typeof ExerciseType.FlashcardMatch;
       completedAt: number; // completion time in milliseconds
       mistakes: number; // number of mismatches
     }
   | {
-      type: ExerciseType.FreeResponse;
+      type: typeof ExerciseType.FreeResponse;
       answer: string;
     };
 

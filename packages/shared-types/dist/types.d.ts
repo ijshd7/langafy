@@ -1,14 +1,15 @@
 /**
  * CEFR (Common European Framework of Reference for Languages) proficiency levels
  */
-export declare enum CefrLevel {
-    A1 = "A1",
-    A2 = "A2",
-    B1 = "B1",
-    B2 = "B2",
-    C1 = "C1",
-    C2 = "C2"
-}
+export declare const CefrLevel: {
+    readonly A1: "A1";
+    readonly A2: "A2";
+    readonly B1: "B1";
+    readonly B2: "B2";
+    readonly C1: "C1";
+    readonly C2: "C2";
+};
+export type CefrLevel = (typeof CefrLevel)[keyof typeof CefrLevel];
 /**
  * Supported language in the platform
  */
@@ -57,13 +58,14 @@ export interface UserLanguage {
 /**
  * Exercise type enumeration
  */
-export declare enum ExerciseType {
-    MultipleChoice = "MultipleChoice",
-    FillBlank = "FillBlank",
-    WordScramble = "WordScramble",
-    FlashcardMatch = "FlashcardMatch",
-    FreeResponse = "FreeResponse"
-}
+export declare const ExerciseType: {
+    readonly MultipleChoice: "MultipleChoice";
+    readonly FillBlank: "FillBlank";
+    readonly WordScramble: "WordScramble";
+    readonly FlashcardMatch: "FlashcardMatch";
+    readonly FreeResponse: "FreeResponse";
+};
+export type ExerciseType = (typeof ExerciseType)[keyof typeof ExerciseType];
 /**
  * Language code type alias
  */
@@ -217,20 +219,20 @@ export interface UserVocabulary {
  * Exercise submission - discriminated union by exercise type
  */
 export type ExerciseSubmission = {
-    type: ExerciseType.MultipleChoice;
+    type: typeof ExerciseType.MultipleChoice;
     selectedIndex: number;
 } | {
-    type: ExerciseType.FillBlank;
+    type: typeof ExerciseType.FillBlank;
     answer: string;
 } | {
-    type: ExerciseType.WordScramble;
+    type: typeof ExerciseType.WordScramble;
     answer: string;
 } | {
-    type: ExerciseType.FlashcardMatch;
+    type: typeof ExerciseType.FlashcardMatch;
     completedAt: number;
     mistakes: number;
 } | {
-    type: ExerciseType.FreeResponse;
+    type: typeof ExerciseType.FreeResponse;
     answer: string;
 };
 /**

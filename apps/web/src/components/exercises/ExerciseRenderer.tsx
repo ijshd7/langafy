@@ -1,6 +1,6 @@
 'use client';
 
-import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types';
+import { Exercise, ExerciseResult } from '@langafy/shared-types';
 import { AlertCircle } from 'lucide-react';
 
 import { FlashcardMatch } from '../games/FlashcardMatch';
@@ -26,24 +26,26 @@ export function ExerciseRenderer({
   onComplete,
   isLoading = false,
 }: ExerciseRendererProps) {
+  // Use string literals instead of ExerciseType enum references to avoid
+  // Turbopack/SWC module initialization ordering issues with same-named const+type exports
   switch (exercise.type) {
-    case ExerciseType.MultipleChoice:
+    case 'MultipleChoice':
       return <MultipleChoice exercise={exercise} onComplete={onComplete} isLoading={isLoading} />;
 
-    case ExerciseType.FillBlank:
+    case 'FillBlank':
       return <FillInTheBlank exercise={exercise} onComplete={onComplete} isLoading={isLoading} />;
 
-    case ExerciseType.WordScramble:
+    case 'WordScramble':
       return (
         <WordScramble exercise={exercise} onComplete={onComplete} basePoints={exercise.points} />
       );
 
-    case ExerciseType.FlashcardMatch:
+    case 'FlashcardMatch':
       return (
         <FlashcardMatch exercise={exercise} onComplete={onComplete} basePoints={exercise.points} />
       );
 
-    case ExerciseType.FreeResponse:
+    case 'FreeResponse':
       return (
         <div className="mx-auto w-full max-w-2xl rounded-lg border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-950">
           <div className="flex items-start gap-3">

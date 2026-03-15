@@ -1,4 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useFlashcardGame } from '@langafy/shared-game-logic';
+import type { FlashcardGameCard } from '@langafy/shared-game-logic';
+import type {
+  Exercise,
+  ExerciseResult,
+  FlashcardMatchConfig,
+} from '@langafy/shared-types';
+import * as Haptics from 'expo-haptics';
+import { useCallback, useEffect, useState } from 'react';
 import { View, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -8,13 +16,7 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
-import type {
-  Exercise,
-  ExerciseResult,
-  FlashcardMatchConfig,
-} from '@langafy/shared-types';
-import { useFlashcardGame } from '@langafy/shared-game-logic';
+
 import { Text } from '../ui/text';
 
 interface FlashcardMatchProps {
@@ -52,14 +54,7 @@ export function FlashcardMatch({
     start();
   }, [start]);
 
-  // Handle game completion
-  useEffect(() => {
-    if (result && gameState === 'completed') {
-      handleSubmit(result);
-    }
-  }, [result, gameState]);
-
-  const handleSubmit = async (gameResult: typeof result) => {
+  const handleSubmit = useCallback(async (gameResult: typeof result) => {
     if (!gameResult) return;
 
     try {
@@ -85,7 +80,14 @@ export function FlashcardMatch({
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [config.pairs.length, basePoints, onComplete]);
+
+  // Handle game completion
+  useEffect(() => {
+    if (result && gameState === 'completed') {
+      handleSubmit(result);
+    }
+  }, [result, gameState, handleSubmit]);
 
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);
@@ -204,7 +206,7 @@ export function FlashcardMatch({
 }
 
 interface FlashcardTileProps {
-  card: any;
+  card: FlashcardGameCard;
   isSelected: boolean;
   isMismatched: boolean;
   onPress: () => void;
@@ -213,7 +215,7 @@ interface FlashcardTileProps {
 
 function FlashcardTile({
   card,
-  isSelected,
+  isSelected: _isSelected,
   isMismatched,
   onPress,
   disabled,

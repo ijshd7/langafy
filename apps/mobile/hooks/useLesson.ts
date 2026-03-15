@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
 import { apiClient } from '@/lib/api';
 
 /**
@@ -32,7 +33,7 @@ export function useLesson(lessonId: string) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = async (isRefresh = false) => {
+  const load = useCallback(async (isRefresh = false) => {
     try {
       if (!isRefresh) {
         setLoading(true);
@@ -50,12 +51,12 @@ export function useLesson(lessonId: string) {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [lessonId]);
 
   // Re-fetch when lessonId changes
   useEffect(() => {
     load();
-  }, [lessonId]);
+  }, [load]);
 
   const refresh = async () => {
     setRefreshing(true);

@@ -1,21 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import { useRouter } from 'expo-router';
+import { AlertCircleIcon } from 'lucide-react-native';
+import React, { useEffect, useMemo } from 'react';
 import {
   Animated,
   RefreshControl,
   ScrollView,
   View,
-  useColorScheme,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { Button } from '@/components/ui/button';
 import { useLevels, type CefrLevel } from '@/hooks/useLevels';
-import { AlertCircleIcon } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
 
 /**
  * Skeleton loading component
@@ -27,7 +25,7 @@ function SkeletonLine({
   width?: string | number;
   height?: number;
 }) {
-  const shimmerAnim = useRef(new Animated.Value(0)).current;
+  const shimmerAnim = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
     Animated.loop(
@@ -69,7 +67,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
       <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
       <Text className="text-center text-lg font-semibold text-foreground">
-        Couldn't load levels
+        Couldn&apos;t load levels
       </Text>
       <Text className="text-center text-sm text-muted-foreground">
         Please check your connection and try again

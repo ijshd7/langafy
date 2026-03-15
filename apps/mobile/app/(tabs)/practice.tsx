@@ -1,3 +1,18 @@
+import * as Speech from 'expo-speech'
+import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition'
+import {
+  MessageSquareIcon,
+  SendIcon,
+  PlusIcon,
+  ArrowLeftIcon,
+  XIcon,
+  TrashIcon,
+  BotIcon,
+  MessageCircleIcon,
+  MicIcon,
+  Volume2Icon,
+  VolumeXIcon,
+} from 'lucide-react-native'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   View,
@@ -22,25 +37,11 @@ import Animated, {
   withTiming,
   cancelAnimation,
 } from 'react-native-reanimated'
-import {
-  MessageSquareIcon,
-  SendIcon,
-  PlusIcon,
-  ArrowLeftIcon,
-  XIcon,
-  TrashIcon,
-  BotIcon,
-  MessageCircleIcon,
-  MicIcon,
-  MicOffIcon,
-  Volume2Icon,
-  VolumeXIcon,
-} from 'lucide-react-native'
-import { Text } from '@/components/ui/text'
+
 import { Icon } from '@/components/ui/icon'
+import { Text } from '@/components/ui/text'
 import { apiClient } from '@/lib/api'
-import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition'
-import * as Speech from 'expo-speech'
+
 
 // --- Types ---
 

@@ -1,18 +1,12 @@
-import { useEffect, useState } from 'react';
-import { View, Pressable, ScrollView, ActivityIndicator } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  interpolate,
-  Extrapolate,
-} from 'react-native-reanimated';
+import { useWordScramble } from '@langafy/shared-game-logic';
 import type {
   Exercise,
   ExerciseResult,
   WordScrambleConfig,
 } from '@langafy/shared-types';
-import { useWordScramble } from '@langafy/shared-game-logic';
+import { useCallback, useEffect, useState } from 'react';
+import { View, Pressable, ScrollView, ActivityIndicator } from 'react-native';
+
 import { Text } from '../ui/text';
 
 interface WordScrambleProps {
@@ -54,14 +48,7 @@ export function WordScramble({
     start();
   }, [start]);
 
-  // Handle game completion
-  useEffect(() => {
-    if (result && gameState === 'completed') {
-      handleSubmit(result);
-    }
-  }, [result, gameState]);
-
-  const handleSubmit = async (gameResult: typeof result) => {
+  const handleSubmit = useCallback(async (gameResult: typeof result) => {
     if (!gameResult) return;
 
     try {
@@ -88,7 +75,14 @@ export function WordScramble({
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [config.targetWord, config.explanation, basePoints, onComplete]);
+
+  // Handle game completion
+  useEffect(() => {
+    if (result && gameState === 'completed') {
+      handleSubmit(result);
+    }
+  }, [result, gameState, handleSubmit]);
 
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);

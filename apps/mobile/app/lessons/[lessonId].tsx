@@ -1,18 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { ExerciseResult } from '@langafy/shared-types';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
+import { AlertCircleIcon, CheckCircleIcon, CheckIcon } from 'lucide-react-native';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   ScrollView,
   View,
   Dimensions,
   Animated,
 } from 'react-native';
-import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
+
+import { ExerciseRenderer } from '@/components/exercises/ExerciseRenderer';
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { Button } from '@/components/ui/button';
 import { useLesson } from '@/hooks/useLesson';
-import { AlertCircleIcon, CheckCircleIcon, CheckIcon } from 'lucide-react-native';
-import { ExerciseRenderer } from '@/components/exercises/ExerciseRenderer';
-import { ExerciseResult } from '@langafy/shared-types';
+
 
 const { width } = Dimensions.get('window');
 
@@ -108,7 +110,7 @@ function CompletionScreen({
   totalPoints: number;
   onBack: () => void;
 }) {
-  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
     Animated.spring(scaleAnim, {
@@ -155,7 +157,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
       <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
       <Text className="text-center text-lg font-semibold text-foreground">
-        Couldn't load lesson
+        Couldn&apos;t load lesson
       </Text>
       <Text className="text-center text-sm text-muted-foreground">
         Please check your connection and try again

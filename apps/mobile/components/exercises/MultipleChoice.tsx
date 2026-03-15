@@ -1,10 +1,12 @@
+import { Exercise, ExerciseResult, MultipleChoiceConfig } from '@langafy/shared-types'
+import { CheckCircle, XCircle } from 'lucide-react-native'
 import { useState } from 'react'
 import { View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
-import { Exercise, ExerciseResult, MultipleChoiceConfig } from '@langafy/shared-types'
-import { apiClient } from '@/lib/api'
+
 import { Text } from '@/components/ui/text'
-import { CheckCircle, XCircle } from 'lucide-react-native'
+import { apiClient } from '@/lib/api'
+
 
 interface MultipleChoiceProps {
   exercise: Exercise

@@ -1,33 +1,28 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import {
+  SearchIcon,
+  RotateCw,
+  ChevronDown,
+  X,
+} from 'lucide-react-native';
+import React, { useState, useMemo } from 'react';
 import {
   View,
-  ScrollView,
   RefreshControl,
   Pressable,
   FlatList,
   TextInput,
   Animated,
-  useColorScheme,
-  Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { useVocabulary, useVocabularyDue, type VocabularyDto } from '@/hooks/useVocabulary';
+
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { Button } from '@/components/ui/button';
-import {
-  SearchIcon,
-  AlertCircleIcon,
-  RotateCw,
-  ChevronDown,
-  X,
-  Volume2,
-} from 'lucide-react-native';
+import { useVocabulary, useVocabularyDue, type VocabularyDto } from '@/hooks/useVocabulary';
 
 const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-const { width } = Dimensions.get('window');
 
 /**
  * Skeleton loading component
@@ -39,7 +34,7 @@ function SkeletonLine({
   width?: string | number;
   height?: number;
 }) {
-  const shimmerAnim = useRef(new Animated.Value(0)).current;
+  const shimmerAnim = useMemo(() => new Animated.Value(0), []);
 
   React.useEffect(() => {
     Animated.loop(
@@ -70,26 +65,6 @@ function SkeletonLine({
         }),
       }}
     />
-  );
-}
-
-/**
- * Error state
- */
-function ErrorState({ onRetry }: { onRetry: () => void }) {
-  return (
-    <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
-      <Text className="text-center text-lg font-semibold text-foreground">
-        Couldn't load vocabulary
-      </Text>
-      <Text className="text-center text-sm text-muted-foreground">
-        Please check your connection and try again
-      </Text>
-      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
-        <Text className="font-semibold text-foreground">Retry</Text>
-      </Button>
-    </View>
   );
 }
 
@@ -151,7 +126,7 @@ function ReviewCard({
   onRate: (quality: number) => void;
   isSubmitting: boolean;
 }) {
-  const flipAnim = useRef(new Animated.Value(0)).current;
+  const flipAnim = useMemo(() => new Animated.Value(0), []);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -298,7 +273,7 @@ export default function VocabularyScreen() {
   const [searchTerm, setSearchTerm] = useState('');
   const [cefrFilter, setCefrFilter] = useState<string | null>(null);
   const [showCefrDropdown, setShowCefrDropdown] = useState(false);
-  const [showDueOnly, setShowDueOnly] = useState(false);
+  const [_showDueOnly, setShowDueOnly] = useState(false);
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
@@ -500,7 +475,7 @@ export default function VocabularyScreen() {
       }
       data={listData.loading ? Array(5).fill(null) : listData.data || []}
       keyExtractor={(item, idx) => item?.id.toString() ?? `skeleton-${idx}`}
-      renderItem={({ item, index }) =>
+      renderItem={({ item }) =>
         listData.loading ? (
           <View className="mb-3 gap-2">
             <SkeletonLine width="100%" height={20} />

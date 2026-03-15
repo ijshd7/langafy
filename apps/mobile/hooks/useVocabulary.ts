@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+
 import { apiClient } from '@/lib/api';
 
 export interface VocabularyDto {

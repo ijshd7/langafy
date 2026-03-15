@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import {
   getAuth,
@@ -8,7 +9,6 @@ import {
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import Constants from 'expo-constants';
 
 /**
  * Firebase configuration from environment variables
@@ -59,6 +59,8 @@ export const getAuthInstance = (): Auth => {
   if (authInstance === null) {
     initializeFirebase();
   }
+  // initializeFirebase() assigns authInstance — non-null assertion is safe here
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return authInstance!;
 };
 

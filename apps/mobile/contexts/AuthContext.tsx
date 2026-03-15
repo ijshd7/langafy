@@ -1,7 +1,8 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { User as FirebaseUser } from 'firebase/auth';
-import * as firebase from '@/lib/firebase';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
+
 import { initializeApiClient } from '@/lib/api';
+import * as firebase from '@/lib/firebase';
 
 /**
  * Auth context interface

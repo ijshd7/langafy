@@ -1,11 +1,14 @@
-import { View } from 'react-native'
 import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
-import { MultipleChoice } from './MultipleChoice'
-import { FillInTheBlank } from './FillInTheBlank'
-import { WordScramble } from '../games/WordScramble'
-import { FlashcardMatch } from '../games/FlashcardMatch'
 import { AlertCircle } from 'lucide-react-native'
+import { View } from 'react-native'
+
 import { Text } from '@/components/ui/text'
+
+import { FlashcardMatch } from '../games/FlashcardMatch'
+import { WordScramble } from '../games/WordScramble'
+
+import { FillInTheBlank } from './FillInTheBlank'
+import { MultipleChoice } from './MultipleChoice'
 
 interface ExerciseRendererProps {
   exercise: Exercise
@@ -94,7 +97,7 @@ export function ExerciseRenderer({
                 Unknown Exercise Type
               </Text>
               <Text className="text-sm text-red-800 dark:text-red-200 mt-1">
-                The exercise type "{exercise.type}" is not recognized.
+                The exercise type &quot;{exercise.type}&quot; is not recognized.
               </Text>
             </View>
           </View>

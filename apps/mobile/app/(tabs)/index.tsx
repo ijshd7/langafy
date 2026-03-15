@@ -1,18 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import {
-  Animated,
-  RefreshControl,
-  ScrollView,
-  View,
-  Dimensions,
-  useColorScheme,
-} from 'react-native';
 import { useRouter } from 'expo-router';
-import { Icon } from '@/components/ui/icon';
-import { Text } from '@/components/ui/text';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
-import { useProgress, type ProgressSummary } from '@/hooks/useProgress';
 import {
   FireIcon,
   StarIcon,
@@ -20,6 +6,21 @@ import {
   ArrowRightIcon,
   AlertCircleIcon,
 } from 'lucide-react-native';
+import React, { useEffect, useMemo } from 'react';
+import {
+  Animated,
+  RefreshControl,
+  ScrollView,
+  View,
+  Dimensions,
+} from 'react-native';
+
+import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { Text } from '@/components/ui/text';
+import { useAuth } from '@/hooks/useAuth';
+import { useProgress, type ProgressSummary } from '@/hooks/useProgress';
+
 
 const { width } = Dimensions.get('window');
 
@@ -33,7 +34,7 @@ function SkeletonLine({
   width?: string | number;
   height?: number;
 }) {
-  const shimmerAnim = useRef(new Animated.Value(0)).current;
+  const shimmerAnim = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
     Animated.loop(
@@ -72,7 +73,6 @@ function SkeletonLine({
  */
 function HeaderSection({ data, loading }: { data?: ProgressSummary; loading: boolean }) {
   const { user } = useAuth();
-  const colorScheme = useColorScheme();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -294,7 +294,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
       <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
       <Text className="text-center text-lg font-semibold text-foreground">
-        Couldn't load progress
+        Couldn&apos;t load progress
       </Text>
       <Text className="text-center text-sm text-muted-foreground">
         Please check your connection and try again

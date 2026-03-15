@@ -1,15 +1,16 @@
 import '@/global.css';
 
-import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { NAV_THEME } from '@/lib/theme';
-import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+
+import { AuthProvider } from '@/contexts/AuthContext';
 import { useAuth } from '@/hooks/useAuth';
+import { NAV_THEME } from '@/lib/theme';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -37,7 +38,7 @@ function RootLayoutNav() {
       // User is not authenticated and not in auth screens - redirect to login
       router.replace('/(auth)/login');
     }
-  }, [user, loading, segments]);
+  }, [user, loading, segments, router]);
 
   // Show splash screen while loading auth state
   if (loading) {

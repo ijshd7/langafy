@@ -1,6 +1,7 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { router } from 'expo-router';
+
 import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginScreen() {
@@ -38,7 +39,7 @@ export default function LoginScreen() {
       await signIn(email, password);
       // Navigate to home after successful sign in
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch {
       // Error is already set in auth context
     }
   };
@@ -102,7 +103,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         <View className="flex-row justify-center">
-          <Text className="text-sm text-muted-foreground">Don't have an account? </Text>
+          <Text className="text-sm text-muted-foreground">Don&apos;t have an account?</Text>
           <TouchableOpacity onPress={() => router.push('/(auth)/signup')} disabled={loading}>
             <Text className="text-sm font-semibold text-primary">Sign up</Text>
           </TouchableOpacity>

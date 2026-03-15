@@ -1,6 +1,7 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { router } from 'expo-router';
+
 import { useAuth } from '@/hooks/useAuth';
 
 export default function SignupScreen() {
@@ -43,7 +44,7 @@ export default function SignupScreen() {
       await signUp(email, password);
       // Navigate to home after successful sign up
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch {
       // Error is already set in auth context
     }
   };

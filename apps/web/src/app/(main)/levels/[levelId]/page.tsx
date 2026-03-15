@@ -50,29 +50,36 @@ function LessonCard({ lesson, onLessonClick }: { lesson: Lesson; onLessonClick: 
   return (
     <button
       onClick={onLessonClick}
+      aria-label={`${lesson.title}: ${lesson.exerciseCount} exercises, ${Math.round(lesson.completionPercentage)}% complete${isCompleted ? ' (completed)' : ''}`}
       className="group w-full rounded-lg border border-slate-600/50 bg-gradient-to-r from-slate-700/40 to-slate-600/30 p-4 text-left transition-all duration-200 hover:border-slate-500 hover:from-slate-700/60 hover:to-slate-600/50">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-slate-100 transition-colors group-hover:text-cyan-300">
+          <h3 className="truncate font-semibold text-slate-100 transition-colors group-hover:text-cyan-300" aria-hidden="true">
             {lesson.title}
           </h3>
           <p className="mt-1 line-clamp-2 text-sm text-slate-400">{lesson.description}</p>
-          <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
+          <div className="mt-3 flex items-center gap-4 text-xs text-slate-500" aria-hidden="true">
             <span>{lesson.exerciseCount} exercises</span>
             <span>{Math.round(lesson.completionPercentage)}% Complete</span>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {isCompleted ? (
-            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+            <CheckCircle2 className="h-5 w-5 text-emerald-400" aria-hidden="true" />
           ) : (
-            <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" />
+            <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true" />
           )}
         </div>
       </div>
 
       {lesson.completionPercentage > 0 && (
-        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-slate-700/40">
+        <div
+          className="mt-3 h-1 w-full overflow-hidden rounded-full bg-slate-700/40"
+          role="progressbar"
+          aria-valuenow={Math.round(lesson.completionPercentage)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-hidden="true">
           <div
             className="bg-linear-to-r h-full rounded-full from-cyan-400 to-emerald-400 transition-all duration-500"
             style={{ width: `${lesson.completionPercentage}%` }}
@@ -108,7 +115,13 @@ function UnitSection({
             {completedLessons} of {totalLessons} Lessons
           </span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700/40">
+        <div
+          className="h-2 w-full overflow-hidden rounded-full bg-slate-700/40"
+          role="progressbar"
+          aria-valuenow={Math.round(completionPercentage)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${unit.name} progress: ${completedLessons} of ${totalLessons} lessons complete`}>
           <div
             className="bg-linear-to-r h-full rounded-full from-cyan-400 to-emerald-400 transition-all duration-500"
             style={{ width: `${completionPercentage}%` }}
@@ -258,8 +271,8 @@ export default function LevelPage(props: LevelPageProps) {
   }
 
   return (
-    <main className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+    <main id="main-content" tabIndex={-1} className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute right-1/4 top-20 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-32 left-1/3 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
       </div>
@@ -269,14 +282,14 @@ export default function LevelPage(props: LevelPageProps) {
           <Link
             href="/dashboard"
             className="mb-6 inline-flex items-center gap-2 text-cyan-400 transition-colors hover:text-cyan-300">
-            <ChevronRight className="h-4 w-4 rotate-180" />
+            <ChevronRight className="h-4 w-4 rotate-180" aria-hidden="true" />
             Back to Dashboard
           </Link>
 
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <div className="bg-linear-to-br flex h-12 w-12 items-center justify-center rounded-lg from-cyan-500 to-emerald-500">
-                <BookOpen className="h-6 w-6 text-white" />
+                <BookOpen className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
               <h1 className="text-4xl font-bold text-slate-50">
                 {levelId.toUpperCase()} - {getLevelName()}
@@ -298,7 +311,7 @@ export default function LevelPage(props: LevelPageProps) {
         <div className="space-y-6">
           {units.length === 0 ? (
             <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-12 text-center">
-              <Lock className="mx-auto mb-4 h-12 w-12 text-slate-500" />
+              <Lock className="mx-auto mb-4 h-12 w-12 text-slate-500" aria-hidden="true" />
               <p className="text-slate-400">No units available for this level yet.</p>
             </div>
           ) : (

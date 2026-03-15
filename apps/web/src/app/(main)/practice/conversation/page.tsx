@@ -780,7 +780,7 @@ export default function ConversationPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700">
       {/* Decorative background blobs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
         <div className="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-emerald-500/5 blur-3xl" />
       </div>
@@ -791,7 +791,7 @@ export default function ConversationPage() {
           <button
             onClick={() => router.back()}
             className="flex items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-slate-200">
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             Back
           </button>
           <div className="h-4 w-px bg-slate-700" />
@@ -921,7 +921,7 @@ export default function ConversationPage() {
         </aside>
 
         {/* Main chat area */}
-        <main className="flex flex-1 flex-col">
+        <main id="main-content" tabIndex={-1} className="flex flex-1 flex-col">
           {!activeId ? (
             <EmptyChatState onNew={() => setShowNewModal(true)} />
           ) : chatLoading ? (

@@ -67,9 +67,15 @@ function DashboardSkeleton() {
 /**
  * Progress bar component with smooth animation
  */
-function ProgressBar({ percentage }: { percentage: number }) {
+function ProgressBar({ percentage, label }: { percentage: number; label?: string }) {
   return (
-    <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-700/40">
+    <div
+      className="relative h-2 w-full overflow-hidden rounded-full bg-slate-700/40"
+      role="progressbar"
+      aria-valuenow={Math.round(percentage)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={label ?? `${Math.round(percentage)}% complete`}>
       <div
         className="bg-linear-to-r h-full rounded-full from-cyan-400 to-emerald-400 transition-all duration-1000 ease-out"
         style={{
@@ -121,7 +127,7 @@ function StatCard({
     <div className="bg-linear-to-br rounded-xl border border-slate-700/50 from-slate-800/60 to-slate-700/40 p-4 backdrop-blur-sm transition-all duration-300 hover:border-slate-600/80">
       <div className="flex items-center gap-3">
         <div className={`rounded-lg p-2 ${color}`}>
-          <Icon className="h-5 w-5 text-white" />
+          <Icon className="h-5 w-5 text-white" aria-hidden="true" />
         </div>
         <div className="flex-1">
           <p className="text-xs uppercase tracking-wider text-slate-400">{label}</p>
@@ -145,17 +151,18 @@ function UnitCard({
   return (
     <button
       onClick={onLessonClick}
+      aria-label={`${unit.name}: ${Math.round(unit.percentage)}% complete`}
       className="bg-linear-to-br group relative w-full rounded-xl border border-slate-700/50 from-slate-800/50 to-slate-700/30 p-6 text-left backdrop-blur-sm transition-all duration-300 hover:border-slate-600 hover:from-slate-800/80 hover:to-slate-700/50">
       <div className="mb-4 flex items-start justify-between">
-        <h3 className="font-semibold text-slate-100 transition-colors group-hover:text-cyan-300">
+        <h3 className="font-semibold text-slate-100 transition-colors group-hover:text-cyan-300" aria-hidden="true">
           {unit.name}
         </h3>
-        <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" />
+        <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true" />
       </div>
 
       <div className="space-y-2">
-        <ProgressBar percentage={unit.percentage} />
-        <p className="text-sm text-slate-400">{Math.round(unit.percentage)}% Complete</p>
+        <ProgressBar percentage={unit.percentage} label={`${unit.name} progress: ${Math.round(unit.percentage)}%`} />
+        <p className="text-sm text-slate-400" aria-hidden="true">{Math.round(unit.percentage)}% Complete</p>
       </div>
     </button>
   );
@@ -342,9 +349,9 @@ export default function DashboardPage() {
   const currentLevel = progress.levelProgress[progress.levelProgress.length - 1];
 
   return (
-    <main className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
+    <main id="main-content" tabIndex={-1} className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
       {/* Background decorative elements */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute right-1/4 top-20 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-32 left-1/3 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
       </div>
@@ -419,13 +426,17 @@ export default function DashboardPage() {
                 </div>
                 <button
                   onClick={() => handleViewLevel(level.level)}
+                  aria-label={`View all units for ${level.level} - ${level.levelName}`}
                   className="flex items-center gap-2 rounded-lg bg-slate-700/50 px-4 py-2 text-sm font-medium text-cyan-400 transition-all hover:bg-slate-700 hover:text-cyan-300">
-                  View All <ChevronRight className="h-4 w-4" />
+                  View All <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 </button>
               </div>
 
               {/* Level progress bar */}
-              <ProgressBar percentage={level.percentage} />
+              <ProgressBar
+                percentage={level.percentage}
+                label={`${level.level} - ${level.levelName}: ${Math.round(level.percentage)}% complete`}
+              />
 
               {/* Units grid */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

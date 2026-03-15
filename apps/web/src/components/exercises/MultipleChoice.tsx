@@ -83,11 +83,11 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
       {/* Question */}
       <div className="space-y-2">
         <p className="text-muted-foreground text-sm">Question</p>
-        <h3 className="text-foreground text-xl font-semibold">{config.question}</h3>
+        <h3 id="mc-question" className="text-foreground text-xl font-semibold">{config.question}</h3>
       </div>
 
       {/* Options Grid */}
-      <div className="space-y-3">
+      <div role="group" aria-labelledby="mc-question" className="space-y-3">
         {config.options.map((option, index) => {
           const isSelected = selectedIndex === index;
           const isCorrect = isCorrectOption(index);
@@ -99,6 +99,7 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
               key={index}
               onClick={() => handleSelect(index)}
               disabled={isDisabled}
+              aria-pressed={isSelected}
               className={`w-full rounded-lg border-2 px-4 py-4 text-left transition-all duration-200 ${
                 isCorrect
                   ? 'border-green-500 bg-green-50 dark:bg-green-950'
@@ -130,9 +131,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
                 {submitted && (
                   <div className="ml-3 flex-shrink-0">
                     {isCorrect && (
-                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
                     )}
-                    {isWrong && <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />}
+                    {isWrong && <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" aria-hidden="true" />}
                   </div>
                 )}
 
@@ -151,7 +152,7 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
           <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
       )}
@@ -169,6 +170,8 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
         <div className="space-y-4">
           {/* Result Message */}
           <div
+            role="status"
+            aria-live="polite"
             className={`rounded-lg border p-4 ${
               result.correct
                 ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950'
@@ -176,9 +179,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
             }`}>
             <div className="flex items-start gap-3">
               {result.correct ? (
-                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" />
+                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
               ) : (
-                <XCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" />
+                <XCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" aria-hidden="true" />
               )}
               <div>
                 <p
@@ -230,7 +233,7 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
           } `}>
           {isSubmitting ? (
             <div className="flex items-center justify-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               Submitting...
             </div>
           ) : (

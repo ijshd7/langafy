@@ -88,7 +88,7 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
             <span key={index}>
               {part}
               {index < displaySentence.split('______').length - 1 && (
-                <span className="mx-2 inline-block h-8 w-24 border-b-2 border-blue-400 align-middle dark:border-blue-500" />
+                <span aria-label="blank" className="mx-2 inline-block h-8 w-24 border-b-2 border-blue-400 align-middle dark:border-blue-500" />
               )}
             </span>
           ))}
@@ -123,7 +123,7 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
           <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
       )}
@@ -141,6 +141,8 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
         <div className="space-y-4">
           {/* Result Message */}
           <div
+            role="status"
+            aria-live="polite"
             className={`rounded-lg border p-4 ${
               result.correct
                 ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950'
@@ -148,9 +150,9 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
             }`}>
             <div className="flex items-start gap-3">
               {result.correct ? (
-                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" />
+                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
               ) : (
-                <XCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" />
+                <XCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" aria-hidden="true" />
               )}
               <div>
                 <p
@@ -202,7 +204,7 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
           } `}>
           {isSubmitting ? (
             <div className="flex items-center justify-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               Submitting...
             </div>
           ) : (

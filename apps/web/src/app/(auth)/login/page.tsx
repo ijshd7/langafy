@@ -1,30 +1,29 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AlertCircle, Loader2 } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { useAuth, useAuthLoading } from '@/hooks/useAuth'
-import { apiClient } from '@/lib/api'
-
+import { useAuth, useAuthLoading } from '@/hooks/useAuth';
+import { apiClient } from '@/lib/api';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-})
+});
 
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const router = useRouter()
-  const { signIn } = useAuth()
-  const authLoading = useAuthLoading()
-  const [submitError, setSubmitError] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter();
+  const { signIn } = useAuth();
+  const authLoading = useAuthLoading();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -37,29 +36,30 @@ export default function LoginPage() {
       email: '',
       password: '',
     },
-  })
+  });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsSubmitting(true)
-    setSubmitError(null)
+    setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
       // Sign in with Firebase
-      await signIn(data.email, data.password)
+      await signIn(data.email, data.password);
 
       // Sync user with API
-      await apiClient.post('/auth/sync', {})
+      await apiClient.post('/auth/sync', {});
 
       // Redirect to dashboard
-      router.push('/dashboard')
+      router.push('/dashboard');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.'
-      setSubmitError(errorMessage)
-      setFocus('email')
+      const errorMessage =
+        error instanceof Error ? error.message : 'Login failed. Please try again.';
+      setSubmitError(errorMessage);
+      setFocus('email');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (authLoading) {
     return (
@@ -69,7 +69,7 @@ export default function LoginPage() {
           <span>Loading...</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -98,7 +98,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 placeholder="you@example.com"
                 disabled={isSubmitting}
-                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
                   errors.email
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-slate-600 focus:border-blue-500 focus:ring-blue-500'
@@ -124,7 +124,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 placeholder="••••••••"
                 disabled={isSubmitting}
-                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
                   errors.password
                     ? 'border-red-500 focus:ring-red-500'
                     : 'border-slate-600 focus:border-blue-500 focus:ring-blue-500'
@@ -152,8 +152,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+              className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50">
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -171,12 +170,11 @@ export default function LoginPage() {
           Don&apos;t have an account?{' '}
           <Link
             href="/signup"
-            className="font-medium text-blue-400 transition-colors hover:text-blue-300"
-          >
+            className="font-medium text-blue-400 transition-colors hover:text-blue-300">
             Sign up
           </Link>
         </p>
       </div>
     </div>
-  )
+  );
 }

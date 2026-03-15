@@ -16,32 +16,32 @@ The API client provides type-safe communication with the backend API, with autom
 For simple requests or when you don't need loading/error state management:
 
 ```typescript
-import { apiClient, ApiError } from '@/lib/api'
-import { User, Language } from '@langafy/shared-types'
+import { apiClient, ApiError } from '@/lib/api';
+import { User, Language } from '@langafy/shared-types';
 
 // GET request
-const user = await apiClient.get<User>('/users/me')
+const user = await apiClient.get<User>('/users/me');
 
 // POST request with data
-const syncedUser = await apiClient.post<User>('/auth/sync', { email: 'user@example.com' })
+const syncedUser = await apiClient.post<User>('/auth/sync', { email: 'user@example.com' });
 
 // PUT request
-const updated = await apiClient.put<User>('/users/me', { displayName: 'New Name' })
+const updated = await apiClient.put<User>('/users/me', { displayName: 'New Name' });
 
 // DELETE request
-await apiClient.delete<void>('/users/me')
+await apiClient.delete<void>('/users/me');
 
 // With query parameters
 const languages = await apiClient.get<Language[]>('/languages', {
-  params: { active: true }
-})
+  params: { active: true },
+});
 
 // Error handling
 try {
-  await apiClient.get('/non-existent')
+  await apiClient.get('/non-existent');
 } catch (error) {
   if (error instanceof ApiError) {
-    console.log(error.statusCode, error.code, error.message)
+    console.log(error.statusCode, error.code, error.message);
   }
 }
 ```
@@ -103,9 +103,9 @@ Once Firebase is configured, tokens are automatically attached to all requests:
 ```typescript
 // Set up token provider (done in Step 3.3)
 apiClient.setTokenProvider(async () => {
-  const auth = getAuth()
-  return auth.currentUser?.getIdToken()
-})
+  const auth = getAuth();
+  return auth.currentUser?.getIdToken();
+});
 
 // Now all requests automatically include: Authorization: Bearer {token}
 ```
@@ -115,24 +115,24 @@ apiClient.setTokenProvider(async () => {
 The `ApiError` class provides structured error information:
 
 ```typescript
-import { ApiError } from '@/lib/api'
+import { ApiError } from '@/lib/api';
 
 try {
-  await apiClient.post('/exercises/submit', { answer: 'test' })
+  await apiClient.post('/exercises/submit', { answer: 'test' });
 } catch (error) {
   if (error instanceof ApiError) {
     switch (error.code) {
       case 'VALIDATION_ERROR':
         // Handle validation error
-        break
+        break;
       case 'UNAUTHORIZED':
         // Handle auth error - redirect to login
-        break
+        break;
       case 'NOT_FOUND':
         // Handle 404
-        break
+        break;
       default:
-        // Handle generic error
+      // Handle generic error
     }
   }
 }
@@ -154,13 +154,13 @@ All requests are fully typed using TypeScript generics and shared types from `@l
 
 ```typescript
 // Response is typed as User
-const user: User = await apiClient.get<User>('/users/me')
+const user: User = await apiClient.get<User>('/users/me');
 
 // Response is typed as User[]
-const users: User[] = await apiClient.get<User[]>('/users')
+const users: User[] = await apiClient.get<User[]>('/users');
 
 // Response is typed as Language[]
-const languages: Language[] = await apiClient.get<Language[]>('/languages')
+const languages: Language[] = await apiClient.get<Language[]>('/languages');
 ```
 
 ## Best Practices

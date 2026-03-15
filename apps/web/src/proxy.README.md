@@ -11,10 +11,11 @@ The proxy in `src/proxy.ts` enforces authentication on protected routes and redi
 The proxy checks for an `auth-token` cookie to determine if a user is authenticated:
 
 ```typescript
-const hasAuthCookie = request.cookies.has('auth-token')
+const hasAuthCookie = request.cookies.has('auth-token');
 ```
 
 This cookie is:
+
 - **Set**: When user signs in or signs up (via `authStore.ts`)
 - **Set**: When Firebase restores auth state (e.g., on page refresh)
 - **Cleared**: When user signs out
@@ -22,6 +23,7 @@ This cookie is:
 ### 2. Route Protection
 
 **Protected Routes** (require authentication):
+
 - `/dashboard` - Main dashboard
 - `/levels` - Level browsing
 - `/lessons` - Lesson pages
@@ -31,6 +33,7 @@ This cookie is:
 If an unauthenticated user tries to access these routes, they are redirected to `/login`.
 
 **Public Routes** (no authentication required):
+
 - `/login` - Login page
 - `/signup` - Signup page
 - `/` - Landing page (if any)
@@ -47,9 +50,9 @@ When user authenticates, `authStore.ts` calls `setAuthCookie()`:
 
 ```typescript
 function setAuthCookie() {
-  const expiresDate = new Date()
-  expiresDate.setDate(expiresDate.getDate() + 7)
-  document.cookie = `auth-token=authenticated; path=/; expires=${expiresDate.toUTCString()}; SameSite=Lax`
+  const expiresDate = new Date();
+  expiresDate.setDate(expiresDate.getDate() + 7);
+  document.cookie = `auth-token=authenticated; path=/; expires=${expiresDate.toUTCString()}; SameSite=Lax`;
 }
 ```
 
@@ -63,7 +66,7 @@ When user signs out, `authStore.ts` calls `clearAuthCookie()`:
 
 ```typescript
 function clearAuthCookie() {
-  document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax'
+  document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
 }
 ```
 
@@ -82,6 +85,7 @@ function clearAuthCookie() {
 ## Flow Example
 
 ### Login Flow
+
 1. User visits `/login` (not authenticated)
 2. User enters credentials and submits
 3. `useAuth().signIn()` is called
@@ -91,12 +95,14 @@ function clearAuthCookie() {
 7. Proxy allows access (cookie present)
 
 ### Protected Route Access
+
 1. User visits `/dashboard` (authenticated)
 2. Proxy checks for `auth-token` cookie
 3. Cookie found → request proceeds
 4. Dashboard page is rendered
 
 ### Logout Flow
+
 1. User clicks sign out
 2. `useAuth().signOut()` is called
 3. Firebase signs out user

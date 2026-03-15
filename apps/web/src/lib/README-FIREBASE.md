@@ -80,10 +80,10 @@ export function MyComponent() {
 For cases where you need to access the store directly:
 
 ```typescript
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/authStore';
 
-const user = useAuthStore((state) => state.user)
-const signIn = useAuthStore((state) => state.signIn)
+const user = useAuthStore((state) => state.user);
+const signIn = useAuthStore((state) => state.signIn);
 ```
 
 ### Available Hooks
@@ -101,7 +101,7 @@ The API client automatically injects Firebase tokens into all requests:
 
 ```typescript
 // In your components, just use the API client:
-const user = await apiClient.get<User>('/users/me')
+const user = await apiClient.get<User>('/users/me');
 // Authorization header is automatically added!
 ```
 
@@ -114,13 +114,13 @@ Firebase auth state is persisted to browser `localStorage`, so users remain logg
 Auth errors are captured and stored in the auth store:
 
 ```typescript
-const { error } = useAuth()
+const { error } = useAuth();
 
 try {
-  await signIn('user@example.com', 'password')
+  await signIn('user@example.com', 'password');
 } catch (err) {
   // Error is also stored in error state
-  console.log(error) // Error message from store
+  console.log(error); // Error message from store
 }
 ```
 
@@ -129,53 +129,54 @@ try {
 ### Sign In
 
 ```typescript
-const { signIn, loading, error } = useAuth()
+const { signIn, loading, error } = useAuth();
 
 const handleSignIn = async () => {
   try {
-    const user = await signIn('user@example.com', 'password')
-    console.log('Signed in:', user.uid)
+    const user = await signIn('user@example.com', 'password');
+    console.log('Signed in:', user.uid);
     // User is automatically added to store
     // API token provider is automatically set up
     // Redirect to dashboard happens in middleware (Step 3.5)
   } catch (err) {
-    console.log('Sign in failed:', error)
+    console.log('Sign in failed:', error);
   }
-}
+};
 ```
 
 ### Sign Up
 
 ```typescript
-const { signUp, loading, error } = useAuth()
+const { signUp, loading, error } = useAuth();
 
 const handleSignUp = async () => {
   try {
-    const user = await signUp('newuser@example.com', 'password')
-    console.log('Account created:', user.uid)
+    const user = await signUp('newuser@example.com', 'password');
+    console.log('Account created:', user.uid);
     // User is automatically added to store
   } catch (err) {
-    console.log('Sign up failed:', error)
+    console.log('Sign up failed:', error);
   }
-}
+};
 ```
 
 ### Sign Out
 
 ```typescript
-const { signOut } = useAuth()
+const { signOut } = useAuth();
 
 const handleSignOut = async () => {
-  await signOut()
+  await signOut();
   // user is set to null in store
   // API client token provider is cleared
   // Redirect to login happens in middleware (Step 3.5)
-}
+};
 ```
 
 ## Next Steps (Step 3.4)
 
 Step 3.4 will implement the auth pages (login and signup) using these hooks:
+
 - `src/app/(auth)/login/page.tsx` - Email/password login form
 - `src/app/(auth)/signup/page.tsx` - Email/password signup form
 
@@ -190,6 +191,7 @@ Make sure all `NEXT_PUBLIC_FIREBASE_*` environment variables are set in `.env`.
 ### Tokens not being sent to API
 
 Check:
+
 1. Firebase user is authenticated: `console.log(useAuth().user)`
 2. API client token provider is set up (automatic in AuthProvider)
 3. API is checking `Authorization` header
@@ -197,6 +199,7 @@ Check:
 ### Auth state not persisting across page reloads
 
 Firebase should persist by default to `localStorage`. Check browser DevTools:
+
 - Application → Local Storage
 - Look for `firebase:authUser:...` entries
 

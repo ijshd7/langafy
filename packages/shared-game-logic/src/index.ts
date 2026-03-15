@@ -1,11 +1,11 @@
 // Hooks
-export { useGameTimer } from './hooks/useGameTimer'
-export type { TimerMode, GameTimerState, GameTimerActions } from './hooks/useGameTimer'
+export { useGameTimer } from './hooks/useGameTimer';
+export type { TimerMode, GameTimerState, GameTimerActions } from './hooks/useGameTimer';
 
-export { useGameScoring } from './hooks/useGameScoring'
-export type { GameScore, GameScoringState, GameScoringActions } from './hooks/useGameScoring'
+export { useGameScoring } from './hooks/useGameScoring';
+export type { GameScore, GameScoringState, GameScoringActions } from './hooks/useGameScoring';
 
-export { useFlashcardGame } from './hooks/useFlashcardGame'
+export { useFlashcardGame } from './hooks/useFlashcardGame';
 export type {
   FlashcardPair,
   CardSide,
@@ -13,20 +13,20 @@ export type {
   FlashcardGameState,
   FlashcardGameResult,
   FlashcardGameHook,
-} from './hooks/useFlashcardGame'
+} from './hooks/useFlashcardGame';
 
-export { useWordScramble } from './hooks/useWordScramble'
+export { useWordScramble } from './hooks/useWordScramble';
 export type {
   WordScrambleGameState,
   ScrambleTile,
   WordScrambleResult,
   WordScrambleHook,
-} from './hooks/useWordScramble'
+} from './hooks/useWordScramble';
 
 // Utils
-export { shuffleArray, scrambleWord, isWordMatch } from './utils/scramble'
+export { shuffleArray, scrambleWord, isWordMatch } from './utils/scramble';
 export {
   calculateTimeBonus,
   calculateAccuracyMultiplier,
   calculateFinalScore,
-} from './utils/scoring'
+} from './utils/scoring';

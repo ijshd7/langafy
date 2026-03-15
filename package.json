@@ -16,7 +16,8 @@
     "seed:reset": "node scripts/seed.js --reset",
     "seed:help": "node scripts/seed.js --help",
     "lint": "npm -w web run lint && npm -w mobile run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\" --ignore-path .gitignore",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",
     "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env up --build",
     "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down"

@@ -23,27 +23,28 @@ export function useUnits(levelId: string) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async (isRefresh = false) => {
-    try {
-      if (!isRefresh) {
-        setLoading(true);
-      }
-      setError(null);
+  const load = useCallback(
+    async (isRefresh = false) => {
+      try {
+        if (!isRefresh) {
+          setLoading(true);
+        }
+        setError(null);
 
-      // Fetch units for the level and language
-      const response = await apiClient.get<Unit[]>(
-        `/languages/es/levels/${levelId}/units`
-      );
-      setData(response);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load units';
-      setError(errorMessage);
-      console.error('[useUnits] Error loading units:', err);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [levelId]);
+        // Fetch units for the level and language
+        const response = await apiClient.get<Unit[]>(`/languages/es/levels/${levelId}/units`);
+        setData(response);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load units';
+        setError(errorMessage);
+        console.error('[useUnits] Error loading units:', err);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [levelId]
+  );
 
   // Re-fetch when levelId changes
   useEffect(() => {

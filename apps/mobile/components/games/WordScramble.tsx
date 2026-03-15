@@ -1,9 +1,5 @@
 import { useWordScramble } from '@langafy/shared-game-logic';
-import type {
-  Exercise,
-  ExerciseResult,
-  WordScrambleConfig,
-} from '@langafy/shared-types';
+import type { Exercise, ExerciseResult, WordScrambleConfig } from '@langafy/shared-types';
 import { useCallback, useEffect, useState } from 'react';
 import { View, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 
@@ -15,11 +11,7 @@ interface WordScrambleProps {
   basePoints: number;
 }
 
-export function WordScramble({
-  exercise,
-  onComplete,
-  basePoints,
-}: WordScrambleProps) {
+export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleProps) {
   const config = exercise.config as WordScrambleConfig;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,46 +28,44 @@ export function WordScramble({
     useHint,
     submit,
     result,
-  } = useWordScramble(
-    config.targetWord,
-    config.hint || 'No hint available',
-    basePoints,
-    undefined,
-  );
+  } = useWordScramble(config.targetWord, config.hint || 'No hint available', basePoints, undefined);
 
   // Auto-start game on mount
   useEffect(() => {
     start();
   }, [start]);
 
-  const handleSubmit = useCallback(async (gameResult: typeof result) => {
-    if (!gameResult) return;
+  const handleSubmit = useCallback(
+    async (gameResult: typeof result) => {
+      if (!gameResult) return;
 
-    try {
-      setIsSubmitting(true);
+      try {
+        setIsSubmitting(true);
 
-      const exResult: ExerciseResult = {
-        correct: gameResult.correct,
-        score: gameResult.correct ? Math.round(gameResult.score.finalScore) : 0,
-        maxScore: basePoints,
-        timeTaken: gameResult.elapsedMs,
-      };
+        const exResult: ExerciseResult = {
+          correct: gameResult.correct,
+          score: gameResult.correct ? Math.round(gameResult.score.finalScore) : 0,
+          maxScore: basePoints,
+          timeTaken: gameResult.elapsedMs,
+        };
 
-      if (exResult.correct) {
-        onComplete(exResult);
-      } else {
-        onComplete({
-          ...exResult,
-          correctAnswer: config.targetWord,
-          explanation: config.explanation,
-        });
+        if (exResult.correct) {
+          onComplete(exResult);
+        } else {
+          onComplete({
+            ...exResult,
+            correctAnswer: config.targetWord,
+            explanation: config.explanation,
+          });
+        }
+      } catch (error) {
+        console.error('Error submitting game result:', error);
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      console.error('Error submitting game result:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [config.targetWord, config.explanation, basePoints, onComplete]);
+    },
+    [config.targetWord, config.explanation, basePoints, onComplete]
+  );
 
   // Handle game completion
   useEffect(() => {
@@ -110,9 +100,7 @@ export function WordScramble({
         <View className="flex-row items-center justify-between rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-4">
           <View>
             <Text className="text-xs font-medium text-gray-600">Time</Text>
-            <Text className="text-2xl font-bold text-blue-600">
-              {formatTime(elapsedMs)}
-            </Text>
+            <Text className="text-2xl font-bold text-blue-600">{formatTime(elapsedMs)}</Text>
           </View>
 
           <View className="items-center">
@@ -133,7 +121,7 @@ export function WordScramble({
           <Text className="text-sm font-medium text-gray-600">Your Answer</Text>
           <View className="min-h-20 flex-row flex-wrap items-center gap-2 rounded-lg bg-blue-50 p-4">
             {answer.length === 0 ? (
-              <Text className="text-gray-400 italic">Tap letters to arrange them</Text>
+              <Text className="italic text-gray-400">Tap letters to arrange them</Text>
             ) : (
               answer.map((letter, i) => (
                 <Pressable
@@ -141,8 +129,7 @@ export function WordScramble({
                   onPress={() => removeTileFromAnswer(i)}
                   className="h-14 w-14 items-center justify-center rounded-lg bg-green-500"
                   accessibilityLabel={`Remove ${letter} from answer`}
-                  accessibilityRole="button"
-                >
+                  accessibilityRole="button">
                   <Text className="text-lg font-bold text-white">{letter}</Text>
                 </Pressable>
               ))
@@ -163,8 +150,7 @@ export function WordScramble({
                   onPress={() => placeTile(tile.id)}
                   className="h-14 w-14 items-center justify-center rounded-lg bg-blue-500"
                   accessibilityLabel={`Add ${tile.letter} to answer`}
-                  accessibilityRole="button"
-                >
+                  accessibilityRole="button">
                   <Text className="text-lg font-bold text-white">{tile.letter}</Text>
                 </Pressable>
               ))
@@ -183,9 +169,7 @@ export function WordScramble({
         {/* Feedback messages */}
         {gameState === 'incorrect' && (
           <View className="rounded-lg border border-red-300 bg-red-50 p-4">
-            <Text className="text-sm font-medium text-red-800">
-              Not quite right. Try again!
-            </Text>
+            <Text className="text-sm font-medium text-red-800">Not quite right. Try again!</Text>
           </View>
         )}
 
@@ -196,8 +180,7 @@ export function WordScramble({
             disabled={hint !== null || gameState !== 'playing'}
             className="rounded-lg bg-amber-500 px-4 py-3 disabled:bg-gray-300"
             accessibilityLabel="Show hint"
-            accessibilityRole="button"
-          >
+            accessibilityRole="button">
             <Text className="text-center font-semibold text-white">
               {hint ? 'Hint Shown' : 'Show Hint'}
             </Text>
@@ -208,8 +191,7 @@ export function WordScramble({
             disabled={answer.length === 0 || gameState !== 'playing'}
             className="rounded-lg bg-green-500 px-4 py-3 disabled:bg-gray-300"
             accessibilityLabel="Check answer"
-            accessibilityRole="button"
-          >
+            accessibilityRole="button">
             <Text className="text-center font-semibold text-white">Check Answer</Text>
           </Pressable>
         </View>
@@ -238,9 +220,7 @@ export function WordScramble({
 
               <View className="items-center">
                 <Text className="text-sm font-medium text-gray-600">Hints</Text>
-                <Text className="text-xl font-bold text-amber-600">
-                  {result.hintsUsed}
-                </Text>
+                <Text className="text-xl font-bold text-amber-600">{result.hintsUsed}</Text>
               </View>
 
               {result.correct && (
@@ -266,9 +246,7 @@ export function WordScramble({
         {process.env.NODE_ENV === 'development' && (
           <View className="gap-1 rounded border border-gray-200 bg-gray-50 p-2">
             <Text className="text-xs text-gray-500">State: {gameState}</Text>
-            <Text className="text-xs text-gray-500">
-              Answer: {answerWord || '(empty)'}
-            </Text>
+            <Text className="text-xs text-gray-500">Answer: {answerWord || '(empty)'}</Text>
             <Text className="text-xs text-gray-500">Target: {config.targetWord}</Text>
           </View>
         )}

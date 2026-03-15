@@ -1,7 +1,7 @@
-import { User as FirebaseUser } from 'firebase/auth'
-import { create } from 'zustand'
+import { User as FirebaseUser } from 'firebase/auth';
+import { create } from 'zustand';
 
-import * as firebase from '@/lib/firebase'
+import * as firebase from '@/lib/firebase';
 
 /**
  * Helper to set auth cookie
@@ -10,16 +10,16 @@ import * as firebase from '@/lib/firebase'
 function setAuthCookie() {
   // Set a simple auth flag cookie for middleware to check
   // Use a 7-day expiration
-  const expiresDate = new Date()
-  expiresDate.setDate(expiresDate.getDate() + 7)
-  document.cookie = `auth-token=authenticated; path=/; expires=${expiresDate.toUTCString()}; SameSite=Lax`
+  const expiresDate = new Date();
+  expiresDate.setDate(expiresDate.getDate() + 7);
+  document.cookie = `auth-token=authenticated; path=/; expires=${expiresDate.toUTCString()}; SameSite=Lax`;
 }
 
 /**
  * Helper to clear auth cookie
  */
 function clearAuthCookie() {
-  document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax'
+  document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
 }
 
 /**
@@ -27,18 +27,18 @@ function clearAuthCookie() {
  */
 export interface AuthState {
   // State
-  user: FirebaseUser | null
-  loading: boolean
-  error: string | null
+  user: FirebaseUser | null;
+  loading: boolean;
+  error: string | null;
 
   // Actions
-  setUser: (user: FirebaseUser | null) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: string | null) => void
-  signIn: (email: string, password: string) => Promise<FirebaseUser>
-  signUp: (email: string, password: string) => Promise<FirebaseUser>
-  signOut: () => Promise<void>
-  clearError: () => void
+  setUser: (user: FirebaseUser | null) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  signIn: (email: string, password: string) => Promise<FirebaseUser>;
+  signUp: (email: string, password: string) => Promise<FirebaseUser>;
+  signOut: () => Promise<void>;
+  clearError: () => void;
 }
 
 /**
@@ -64,48 +64,48 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   // Sign in with email and password
   signIn: async (email: string, password: string) => {
-    set({ loading: true, error: null })
+    set({ loading: true, error: null });
     try {
-      const user = await firebase.signIn(email, password)
-      setAuthCookie()
-      set({ user, loading: false })
-      return user
+      const user = await firebase.signIn(email, password);
+      setAuthCookie();
+      set({ user, loading: false });
+      return user;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign in failed'
-      set({ error: errorMessage, loading: false })
-      throw error
+      const errorMessage = error instanceof Error ? error.message : 'Sign in failed';
+      set({ error: errorMessage, loading: false });
+      throw error;
     }
   },
 
   // Sign up with email and password
   signUp: async (email: string, password: string) => {
-    set({ loading: true, error: null })
+    set({ loading: true, error: null });
     try {
-      const user = await firebase.signUp(email, password)
-      setAuthCookie()
-      set({ user, loading: false })
-      return user
+      const user = await firebase.signUp(email, password);
+      setAuthCookie();
+      set({ user, loading: false });
+      return user;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign up failed'
-      set({ error: errorMessage, loading: false })
-      throw error
+      const errorMessage = error instanceof Error ? error.message : 'Sign up failed';
+      set({ error: errorMessage, loading: false });
+      throw error;
     }
   },
 
   // Sign out current user
   signOut: async () => {
-    set({ loading: true, error: null })
+    set({ loading: true, error: null });
     try {
-      await firebase.signOut()
-      clearAuthCookie()
-      set({ user: null, loading: false })
+      await firebase.signOut();
+      clearAuthCookie();
+      set({ user: null, loading: false });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign out failed'
-      set({ error: errorMessage, loading: false })
-      throw error
+      const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
+      set({ error: errorMessage, loading: false });
+      throw error;
     }
   },
-}))
+}));
 
 /**
  * Initialize auth state by subscribing to Firebase auth state changes
@@ -115,15 +115,15 @@ export const useAuthStore = create<AuthState>((set) => ({
  */
 export function initializeAuth() {
   const unsubscribe = firebase.onAuthStateChange((user) => {
-    useAuthStore.setState({ user, loading: false })
+    useAuthStore.setState({ user, loading: false });
 
     // Update auth cookie when Firebase auth state changes
     if (user) {
-      setAuthCookie()
+      setAuthCookie();
     } else {
-      clearAuthCookie()
+      clearAuthCookie();
     }
-  })
+  });
 
-  return unsubscribe
+  return unsubscribe;
 }

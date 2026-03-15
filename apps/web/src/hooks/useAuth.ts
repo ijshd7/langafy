@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/authStore';
 
 /**
  * Hook for accessing auth state and actions
@@ -14,7 +14,7 @@ import { useAuthStore } from '@/stores/authStore'
  * const user = useAuth(state => state.user)
  */
 export function useAuth() {
-  return useAuthStore()
+  return useAuthStore();
 }
 
 /**
@@ -25,8 +25,8 @@ export function useAuth() {
  * if (!isAuthenticated) return <LoginPage />
  */
 export function useIsAuthenticated() {
-  const user = useAuthStore((state) => state.user)
-  return user !== null
+  const user = useAuthStore((state) => state.user);
+  return user !== null;
 }
 
 /**
@@ -38,7 +38,7 @@ export function useIsAuthenticated() {
  * console.log(user?.email)
  */
 export function useCurrentUser() {
-  return useAuthStore((state) => state.user)
+  return useAuthStore((state) => state.user);
 }
 
 /**
@@ -49,5 +49,5 @@ export function useCurrentUser() {
  * if (loading) return <LoadingSpinner />
  */
 export function useAuthLoading() {
-  return useAuthStore((state) => state.loading)
+  return useAuthStore((state) => state.loading);
 }

@@ -34,6 +34,7 @@ npm run docker:up
 ```
 
 This starts:
+
 - **PostgreSQL** on `http://localhost:5432`
 - **API** on `http://localhost:5000` (Swagger UI at `/swagger`)
 - **Web App** on `http://localhost:3000`
@@ -49,12 +50,14 @@ npm run docker:down
 Run each service independently:
 
 **Install dependencies:**
+
 ```bash
 npm install
 ```
 
 **Terminal 1 — Database:**
 Set up PostgreSQL 16 manually (or use Docker for just the database):
+
 ```bash
 docker run -d --name langafy-db \
   -e POSTGRES_USER=langafy \
@@ -65,22 +68,29 @@ docker run -d --name langafy-db \
 ```
 
 **Terminal 2 — API:**
+
 ```bash
 npm run dev:api
 ```
+
 API runs on `http://localhost:5000`
 
 **Terminal 3 — Web:**
+
 ```bash
 npm run dev:web
 ```
+
 Web app runs on `http://localhost:3000`
 
 **Terminal 4 — Mobile (optional):**
+
 ```bash
 npx expo start --web
 ```
+
 Or on a physical device:
+
 ```bash
 npx expo start
 ```
@@ -132,19 +142,20 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 
 ## Technology Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Web** | Next.js 16 + React 19 + Tailwind CSS 4 |
-| **Mobile** | Expo 54 + React Native 0.81 + Nativewind |
-| **API** | ASP.NET Core 8 / C# |
-| **Database** | PostgreSQL 16 |
-| **Auth** | Firebase Authentication |
-| **AI** | Open Router |
-| **Containerization** | Docker + docker-compose |
+| Layer                | Technology                               |
+| -------------------- | ---------------------------------------- |
+| **Web**              | Next.js 16 + React 19 + Tailwind CSS 4   |
+| **Mobile**           | Expo 54 + React Native 0.81 + Nativewind |
+| **API**              | ASP.NET Core 8 / C#                      |
+| **Database**         | PostgreSQL 16                            |
+| **Auth**             | Firebase Authentication                  |
+| **AI**               | Open Router                              |
+| **Containerization** | Docker + docker-compose                  |
 
 ## Development Workflow
 
 1. Clone the repo and install dependencies:
+
    ```bash
    git clone https://github.com/ijshd7/langafy
    cd langafy
@@ -152,9 +163,11 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
    ```
 
 2. Start the development environment:
+
    ```bash
    npm run docker:up
    ```
+
    Or run services individually (see Getting Started).
 
 3. Open the web app at `http://localhost:3000`

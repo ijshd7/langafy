@@ -1,19 +1,12 @@
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { AlertCircleIcon } from 'lucide-react-native';
 import React, { useEffect, useMemo } from 'react';
-import {
-  Animated,
-  RefreshControl,
-  ScrollView,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { Animated, RefreshControl, ScrollView, View, TouchableOpacity } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useUnits, type Unit } from '@/hooks/useUnits';
-
 
 /**
  * Skeleton loading component
@@ -46,7 +39,7 @@ function SkeletonLine({
 
   return (
     <Animated.View
-      className="rounded-lg bg-muted"
+      className="bg-muted rounded-lg"
       style={{
         width: w,
         height,
@@ -65,19 +58,15 @@ function SkeletonLine({
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
-      <Text className="text-center text-lg font-semibold text-foreground">
+      <Icon as={AlertCircleIcon} className="text-destructive size-12" />
+      <Text className="text-foreground text-center text-lg font-semibold">
         Couldn&apos;t load units
       </Text>
-      <Text className="text-center text-sm text-muted-foreground">
+      <Text className="text-muted-foreground text-center text-sm">
         Please check your connection and try again
       </Text>
-      <Button
-        onPress={onRetry}
-        variant="outline"
-        className="rounded-lg px-6 py-3"
-      >
-        <Text className="font-semibold text-foreground">Retry</Text>
+      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
+        <Text className="text-foreground font-semibold">Retry</Text>
       </Button>
     </View>
   );
@@ -89,16 +78,14 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 function UnitCard({ unit, onPress }: { unit: Unit; onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <View className="rounded-xl border border-border bg-card p-4">
-        <View className="flex-row items-start justify-between gap-3 mb-2">
-          <Text className="font-semibold text-foreground text-base flex-1">
-            {unit.title}
-          </Text>
-          <View className="rounded-full bg-muted px-2 py-1">
-            <Text className="text-xs font-medium text-foreground">{unit.cefrLevel}</Text>
+      <View className="border-border bg-card rounded-xl border p-4">
+        <View className="mb-2 flex-row items-start justify-between gap-3">
+          <Text className="text-foreground flex-1 text-base font-semibold">{unit.title}</Text>
+          <View className="bg-muted rounded-full px-2 py-1">
+            <Text className="text-foreground text-xs font-medium">{unit.cefrLevel}</Text>
           </View>
         </View>
-        <Text className="text-sm text-muted-foreground" numberOfLines={2}>
+        <Text className="text-muted-foreground text-sm" numberOfLines={2}>
           {unit.description}
         </Text>
       </View>
@@ -122,15 +109,10 @@ export default function UnitListScreen() {
         }}
       />
       <ScrollView
-        className="flex-1 bg-background"
+        className="bg-background flex-1"
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
-            tintColor="#06B6D4"
-          />
-        }
-      >
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#06B6D4" />
+        }>
         {error && data === null ? (
           <ErrorState onRetry={refresh} />
         ) : (
@@ -150,9 +132,7 @@ export default function UnitListScreen() {
                 />
               ))
             ) : (
-              <Text className="text-center text-muted-foreground py-8">
-                No units available
-              </Text>
+              <Text className="text-muted-foreground py-8 text-center">No units available</Text>
             )}
           </View>
         )}

@@ -1,19 +1,19 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-export type TimerMode = 'countup' | 'countdown'
+export type TimerMode = 'countup' | 'countdown';
 
 export interface GameTimerState {
-  elapsedMs: number
-  remainingMs: number | null
-  isRunning: boolean
-  isExpired: boolean
+  elapsedMs: number;
+  remainingMs: number | null;
+  isRunning: boolean;
+  isExpired: boolean;
 }
 
 export interface GameTimerActions {
-  start: () => void
-  pause: () => void
-  resume: () => void
-  reset: () => void
+  start: () => void;
+  pause: () => void;
+  resume: () => void;
+  reset: () => void;
 }
 
 /**
@@ -29,84 +29,82 @@ export interface GameTimerActions {
 export function useGameTimer(
   mode: TimerMode = 'countup',
   timeLimitMs?: number,
-  onExpire?: () => void,
+  onExpire?: () => void
 ): GameTimerState & GameTimerActions {
-  const [elapsedMs, setElapsedMs] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
-  const [isExpired, setIsExpired] = useState(false)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const startTimeRef = useRef<number | null>(null)
-  const accumulatedRef = useRef(0)
-  const onExpireRef = useRef(onExpire)
-  onExpireRef.current = onExpire
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startTimeRef = useRef<number | null>(null);
+  const accumulatedRef = useRef(0);
+  const onExpireRef = useRef(onExpire);
+  onExpireRef.current = onExpire;
 
   const clearTimer = () => {
     if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-  }
+  };
 
   const start = useCallback(() => {
-    if (isRunning) return
-    startTimeRef.current = Date.now()
-    setIsRunning(true)
+    if (isRunning) return;
+    startTimeRef.current = Date.now();
+    setIsRunning(true);
     intervalRef.current = setInterval(() => {
-      const sinceStart = Date.now() - (startTimeRef.current ?? Date.now())
-      const total = accumulatedRef.current + sinceStart
-      setElapsedMs(total)
+      const sinceStart = Date.now() - (startTimeRef.current ?? Date.now());
+      const total = accumulatedRef.current + sinceStart;
+      setElapsedMs(total);
 
       if (mode === 'countdown' && timeLimitMs !== undefined && total >= timeLimitMs) {
-        setElapsedMs(timeLimitMs)
-        setIsExpired(true)
-        setIsRunning(false)
-        clearTimer()
-        onExpireRef.current?.()
+        setElapsedMs(timeLimitMs);
+        setIsExpired(true);
+        setIsRunning(false);
+        clearTimer();
+        onExpireRef.current?.();
       }
-    }, 100)
-  }, [isRunning, mode, timeLimitMs])
+    }, 100);
+  }, [isRunning, mode, timeLimitMs]);
 
   const pause = useCallback(() => {
-    if (!isRunning) return
-    accumulatedRef.current += Date.now() - (startTimeRef.current ?? Date.now())
-    setIsRunning(false)
-    clearTimer()
-  }, [isRunning])
+    if (!isRunning) return;
+    accumulatedRef.current += Date.now() - (startTimeRef.current ?? Date.now());
+    setIsRunning(false);
+    clearTimer();
+  }, [isRunning]);
 
   const resume = useCallback(() => {
-    if (isRunning || isExpired) return
-    startTimeRef.current = Date.now()
-    setIsRunning(true)
+    if (isRunning || isExpired) return;
+    startTimeRef.current = Date.now();
+    setIsRunning(true);
     intervalRef.current = setInterval(() => {
-      const sinceStart = Date.now() - (startTimeRef.current ?? Date.now())
-      const total = accumulatedRef.current + sinceStart
-      setElapsedMs(total)
+      const sinceStart = Date.now() - (startTimeRef.current ?? Date.now());
+      const total = accumulatedRef.current + sinceStart;
+      setElapsedMs(total);
 
       if (mode === 'countdown' && timeLimitMs !== undefined && total >= timeLimitMs) {
-        setElapsedMs(timeLimitMs)
-        setIsExpired(true)
-        setIsRunning(false)
-        clearTimer()
-        onExpireRef.current?.()
+        setElapsedMs(timeLimitMs);
+        setIsExpired(true);
+        setIsRunning(false);
+        clearTimer();
+        onExpireRef.current?.();
       }
-    }, 100)
-  }, [isRunning, isExpired, mode, timeLimitMs])
+    }, 100);
+  }, [isRunning, isExpired, mode, timeLimitMs]);
 
   const reset = useCallback(() => {
-    clearTimer()
-    setElapsedMs(0)
-    setIsRunning(false)
-    setIsExpired(false)
-    accumulatedRef.current = 0
-    startTimeRef.current = null
-  }, [])
+    clearTimer();
+    setElapsedMs(0);
+    setIsRunning(false);
+    setIsExpired(false);
+    accumulatedRef.current = 0;
+    startTimeRef.current = null;
+  }, []);
 
-  useEffect(() => () => clearTimer(), [])
+  useEffect(() => () => clearTimer(), []);
 
   const remainingMs =
-    mode === 'countdown' && timeLimitMs !== undefined
-      ? Math.max(0, timeLimitMs - elapsedMs)
-      : null
+    mode === 'countdown' && timeLimitMs !== undefined ? Math.max(0, timeLimitMs - elapsedMs) : null;
 
-  return { elapsedMs, remainingMs, isRunning, isExpired, start, pause, resume, reset }
+  return { elapsedMs, remainingMs, isRunning, isExpired, start, pause, resume, reset };
 }

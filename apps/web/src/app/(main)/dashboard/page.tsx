@@ -1,36 +1,35 @@
-'use client'
+'use client';
 
-import { ChevronRight, Flame, Trophy, BookOpen, Zap, MessageCircle } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { ChevronRight, Flame, Trophy, BookOpen, Zap, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
-import { apiClient } from '@/lib/api'
-
+import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth';
+import { apiClient } from '@/lib/api';
 
 /**
  * Mock progress data structure - will be replaced with actual API response
  * This matches the expected API response from GET /api/progress
  */
 interface ProgressSummary {
-  totalPoints: number
-  currentStreak: number
+  totalPoints: number;
+  currentStreak: number;
   levelProgress: {
-    level: string
-    levelName: string
-    percentage: number
+    level: string;
+    levelName: string;
+    percentage: number;
     units: {
-      id: string
-      name: string
-      percentage: number
-    }[]
-  }[]
+      id: string;
+      name: string;
+      percentage: number;
+    }[];
+  }[];
   nextIncompleteLesson?: {
-    id: string
-    title: string
-    unitId: string
-  }
+    id: string;
+    title: string;
+    unitId: string;
+  };
 }
 
 /**
@@ -41,26 +40,28 @@ function DashboardSkeleton() {
     <div className="animate-pulse space-y-8">
       {/* Header skeleton */}
       <div className="space-y-4">
-        <div className="h-8 w-48 rounded-lg bg-linear-to-r from-slate-700 to-slate-600" />
+        <div className="bg-linear-to-r h-8 w-48 rounded-lg from-slate-700 to-slate-600" />
         <div className="grid grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-20 rounded-lg bg-linear-to-r from-slate-700 to-slate-600" />
+            <div key={i} className="bg-linear-to-r h-20 rounded-lg from-slate-700 to-slate-600" />
           ))}
         </div>
       </div>
 
       {/* Units skeleton */}
       <div className="space-y-4">
-        <div className="h-6 w-32 rounded-lg bg-linear-to-r from-slate-700 to-slate-600" />
+        <div className="bg-linear-to-r h-6 w-32 rounded-lg from-slate-700 to-slate-600" />
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="space-y-3 rounded-xl bg-linear-to-r from-slate-700 to-slate-600 p-6">
+          <div
+            key={i}
+            className="bg-linear-to-r space-y-3 rounded-xl from-slate-700 to-slate-600 p-6">
             <div className="h-5 w-32 rounded bg-slate-600" />
             <div className="h-3 w-full rounded-full bg-slate-600" />
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -70,13 +71,13 @@ function ProgressBar({ percentage }: { percentage: number }) {
   return (
     <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-700/40">
       <div
-        className="h-full rounded-full bg-linear-to-r from-cyan-400 to-emerald-400 transition-all duration-1000 ease-out"
+        className="bg-linear-to-r h-full rounded-full from-cyan-400 to-emerald-400 transition-all duration-1000 ease-out"
         style={{
           width: `${percentage}%`,
         }}
       />
     </div>
-  )
+  );
 }
 
 /**
@@ -90,17 +91,16 @@ function CefrLevelBadge({ level }: { level: string }) {
     B2: { bg: 'from-emerald-500 to-green-500', text: 'text-white', ring: 'ring-emerald-400/50' },
     C1: { bg: 'from-amber-500 to-orange-500', text: 'text-white', ring: 'ring-amber-400/50' },
     C2: { bg: 'from-orange-500 to-red-500', text: 'text-white', ring: 'ring-orange-400/50' },
-  }
+  };
 
-  const color = colors[level] || colors.A1
+  const color = colors[level] || colors.A1;
 
   return (
     <div
-      className={`inline-flex items-center justify-center h-24 w-24 rounded-full bg-linear-to-br ${color.bg} ring-4 ${color.ring} shadow-lg transform transition-transform duration-300 hover:scale-110`}
-    >
+      className={`bg-linear-to-br inline-flex h-24 w-24 items-center justify-center rounded-full ${color.bg} ring-4 ${color.ring} transform shadow-lg transition-transform duration-300 hover:scale-110`}>
       <span className={`text-2xl font-bold ${color.text}`}>{level}</span>
     </div>
-  )
+  );
 }
 
 /**
@@ -112,24 +112,24 @@ function StatCard({
   value,
   color,
 }: {
-  icon: typeof Trophy
-  label: string
-  value: string | number
-  color: string
+  icon: typeof Trophy;
+  label: string;
+  value: string | number;
+  color: string;
 }) {
   return (
-    <div className="rounded-xl bg-linear-to-br from-slate-800/60 to-slate-700/40 border border-slate-700/50 p-4 backdrop-blur-sm hover:border-slate-600/80 transition-all duration-300">
+    <div className="bg-linear-to-br rounded-xl border border-slate-700/50 from-slate-800/60 to-slate-700/40 p-4 backdrop-blur-sm transition-all duration-300 hover:border-slate-600/80">
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${color}`}>
+        <div className={`rounded-lg p-2 ${color}`}>
           <Icon className="h-5 w-5 text-white" />
         </div>
         <div className="flex-1">
-          <p className="text-xs text-slate-400 uppercase tracking-wider">{label}</p>
-          <p className="text-xl font-bold text-slate-100 mt-0.5">{value}</p>
+          <p className="text-xs uppercase tracking-wider text-slate-400">{label}</p>
+          <p className="mt-0.5 text-xl font-bold text-slate-100">{value}</p>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -139,17 +139,18 @@ function UnitCard({
   unit,
   onLessonClick,
 }: {
-  unit: ProgressSummary['levelProgress'][0]['units'][0]
-  onLessonClick: () => void
+  unit: ProgressSummary['levelProgress'][0]['units'][0];
+  onLessonClick: () => void;
 }) {
   return (
     <button
       onClick={onLessonClick}
-      className="group relative w-full text-left rounded-xl bg-linear-to-br from-slate-800/50 to-slate-700/30 border border-slate-700/50 p-6 backdrop-blur-sm hover:from-slate-800/80 hover:to-slate-700/50 hover:border-slate-600 transition-all duration-300"
-    >
-      <div className="flex items-start justify-between mb-4">
-        <h3 className="font-semibold text-slate-100 group-hover:text-cyan-300 transition-colors">{unit.name}</h3>
-        <ChevronRight className="h-5 w-5 text-slate-500 group-hover:text-cyan-400 transform group-hover:translate-x-1 transition-all" />
+      className="bg-linear-to-br group relative w-full rounded-xl border border-slate-700/50 from-slate-800/50 to-slate-700/30 p-6 text-left backdrop-blur-sm transition-all duration-300 hover:border-slate-600 hover:from-slate-800/80 hover:to-slate-700/50">
+      <div className="mb-4 flex items-start justify-between">
+        <h3 className="font-semibold text-slate-100 transition-colors group-hover:text-cyan-300">
+          {unit.name}
+        </h3>
+        <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" />
       </div>
 
       <div className="space-y-2">
@@ -157,7 +158,7 @@ function UnitCard({
         <p className="text-sm text-slate-400">{Math.round(unit.percentage)}% Complete</p>
       </div>
     </button>
-  )
+  );
 }
 
 /**
@@ -167,85 +168,84 @@ function ContinueLearningCard({
   lesson,
   onClick,
 }: {
-  lesson: ProgressSummary['nextIncompleteLesson']
-  onClick: () => void
+  lesson: ProgressSummary['nextIncompleteLesson'];
+  onClick: () => void;
 }) {
-  if (!lesson) return null
+  if (!lesson) return null;
 
   return (
     <button
       onClick={onClick}
-      className="relative w-full overflow-hidden rounded-xl bg-linear-to-r from-cyan-600/20 via-emerald-600/20 to-teal-600/20 border border-cyan-500/40 p-6 hover:border-cyan-500/80 transition-all duration-300 group"
-    >
+      className="bg-linear-to-r group relative w-full overflow-hidden rounded-xl border border-cyan-500/40 from-cyan-600/20 via-emerald-600/20 to-teal-600/20 p-6 transition-all duration-300 hover:border-cyan-500/80">
       {/* Animated background effect */}
-      <div className="absolute inset-0 bg-linear-to-r from-cyan-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="bg-linear-to-r absolute inset-0 from-cyan-500/10 to-emerald-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
       <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-cyan-500 to-emerald-500">
+          <div className="bg-linear-to-br flex h-12 w-12 items-center justify-center rounded-lg from-cyan-500 to-emerald-500">
             <Zap className="h-6 w-6 text-white" />
           </div>
           <div className="text-left">
             <p className="text-sm font-medium text-slate-300">Continue Learning</p>
-            <p className="text-lg font-bold text-cyan-300 group-hover:text-cyan-200 transition-colors">
+            <p className="text-lg font-bold text-cyan-300 transition-colors group-hover:text-cyan-200">
               {lesson.title}
             </p>
           </div>
         </div>
-        <ChevronRight className="h-6 w-6 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+        <ChevronRight className="h-6 w-6 text-emerald-400 transition-transform group-hover:translate-x-1" />
       </div>
     </button>
-  )
+  );
 }
 
 /**
  * Main dashboard page
  */
 export default function DashboardPage() {
-  const router = useRouter()
-  const user = useCurrentUser()
-  const authLoading = useAuthLoading()
-  const [progress, setProgress] = useState<ProgressSummary | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const user = useCurrentUser();
+  const authLoading = useAuthLoading();
+  const [progress, setProgress] = useState<ProgressSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Initialize token provider for API client
    */
   useEffect(() => {
     const initTokenProvider = async () => {
-      const { getAuth } = await import('firebase/auth')
-      const auth = getAuth()
+      const { getAuth } = await import('firebase/auth');
+      const auth = getAuth();
 
       apiClient.setTokenProvider(async () => {
-        const currentUser = auth.currentUser
+        const currentUser = auth.currentUser;
         if (currentUser) {
-          return await currentUser.getIdToken()
+          return await currentUser.getIdToken();
         }
-        return null
-      })
-    }
+        return null;
+      });
+    };
 
-    initTokenProvider()
-  }, [])
+    initTokenProvider();
+  }, []);
 
   /**
    * Fetch progress data from API
    */
   useEffect(() => {
     const fetchProgress = async () => {
-      if (!user || authLoading) return
+      if (!user || authLoading) return;
 
       try {
-        setLoading(true)
-        setError(null)
+        setLoading(true);
+        setError(null);
 
         // Fetch progress from API
-        const data = await apiClient.get<ProgressSummary>('/progress')
-        setProgress(data)
+        const data = await apiClient.get<ProgressSummary>('/progress');
+        setProgress(data);
       } catch (err) {
-        console.error('Failed to fetch progress:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load progress')
+        console.error('Failed to fetch progress:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load progress');
 
         // Set mock data for demonstration if API fails
         setProgress({
@@ -276,98 +276,106 @@ export default function DashboardPage() {
             title: 'Ordering Food in Spanish',
             unitId: '4',
           },
-        })
+        });
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchProgress()
-  }, [user, authLoading])
+    fetchProgress();
+  }, [user, authLoading]);
 
   /**
    * Navigate to lesson
    */
   const handleContinueLearning = () => {
     if (progress?.nextIncompleteLesson) {
-      router.push(`/lessons/${progress.nextIncompleteLesson.id}`)
+      router.push(`/lessons/${progress.nextIncompleteLesson.id}`);
     }
-  }
+  };
 
   /**
    * Navigate to level
    */
   const handleViewLevel = (levelName: string) => {
-    const levelCode = levelName.split(' ')[0]
-    router.push(`/levels/${levelCode}`)
-  }
+    const levelCode = levelName.split(' ')[0];
+    router.push(`/levels/${levelCode}`);
+  };
 
   // Show loading state if auth is still loading
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-700">
+      <div className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <DashboardSkeleton />
         </div>
       </div>
-    )
+    );
   }
 
   // Show loading state while fetching progress
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-700">
+      <div className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <DashboardSkeleton />
         </div>
       </div>
-    )
+    );
   }
 
   // Show error state
   if (error && !progress) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-700">
+      <div className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="rounded-xl bg-red-500/10 border border-red-500/50 p-6">
+          <div className="rounded-xl border border-red-500/50 bg-red-500/10 p-6">
             <p className="text-red-300">Error loading dashboard. Please try again.</p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  if (!progress) return null
+  if (!progress) return null;
 
-  const currentLevel = progress.levelProgress[progress.levelProgress.length - 1]
+  const currentLevel = progress.levelProgress[progress.levelProgress.length - 1];
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-700 text-slate-100">
+    <main className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
       {/* Background decorative elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-32 left-1/3 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute right-1/4 top-20 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
+        <div className="absolute bottom-32 left-1/3 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header section */}
         <div className="mb-12 space-y-8">
           <div>
-            <p className="text-sm font-medium text-cyan-400 uppercase tracking-widest">Welcome back, {user?.email?.split('@')[0]}</p>
-            <h1 className="mt-2 text-4xl font-bold text-slate-50 sm:text-5xl">Your Learning Journey</h1>
+            <p className="text-sm font-medium uppercase tracking-widest text-cyan-400">
+              Welcome back, {user?.email?.split('@')[0]}
+            </p>
+            <h1 className="mt-2 text-4xl font-bold text-slate-50 sm:text-5xl">
+              Your Learning Journey
+            </h1>
           </div>
 
           {/* Level and stats section */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:items-center">
             {/* Current level display */}
-            <div className="lg:col-span-2 space-y-4">
-              <p className="text-sm font-medium text-slate-400 uppercase tracking-wider">Current Level</p>
+            <div className="space-y-4 lg:col-span-2">
+              <p className="text-sm font-medium uppercase tracking-wider text-slate-400">
+                Current Level
+              </p>
               <div className="flex items-center gap-6">
                 <CefrLevelBadge level={currentLevel.level} />
                 <div className="space-y-2">
                   <h2 className="text-2xl font-bold text-slate-100">{currentLevel.level}</h2>
                   <p className="text-slate-400">{currentLevel.levelName}</p>
-                  <p className="text-sm text-cyan-400">{Math.round(currentLevel.percentage)}% Complete</p>
+                  <p className="text-sm text-cyan-400">
+                    {Math.round(currentLevel.percentage)}% Complete
+                  </p>
                 </div>
               </div>
             </div>
@@ -390,7 +398,10 @@ export default function DashboardPage() {
 
         {/* Continue learning CTA */}
         <div className="mb-12">
-          <ContinueLearningCard lesson={progress.nextIncompleteLesson} onClick={handleContinueLearning} />
+          <ContinueLearningCard
+            lesson={progress.nextIncompleteLesson}
+            onClick={handleContinueLearning}
+          />
         </div>
 
         {/* Progress by level */}
@@ -399,13 +410,16 @@ export default function DashboardPage() {
             <div key={level.level} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-100">{level.level} - {level.levelName}</h2>
-                  <p className="mt-1 text-sm text-slate-400">{Math.round(level.percentage)}% Complete</p>
+                  <h2 className="text-xl font-semibold text-slate-100">
+                    {level.level} - {level.levelName}
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-400">
+                    {Math.round(level.percentage)}% Complete
+                  </p>
                 </div>
                 <button
                   onClick={() => handleViewLevel(level.level)}
-                  className="flex items-center gap-2 rounded-lg bg-slate-700/50 px-4 py-2 text-sm font-medium text-cyan-400 hover:bg-slate-700 hover:text-cyan-300 transition-all"
-                >
+                  className="flex items-center gap-2 rounded-lg bg-slate-700/50 px-4 py-2 text-sm font-medium text-cyan-400 transition-all hover:bg-slate-700 hover:text-cyan-300">
                   View All <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
@@ -429,37 +443,39 @@ export default function DashboardPage() {
 
         {/* Additional resources section */}
         <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-xl bg-linear-to-r from-slate-800/50 to-slate-700/30 border border-slate-700/50 p-8 backdrop-blur-sm">
+          <div className="bg-linear-to-r rounded-xl border border-slate-700/50 from-slate-800/50 to-slate-700/30 p-8 backdrop-blur-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <BookOpen className="h-6 w-6 text-emerald-400" />
                 <div>
                   <h3 className="font-semibold text-slate-100">Explore Vocabulary</h3>
-                  <p className="text-sm text-slate-400">Review and practice vocabulary from all levels</p>
+                  <p className="text-sm text-slate-400">
+                    Review and practice vocabulary from all levels
+                  </p>
                 </div>
               </div>
               <Link
                 href="/vocabulary"
-                className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-500 to-emerald-500 px-6 py-2 font-medium text-slate-900 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
-              >
+                className="bg-linear-to-r inline-flex items-center gap-2 rounded-lg from-cyan-500 to-emerald-500 px-6 py-2 font-medium text-slate-900 transition-all hover:shadow-lg hover:shadow-cyan-500/25">
                 View Dictionary <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
 
-          <div className="rounded-xl bg-linear-to-r from-cyan-900/30 to-emerald-900/20 border border-cyan-700/40 p-8 backdrop-blur-sm">
+          <div className="bg-linear-to-r rounded-xl border border-cyan-700/40 from-cyan-900/30 to-emerald-900/20 p-8 backdrop-blur-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <MessageCircle className="h-6 w-6 text-cyan-400" />
                 <div>
                   <h3 className="font-semibold text-slate-100">AI Conversation Practice</h3>
-                  <p className="text-sm text-slate-400">Chat with an AI tutor to practice speaking</p>
+                  <p className="text-sm text-slate-400">
+                    Chat with an AI tutor to practice speaking
+                  </p>
                 </div>
               </div>
               <Link
                 href="/practice/conversation"
-                className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-500/80 to-emerald-500/80 px-6 py-2 font-medium text-white hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
-              >
+                className="bg-linear-to-r inline-flex items-center gap-2 rounded-lg from-cyan-500/80 to-emerald-500/80 px-6 py-2 font-medium text-white transition-all hover:shadow-lg hover:shadow-cyan-500/25">
                 Start Chatting <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
@@ -467,5 +483,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }

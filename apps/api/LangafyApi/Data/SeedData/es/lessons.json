@@ -1,81 +1,501 @@
 [
-  { "code": "A1_001_001", "unitCode": "A1_001", "title": "Basic Greetings", "description": "Learn to say hello, goodbye, and basic courtesies", "objective": "Master common greeting phrases and responses", "sortOrder": 1 },
-  { "code": "A1_001_002", "unitCode": "A1_001", "title": "Introducing Yourself", "description": "Learn how to introduce yourself and ask for names", "objective": "Introduce yourself and ask others their names", "sortOrder": 2 },
-  { "code": "A1_001_003", "unitCode": "A1_001", "title": "Polite Expressions", "description": "Learn essential polite phrases like please, thank you, and excuse me", "objective": "Use courtesy expressions naturally in conversation", "sortOrder": 3 },
+  {
+    "code": "A1_001_001",
+    "unitCode": "A1_001",
+    "title": "Basic Greetings",
+    "description": "Learn to say hello, goodbye, and basic courtesies",
+    "objective": "Master common greeting phrases and responses",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_001_002",
+    "unitCode": "A1_001",
+    "title": "Introducing Yourself",
+    "description": "Learn how to introduce yourself and ask for names",
+    "objective": "Introduce yourself and ask others their names",
+    "sortOrder": 2
+  },
+  {
+    "code": "A1_001_003",
+    "unitCode": "A1_001",
+    "title": "Polite Expressions",
+    "description": "Learn essential polite phrases like please, thank you, and excuse me",
+    "objective": "Use courtesy expressions naturally in conversation",
+    "sortOrder": 3
+  },
 
-  { "code": "A1_002_001", "unitCode": "A1_002", "title": "Numbers 0-20", "description": "Learn to count and recognize basic numbers", "objective": "Confidently count from 0 to 20 in Spanish", "sortOrder": 1 },
-  { "code": "A1_002_002", "unitCode": "A1_002", "title": "Colors & Descriptions", "description": "Learn color names and basic color descriptions", "objective": "Name common colors and use them in simple sentences", "sortOrder": 2 },
-  { "code": "A1_002_003", "unitCode": "A1_002", "title": "Numbers 21-100", "description": "Extend your number knowledge into the tens and hundreds", "objective": "Count to 100 and perform simple arithmetic in Spanish", "sortOrder": 3 },
+  {
+    "code": "A1_002_001",
+    "unitCode": "A1_002",
+    "title": "Numbers 0-20",
+    "description": "Learn to count and recognize basic numbers",
+    "objective": "Confidently count from 0 to 20 in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_002_002",
+    "unitCode": "A1_002",
+    "title": "Colors & Descriptions",
+    "description": "Learn color names and basic color descriptions",
+    "objective": "Name common colors and use them in simple sentences",
+    "sortOrder": 2
+  },
+  {
+    "code": "A1_002_003",
+    "unitCode": "A1_002",
+    "title": "Numbers 21-100",
+    "description": "Extend your number knowledge into the tens and hundreds",
+    "objective": "Count to 100 and perform simple arithmetic in Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "A1_003_001", "unitCode": "A1_003", "title": "Family Members", "description": "Learn names for immediate and extended family members", "objective": "Identify and name family members in Spanish", "sortOrder": 1 },
-  { "code": "A1_003_002", "unitCode": "A1_003", "title": "Describing People", "description": "Learn adjectives to describe physical appearance and personality", "objective": "Describe people using basic adjectives", "sortOrder": 2 },
-  { "code": "A1_003_003", "unitCode": "A1_003", "title": "Possessive Pronouns", "description": "Learn how to express ownership using possessives", "objective": "Use mi, tu, su, nuestro correctly in sentences", "sortOrder": 3 },
+  {
+    "code": "A1_003_001",
+    "unitCode": "A1_003",
+    "title": "Family Members",
+    "description": "Learn names for immediate and extended family members",
+    "objective": "Identify and name family members in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_003_002",
+    "unitCode": "A1_003",
+    "title": "Describing People",
+    "description": "Learn adjectives to describe physical appearance and personality",
+    "objective": "Describe people using basic adjectives",
+    "sortOrder": 2
+  },
+  {
+    "code": "A1_003_003",
+    "unitCode": "A1_003",
+    "title": "Possessive Pronouns",
+    "description": "Learn how to express ownership using possessives",
+    "objective": "Use mi, tu, su, nuestro correctly in sentences",
+    "sortOrder": 3
+  },
 
-  { "code": "A1_004_001", "unitCode": "A1_004", "title": "Food Vocabulary", "description": "Learn names for common foods and ingredients", "objective": "Identify and name everyday food items in Spanish", "sortOrder": 1 },
-  { "code": "A1_004_002", "unitCode": "A1_004", "title": "Ordering at a Café", "description": "Learn phrases to order food and drinks at a café or restaurant", "objective": "Place a basic food and drink order in Spanish", "sortOrder": 2 },
-  { "code": "A1_004_003", "unitCode": "A1_004", "title": "Meals & Drinks", "description": "Learn vocabulary for mealtimes, drinks, and common dishes", "objective": "Discuss meals and beverages using Spanish vocabulary", "sortOrder": 3 },
+  {
+    "code": "A1_004_001",
+    "unitCode": "A1_004",
+    "title": "Food Vocabulary",
+    "description": "Learn names for common foods and ingredients",
+    "objective": "Identify and name everyday food items in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_004_002",
+    "unitCode": "A1_004",
+    "title": "Ordering at a Café",
+    "description": "Learn phrases to order food and drinks at a café or restaurant",
+    "objective": "Place a basic food and drink order in Spanish",
+    "sortOrder": 2
+  },
+  {
+    "code": "A1_004_003",
+    "unitCode": "A1_004",
+    "title": "Meals & Drinks",
+    "description": "Learn vocabulary for mealtimes, drinks, and common dishes",
+    "objective": "Discuss meals and beverages using Spanish vocabulary",
+    "sortOrder": 3
+  },
 
-  { "code": "A2_001_001", "unitCode": "A2_001", "title": "Morning Routine", "description": "Learn reflexive verbs to describe daily morning activities", "objective": "Describe a morning routine using reflexive verbs", "sortOrder": 1 },
-  { "code": "A2_001_002", "unitCode": "A2_001", "title": "Time Expressions", "description": "Learn to tell the time and use time expressions", "objective": "Tell the time and schedule activities in Spanish", "sortOrder": 2 },
-  { "code": "A2_001_003", "unitCode": "A2_001", "title": "Weekly Activities", "description": "Discuss activities you do on different days of the week", "objective": "Talk about weekly habits and recurring activities", "sortOrder": 3 },
+  {
+    "code": "A2_001_001",
+    "unitCode": "A2_001",
+    "title": "Morning Routine",
+    "description": "Learn reflexive verbs to describe daily morning activities",
+    "objective": "Describe a morning routine using reflexive verbs",
+    "sortOrder": 1
+  },
+  {
+    "code": "A2_001_002",
+    "unitCode": "A2_001",
+    "title": "Time Expressions",
+    "description": "Learn to tell the time and use time expressions",
+    "objective": "Tell the time and schedule activities in Spanish",
+    "sortOrder": 2
+  },
+  {
+    "code": "A2_001_003",
+    "unitCode": "A2_001",
+    "title": "Weekly Activities",
+    "description": "Discuss activities you do on different days of the week",
+    "objective": "Talk about weekly habits and recurring activities",
+    "sortOrder": 3
+  },
 
-  { "code": "A2_002_001", "unitCode": "A2_002", "title": "At the Market", "description": "Learn vocabulary for shopping and asking about prices", "objective": "Ask for prices and make purchases at a market", "sortOrder": 1 },
-  { "code": "A2_002_002", "unitCode": "A2_002", "title": "Clothing Vocabulary", "description": "Learn names for clothing items and how to describe them", "objective": "Name clothing items and describe their colors and styles", "sortOrder": 2 },
-  { "code": "A2_002_003", "unitCode": "A2_002", "title": "Making Purchases", "description": "Learn to pay, ask for a receipt, and handle transactions", "objective": "Complete a purchase transaction in Spanish", "sortOrder": 3 },
+  {
+    "code": "A2_002_001",
+    "unitCode": "A2_002",
+    "title": "At the Market",
+    "description": "Learn vocabulary for shopping and asking about prices",
+    "objective": "Ask for prices and make purchases at a market",
+    "sortOrder": 1
+  },
+  {
+    "code": "A2_002_002",
+    "unitCode": "A2_002",
+    "title": "Clothing Vocabulary",
+    "description": "Learn names for clothing items and how to describe them",
+    "objective": "Name clothing items and describe their colors and styles",
+    "sortOrder": 2
+  },
+  {
+    "code": "A2_002_003",
+    "unitCode": "A2_002",
+    "title": "Making Purchases",
+    "description": "Learn to pay, ask for a receipt, and handle transactions",
+    "objective": "Complete a purchase transaction in Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "A2_003_001", "unitCode": "A2_003", "title": "Describing the Weather", "description": "Learn expressions for common weather conditions", "objective": "Describe current and future weather in Spanish", "sortOrder": 1 },
-  { "code": "A2_003_002", "unitCode": "A2_003", "title": "Seasons & Months", "description": "Learn the four seasons, months, and seasonal activities", "objective": "Name seasons, months, and associated activities", "sortOrder": 2 },
-  { "code": "A2_003_003", "unitCode": "A2_003", "title": "Weather Forecasts", "description": "Understand and discuss weather forecasts and climate", "objective": "Interpret and describe weather forecasts in Spanish", "sortOrder": 3 },
+  {
+    "code": "A2_003_001",
+    "unitCode": "A2_003",
+    "title": "Describing the Weather",
+    "description": "Learn expressions for common weather conditions",
+    "objective": "Describe current and future weather in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A2_003_002",
+    "unitCode": "A2_003",
+    "title": "Seasons & Months",
+    "description": "Learn the four seasons, months, and seasonal activities",
+    "objective": "Name seasons, months, and associated activities",
+    "sortOrder": 2
+  },
+  {
+    "code": "A2_003_003",
+    "unitCode": "A2_003",
+    "title": "Weather Forecasts",
+    "description": "Understand and discuss weather forecasts and climate",
+    "objective": "Interpret and describe weather forecasts in Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "A2_004_001", "unitCode": "A2_004", "title": "Getting Around Town", "description": "Learn vocabulary for transport options in a city", "objective": "Name transport options and describe how to get somewhere", "sortOrder": 1 },
-  { "code": "A2_004_002", "unitCode": "A2_004", "title": "Asking for Directions", "description": "Learn to ask and give directions using spatial vocabulary", "objective": "Ask for and understand basic directions in Spanish", "sortOrder": 2 },
-  { "code": "A2_004_003", "unitCode": "A2_004", "title": "Buying Tickets", "description": "Learn vocabulary for purchasing transport tickets and reading schedules", "objective": "Buy a ticket and navigate a transport schedule", "sortOrder": 3 },
+  {
+    "code": "A2_004_001",
+    "unitCode": "A2_004",
+    "title": "Getting Around Town",
+    "description": "Learn vocabulary for transport options in a city",
+    "objective": "Name transport options and describe how to get somewhere",
+    "sortOrder": 1
+  },
+  {
+    "code": "A2_004_002",
+    "unitCode": "A2_004",
+    "title": "Asking for Directions",
+    "description": "Learn to ask and give directions using spatial vocabulary",
+    "objective": "Ask for and understand basic directions in Spanish",
+    "sortOrder": 2
+  },
+  {
+    "code": "A2_004_003",
+    "unitCode": "A2_004",
+    "title": "Buying Tickets",
+    "description": "Learn vocabulary for purchasing transport tickets and reading schedules",
+    "objective": "Buy a ticket and navigate a transport schedule",
+    "sortOrder": 3
+  },
 
-  { "code": "B1_001_001", "unitCode": "B1_001", "title": "Job Descriptions", "description": "Learn vocabulary for professions and workplace environments", "objective": "Describe different jobs and their responsibilities", "sortOrder": 1 },
-  { "code": "B1_001_002", "unitCode": "B1_001", "title": "Workplace Conversations", "description": "Practice common workplace interactions and professional vocabulary", "objective": "Communicate professionally in a workplace setting", "sortOrder": 2 },
-  { "code": "B1_001_003", "unitCode": "B1_001", "title": "Job Applications", "description": "Learn language for writing a CV and preparing for interviews", "objective": "Discuss work experience and apply for a job in Spanish", "sortOrder": 3 },
+  {
+    "code": "B1_001_001",
+    "unitCode": "B1_001",
+    "title": "Job Descriptions",
+    "description": "Learn vocabulary for professions and workplace environments",
+    "objective": "Describe different jobs and their responsibilities",
+    "sortOrder": 1
+  },
+  {
+    "code": "B1_001_002",
+    "unitCode": "B1_001",
+    "title": "Workplace Conversations",
+    "description": "Practice common workplace interactions and professional vocabulary",
+    "objective": "Communicate professionally in a workplace setting",
+    "sortOrder": 2
+  },
+  {
+    "code": "B1_001_003",
+    "unitCode": "B1_001",
+    "title": "Job Applications",
+    "description": "Learn language for writing a CV and preparing for interviews",
+    "objective": "Discuss work experience and apply for a job in Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "B1_002_001", "unitCode": "B1_002", "title": "Planning a Trip", "description": "Learn vocabulary for researching destinations and making travel plans", "objective": "Plan a trip and discuss travel preferences", "sortOrder": 1 },
-  { "code": "B1_002_002", "unitCode": "B1_002", "title": "At the Hotel", "description": "Learn to check in, describe preferences, and handle hotel stays", "objective": "Check in and communicate needs at a hotel", "sortOrder": 2 },
-  { "code": "B1_002_003", "unitCode": "B1_002", "title": "Sightseeing & Tourism", "description": "Discuss tourist attractions, guided tours, and cultural sites", "objective": "Discuss sightseeing plans and ask about tourist attractions", "sortOrder": 3 },
+  {
+    "code": "B1_002_001",
+    "unitCode": "B1_002",
+    "title": "Planning a Trip",
+    "description": "Learn vocabulary for researching destinations and making travel plans",
+    "objective": "Plan a trip and discuss travel preferences",
+    "sortOrder": 1
+  },
+  {
+    "code": "B1_002_002",
+    "unitCode": "B1_002",
+    "title": "At the Hotel",
+    "description": "Learn to check in, describe preferences, and handle hotel stays",
+    "objective": "Check in and communicate needs at a hotel",
+    "sortOrder": 2
+  },
+  {
+    "code": "B1_002_003",
+    "unitCode": "B1_002",
+    "title": "Sightseeing & Tourism",
+    "description": "Discuss tourist attractions, guided tours, and cultural sites",
+    "objective": "Discuss sightseeing plans and ask about tourist attractions",
+    "sortOrder": 3
+  },
 
-  { "code": "B1_003_001", "unitCode": "B1_003", "title": "Body Parts", "description": "Learn vocabulary for all major body parts and anatomy", "objective": "Name body parts and use them in context", "sortOrder": 1 },
-  { "code": "B1_003_002", "unitCode": "B1_003", "title": "At the Doctor's", "description": "Learn to describe symptoms and understand medical advice", "objective": "Describe symptoms and understand a doctor's instructions", "sortOrder": 2 },
-  { "code": "B1_003_003", "unitCode": "B1_003", "title": "Healthy Habits", "description": "Discuss exercise, diet, sleep, and wellbeing in Spanish", "objective": "Talk about healthy lifestyle choices and habits", "sortOrder": 3 },
+  {
+    "code": "B1_003_001",
+    "unitCode": "B1_003",
+    "title": "Body Parts",
+    "description": "Learn vocabulary for all major body parts and anatomy",
+    "objective": "Name body parts and use them in context",
+    "sortOrder": 1
+  },
+  {
+    "code": "B1_003_002",
+    "unitCode": "B1_003",
+    "title": "At the Doctor's",
+    "description": "Learn to describe symptoms and understand medical advice",
+    "objective": "Describe symptoms and understand a doctor's instructions",
+    "sortOrder": 2
+  },
+  {
+    "code": "B1_003_003",
+    "unitCode": "B1_003",
+    "title": "Healthy Habits",
+    "description": "Discuss exercise, diet, sleep, and wellbeing in Spanish",
+    "objective": "Talk about healthy lifestyle choices and habits",
+    "sortOrder": 3
+  },
 
-  { "code": "B1_004_001", "unitCode": "B1_004", "title": "Sports & Activities", "description": "Learn vocabulary for popular sports and physical activities", "objective": "Talk about sports preferences and physical activities", "sortOrder": 1 },
-  { "code": "B1_004_002", "unitCode": "B1_004", "title": "Expressing Preferences", "description": "Learn to express likes, dislikes, and preferences in detail", "objective": "Express and justify personal preferences fluently", "sortOrder": 2 },
-  { "code": "B1_004_003", "unitCode": "B1_004", "title": "Making Plans", "description": "Learn to propose, accept, and decline plans with friends", "objective": "Arrange plans and respond to invitations in Spanish", "sortOrder": 3 },
+  {
+    "code": "B1_004_001",
+    "unitCode": "B1_004",
+    "title": "Sports & Activities",
+    "description": "Learn vocabulary for popular sports and physical activities",
+    "objective": "Talk about sports preferences and physical activities",
+    "sortOrder": 1
+  },
+  {
+    "code": "B1_004_002",
+    "unitCode": "B1_004",
+    "title": "Expressing Preferences",
+    "description": "Learn to express likes, dislikes, and preferences in detail",
+    "objective": "Express and justify personal preferences fluently",
+    "sortOrder": 2
+  },
+  {
+    "code": "B1_004_003",
+    "unitCode": "B1_004",
+    "title": "Making Plans",
+    "description": "Learn to propose, accept, and decline plans with friends",
+    "objective": "Arrange plans and respond to invitations in Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "B2_001_001", "unitCode": "B2_001", "title": "Reading the News", "description": "Analyze newspaper headlines and understand journalistic style", "objective": "Interpret news articles and identify key information", "sortOrder": 1 },
-  { "code": "B2_001_002", "unitCode": "B2_001", "title": "Expressing Opinions", "description": "Learn sophisticated phrases for stating, qualifying, and defending opinions", "objective": "Express and defend complex opinions fluently", "sortOrder": 2 },
-  { "code": "B2_001_003", "unitCode": "B2_001", "title": "Social Media & Technology", "description": "Discuss technology, social media trends, and digital culture", "objective": "Discuss technology and media in contemporary Spanish", "sortOrder": 3 },
+  {
+    "code": "B2_001_001",
+    "unitCode": "B2_001",
+    "title": "Reading the News",
+    "description": "Analyze newspaper headlines and understand journalistic style",
+    "objective": "Interpret news articles and identify key information",
+    "sortOrder": 1
+  },
+  {
+    "code": "B2_001_002",
+    "unitCode": "B2_001",
+    "title": "Expressing Opinions",
+    "description": "Learn sophisticated phrases for stating, qualifying, and defending opinions",
+    "objective": "Express and defend complex opinions fluently",
+    "sortOrder": 2
+  },
+  {
+    "code": "B2_001_003",
+    "unitCode": "B2_001",
+    "title": "Social Media & Technology",
+    "description": "Discuss technology, social media trends, and digital culture",
+    "objective": "Discuss technology and media in contemporary Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "B2_002_001", "unitCode": "B2_002", "title": "Social Issues", "description": "Discuss inequality, poverty, discrimination, and social challenges", "objective": "Engage with complex social topics in Spanish", "sortOrder": 1 },
-  { "code": "B2_002_002", "unitCode": "B2_002", "title": "Cultural Traditions", "description": "Explore Hispanic festivals, traditions, and cultural identity", "objective": "Discuss and compare cultural traditions across Spanish-speaking countries", "sortOrder": 2 },
-  { "code": "B2_002_003", "unitCode": "B2_002", "title": "Comparing Perspectives", "description": "Learn discourse markers and structures for balanced argument", "objective": "Present multiple perspectives using complex linking language", "sortOrder": 3 },
+  {
+    "code": "B2_002_001",
+    "unitCode": "B2_002",
+    "title": "Social Issues",
+    "description": "Discuss inequality, poverty, discrimination, and social challenges",
+    "objective": "Engage with complex social topics in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "B2_002_002",
+    "unitCode": "B2_002",
+    "title": "Cultural Traditions",
+    "description": "Explore Hispanic festivals, traditions, and cultural identity",
+    "objective": "Discuss and compare cultural traditions across Spanish-speaking countries",
+    "sortOrder": 2
+  },
+  {
+    "code": "B2_002_003",
+    "unitCode": "B2_002",
+    "title": "Comparing Perspectives",
+    "description": "Learn discourse markers and structures for balanced argument",
+    "objective": "Present multiple perspectives using complex linking language",
+    "sortOrder": 3
+  },
 
-  { "code": "B2_003_001", "unitCode": "B2_003", "title": "Environmental Problems", "description": "Discuss pollution, climate change, and environmental degradation", "objective": "Discuss major environmental issues using appropriate vocabulary", "sortOrder": 1 },
-  { "code": "B2_003_002", "unitCode": "B2_003", "title": "Conservation & Sustainability", "description": "Explore recycling, renewable energy, and sustainable practices", "objective": "Discuss conservation measures and sustainable solutions", "sortOrder": 2 },
-  { "code": "B2_003_003", "unitCode": "B2_003", "title": "Nature & Ecosystems", "description": "Discuss forests, oceans, biodiversity, and natural habitats", "objective": "Describe ecosystems and the importance of biodiversity", "sortOrder": 3 },
+  {
+    "code": "B2_003_001",
+    "unitCode": "B2_003",
+    "title": "Environmental Problems",
+    "description": "Discuss pollution, climate change, and environmental degradation",
+    "objective": "Discuss major environmental issues using appropriate vocabulary",
+    "sortOrder": 1
+  },
+  {
+    "code": "B2_003_002",
+    "unitCode": "B2_003",
+    "title": "Conservation & Sustainability",
+    "description": "Explore recycling, renewable energy, and sustainable practices",
+    "objective": "Discuss conservation measures and sustainable solutions",
+    "sortOrder": 2
+  },
+  {
+    "code": "B2_003_003",
+    "unitCode": "B2_003",
+    "title": "Nature & Ecosystems",
+    "description": "Discuss forests, oceans, biodiversity, and natural habitats",
+    "objective": "Describe ecosystems and the importance of biodiversity",
+    "sortOrder": 3
+  },
 
-  { "code": "C1_001_001", "unitCode": "C1_001", "title": "Business Negotiations", "description": "Master language for negotiating contracts, deals, and agreements", "objective": "Conduct a professional negotiation in Spanish", "sortOrder": 1 },
-  { "code": "C1_001_002", "unitCode": "C1_001", "title": "Economic Concepts", "description": "Understand and discuss macroeconomic and financial concepts", "objective": "Discuss economic phenomena using precise Spanish terminology", "sortOrder": 2 },
-  { "code": "C1_001_003", "unitCode": "C1_001", "title": "Professional Writing", "description": "Write formal reports, proposals, and business correspondence", "objective": "Produce formal written documents in professional Spanish", "sortOrder": 3 },
+  {
+    "code": "C1_001_001",
+    "unitCode": "C1_001",
+    "title": "Business Negotiations",
+    "description": "Master language for negotiating contracts, deals, and agreements",
+    "objective": "Conduct a professional negotiation in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "C1_001_002",
+    "unitCode": "C1_001",
+    "title": "Economic Concepts",
+    "description": "Understand and discuss macroeconomic and financial concepts",
+    "objective": "Discuss economic phenomena using precise Spanish terminology",
+    "sortOrder": 2
+  },
+  {
+    "code": "C1_001_003",
+    "unitCode": "C1_001",
+    "title": "Professional Writing",
+    "description": "Write formal reports, proposals, and business correspondence",
+    "objective": "Produce formal written documents in professional Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "C1_002_001", "unitCode": "C1_002", "title": "Spanish Literature", "description": "Engage with canonical works from Cervantes, García Lorca, and Neruda", "objective": "Analyze literary texts and discuss themes, style, and context", "sortOrder": 1 },
-  { "code": "C1_002_002", "unitCode": "C1_002", "title": "Film & Art Criticism", "description": "Learn language for critiquing cinema, visual arts, and cultural works", "objective": "Write and discuss critical reviews in fluent Spanish", "sortOrder": 2 },
-  { "code": "C1_002_003", "unitCode": "C1_002", "title": "Cultural Analysis", "description": "Analyze historical influence, cultural legacy, and artistic movements", "objective": "Contextualize cultural phenomena in historical and social frameworks", "sortOrder": 3 },
+  {
+    "code": "C1_002_001",
+    "unitCode": "C1_002",
+    "title": "Spanish Literature",
+    "description": "Engage with canonical works from Cervantes, García Lorca, and Neruda",
+    "objective": "Analyze literary texts and discuss themes, style, and context",
+    "sortOrder": 1
+  },
+  {
+    "code": "C1_002_002",
+    "unitCode": "C1_002",
+    "title": "Film & Art Criticism",
+    "description": "Learn language for critiquing cinema, visual arts, and cultural works",
+    "objective": "Write and discuss critical reviews in fluent Spanish",
+    "sortOrder": 2
+  },
+  {
+    "code": "C1_002_003",
+    "unitCode": "C1_002",
+    "title": "Cultural Analysis",
+    "description": "Analyze historical influence, cultural legacy, and artistic movements",
+    "objective": "Contextualize cultural phenomena in historical and social frameworks",
+    "sortOrder": 3
+  },
 
-  { "code": "C1_003_001", "unitCode": "C1_003", "title": "Constructing Arguments", "description": "Master techniques for building coherent thesis-driven arguments", "objective": "Construct and present a well-structured argument in Spanish", "sortOrder": 1 },
-  { "code": "C1_003_002", "unitCode": "C1_003", "title": "Nuanced Expression", "description": "Learn to convey subtlety, irony, understatement, and implication", "objective": "Express nuanced meaning with precision and sophistication", "sortOrder": 2 },
-  { "code": "C1_003_003", "unitCode": "C1_003", "title": "Academic Language", "description": "Master academic register for essays, papers, and formal discourse", "objective": "Produce and comprehend academic Spanish texts", "sortOrder": 3 },
+  {
+    "code": "C1_003_001",
+    "unitCode": "C1_003",
+    "title": "Constructing Arguments",
+    "description": "Master techniques for building coherent thesis-driven arguments",
+    "objective": "Construct and present a well-structured argument in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "C1_003_002",
+    "unitCode": "C1_003",
+    "title": "Nuanced Expression",
+    "description": "Learn to convey subtlety, irony, understatement, and implication",
+    "objective": "Express nuanced meaning with precision and sophistication",
+    "sortOrder": 2
+  },
+  {
+    "code": "C1_003_003",
+    "unitCode": "C1_003",
+    "title": "Academic Language",
+    "description": "Master academic register for essays, papers, and formal discourse",
+    "objective": "Produce and comprehend academic Spanish texts",
+    "sortOrder": 3
+  },
 
-  { "code": "C2_001_001", "unitCode": "C2_001", "title": "Advanced Rhetoric", "description": "Study rhetorical devices: metaphor, alliteration, irony, and hyperbole", "objective": "Identify and deploy rhetorical devices in Spanish discourse", "sortOrder": 1 },
-  { "code": "C2_001_002", "unitCode": "C2_001", "title": "Formal Register", "description": "Master the most elevated, ceremonial, and legal Spanish registers", "objective": "Produce formally impeccable Spanish in high-stakes contexts", "sortOrder": 2 },
-  { "code": "C2_001_003", "unitCode": "C2_001", "title": "Speechwriting & Oratory", "description": "Learn the craft of writing and delivering speeches in Spanish", "objective": "Write and deliver a compelling speech in Spanish", "sortOrder": 3 },
+  {
+    "code": "C2_001_001",
+    "unitCode": "C2_001",
+    "title": "Advanced Rhetoric",
+    "description": "Study rhetorical devices: metaphor, alliteration, irony, and hyperbole",
+    "objective": "Identify and deploy rhetorical devices in Spanish discourse",
+    "sortOrder": 1
+  },
+  {
+    "code": "C2_001_002",
+    "unitCode": "C2_001",
+    "title": "Formal Register",
+    "description": "Master the most elevated, ceremonial, and legal Spanish registers",
+    "objective": "Produce formally impeccable Spanish in high-stakes contexts",
+    "sortOrder": 2
+  },
+  {
+    "code": "C2_001_003",
+    "unitCode": "C2_001",
+    "title": "Speechwriting & Oratory",
+    "description": "Learn the craft of writing and delivering speeches in Spanish",
+    "objective": "Write and deliver a compelling speech in Spanish",
+    "sortOrder": 3
+  },
 
-  { "code": "C2_002_001", "unitCode": "C2_002", "title": "Spanish Idioms", "description": "Master idiomatic expressions used by native Spanish speakers", "objective": "Understand and use idiomatic Spanish naturally in context", "sortOrder": 1 },
-  { "code": "C2_002_002", "unitCode": "C2_002", "title": "Regional Expressions", "description": "Explore dialect variation across Spain and Latin America", "objective": "Recognize and use regional vocabulary from multiple Spanish-speaking countries", "sortOrder": 2 },
-  { "code": "C2_002_003", "unitCode": "C2_002", "title": "Proverbs & Sayings", "description": "Learn traditional Spanish proverbs, refranes, and folk wisdom", "objective": "Use proverbs and sayings appropriately in conversation", "sortOrder": 3 }
+  {
+    "code": "C2_002_001",
+    "unitCode": "C2_002",
+    "title": "Spanish Idioms",
+    "description": "Master idiomatic expressions used by native Spanish speakers",
+    "objective": "Understand and use idiomatic Spanish naturally in context",
+    "sortOrder": 1
+  },
+  {
+    "code": "C2_002_002",
+    "unitCode": "C2_002",
+    "title": "Regional Expressions",
+    "description": "Explore dialect variation across Spain and Latin America",
+    "objective": "Recognize and use regional vocabulary from multiple Spanish-speaking countries",
+    "sortOrder": 2
+  },
+  {
+    "code": "C2_002_003",
+    "unitCode": "C2_002",
+    "title": "Proverbs & Sayings",
+    "description": "Learn traditional Spanish proverbs, refranes, and folk wisdom",
+    "objective": "Use proverbs and sayings appropriately in conversation",
+    "sortOrder": 3
+  }
 ]

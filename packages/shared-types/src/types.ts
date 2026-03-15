@@ -203,7 +203,7 @@ export interface ProgressSummary {
   currentStreak: number;
   exercisesCompleted: number;
   levelProgress: Record<string, number>; // CEFR level code -> completion percentage
-  unitProgress: Record<string, number>;  // Unit ID -> completion percentage
+  unitProgress: Record<string, number>; // Unit ID -> completion percentage
 }
 
 /**

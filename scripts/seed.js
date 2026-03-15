@@ -35,7 +35,7 @@ const runCommand = (cmd, cwd = apiPath) => {
     execSync(cmd, {
       cwd,
       stdio: 'inherit',
-      shell: true
+      shell: true,
     });
   } catch (error) {
     log(`\n✗ Command failed: ${cmd}`, 'red');
@@ -44,7 +44,8 @@ const runCommand = (cmd, cwd = apiPath) => {
 };
 
 const help = () => {
-  log(`
+  log(
+    `
 Database Seeding Utility
 ========================
 
@@ -80,7 +81,9 @@ Note: The seed command requires:
   - .NET 8 or higher
   - Entity Framework Core tools installed
   - A running PostgreSQL database (check docker-compose setup)
-`, 'green');
+`,
+    'green'
+  );
 };
 
 if (command === '--help' || command === '-h') {

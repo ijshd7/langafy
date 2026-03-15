@@ -33,25 +33,28 @@ export function useLesson(lessonId: string) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async (isRefresh = false) => {
-    try {
-      if (!isRefresh) {
-        setLoading(true);
-      }
-      setError(null);
+  const load = useCallback(
+    async (isRefresh = false) => {
+      try {
+        if (!isRefresh) {
+          setLoading(true);
+        }
+        setError(null);
 
-      // Fetch lesson detail including exercises
-      const response = await apiClient.get<LessonDetail>(`/lessons/${lessonId}`);
-      setData(response);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load lesson';
-      setError(errorMessage);
-      console.error('[useLesson] Error loading lesson:', err);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [lessonId]);
+        // Fetch lesson detail including exercises
+        const response = await apiClient.get<LessonDetail>(`/lessons/${lessonId}`);
+        setData(response);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load lesson';
+        setError(errorMessage);
+        console.error('[useLesson] Error loading lesson:', err);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [lessonId]
+  );
 
   // Re-fetch when lessonId changes
   useEffect(() => {

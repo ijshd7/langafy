@@ -26,11 +26,13 @@ The Langafy API uses automatic database seeding during startup. When the API sta
 ### Seed Data Location
 
 All seed data files are located in:
+
 ```
 apps/api/LangafyApi/Data/SeedData/
 ```
 
 #### File Structure
+
 ```
 SeedData/
 ├── languages.json           # Available languages (e.g., Spanish, French)
@@ -43,6 +45,7 @@ SeedData/
 ```
 
 #### Example: Spanish Data
+
 ```
 SeedData/
 └── es/
@@ -55,23 +58,28 @@ SeedData/
 ## Scripts
 
 ### `npm run seed`
+
 Starts the API in development mode. The database will be seeded automatically if it's empty.
 
 **When to use**: First time setup, or restarting the API after stopping it.
 
 **Requirements**:
+
 - PostgreSQL database running (use `npm run docker:up`)
 - .NET 8 SDK installed
 - Entity Framework Core tools
 
 ### `npm run seed:reset`
+
 Completely resets the database and reseeds from scratch. This will:
+
 1. Drop all database tables
 2. Recreate the schema
 3. Load all seed data from JSON files
 4. Start the API
 
 **When to use**:
+
 - After adding/modifying seed data files
 - When testing new seed data content
 - To clean up corrupted data
@@ -79,6 +87,7 @@ Completely resets the database and reseeds from scratch. This will:
 **Warning**: This deletes all data in the database, including user-created data. Only use in development!
 
 ### `npm run seed:help`
+
 Displays this help documentation in the terminal.
 
 ## Modifying Seed Data
@@ -92,6 +101,7 @@ To add or update seed data:
 ### Example: Adding a New Spanish Unit
 
 Edit `apps/api/LangafyApi/Data/SeedData/es/units.json`:
+
 ```json
 [
   {
@@ -112,6 +122,7 @@ Edit `apps/api/LangafyApi/Data/SeedData/es/units.json`:
 ```
 
 Then reseed:
+
 ```bash
 npm run seed:reset
 ```
@@ -121,6 +132,7 @@ npm run seed:reset
 To add a completely new language (e.g., French):
 
 1. **Create a language directory**:
+
    ```bash
    mkdir apps/api/LangafyApi/Data/SeedData/fr
    ```
@@ -132,6 +144,7 @@ To add a completely new language (e.g., French):
    - `vocabulary.json`
 
 3. **Update `languages.json`** to include the new language:
+
    ```json
    [
      {
@@ -157,14 +170,17 @@ To add a completely new language (e.g., French):
 ## Troubleshooting
 
 ### "Database drop failed"
+
 - Ensure the PostgreSQL database is running: `npm run docker:up`
 - Check that no other connections are using the database
 
 ### "Seed data file not found"
+
 - Verify the JSON files exist in `apps/api/LangafyApi/Data/SeedData/`
 - Check the language code directory matches the language code in `languages.json`
 
 ### "CEFR level not found"
+
 - Ensure `cefr-levels.json` contains the level codes used in your seed files (A1, A2, B1, B2, C1, C2)
 - Verify the `cefrLevel` fields in units.json match exactly
 

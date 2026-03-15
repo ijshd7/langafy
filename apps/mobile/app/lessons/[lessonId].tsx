@@ -2,19 +2,13 @@ import { ExerciseResult } from '@langafy/shared-types';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { AlertCircleIcon, CheckCircleIcon, CheckIcon } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect } from 'react';
-import {
-  ScrollView,
-  View,
-  Dimensions,
-  Animated,
-} from 'react-native';
+import { ScrollView, View, Dimensions, Animated } from 'react-native';
 
 import { ExerciseRenderer } from '@/components/exercises/ExerciseRenderer';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useLesson } from '@/hooks/useLesson';
-
 
 const { width } = Dimensions.get('window');
 
@@ -26,7 +20,7 @@ function ProgressBar({ percentage }: { percentage: number }) {
   const filledWidth = ((width - 32) * fillWidth) / 100;
 
   return (
-    <View className="h-2 overflow-hidden rounded-full bg-muted">
+    <View className="bg-muted h-2 overflow-hidden rounded-full">
       <Animated.View
         className="h-full rounded-full bg-cyan-500"
         style={{ width: Math.max(filledWidth, 4) }}
@@ -34,7 +28,6 @@ function ProgressBar({ percentage }: { percentage: number }) {
     </View>
   );
 }
-
 
 /**
  * Exercise indicator component showing completion status
@@ -53,22 +46,20 @@ function ExerciseIndicators({
       {Array.from({ length: totalExercises }).map((_, index) => (
         <View
           key={index}
-          className={`flex-1 h-10 rounded-lg items-center justify-center ${
+          className={`h-10 flex-1 items-center justify-center rounded-lg ${
             completedIndices.has(index)
               ? 'bg-green-500'
               : index === currentIndex
                 ? 'bg-cyan-500'
                 : 'bg-muted'
-          }`}
-        >
+          }`}>
           {completedIndices.has(index) ? (
             <Icon as={CheckIcon} className="size-5 text-white" />
           ) : (
             <Text
               className={`font-semibold ${
                 index === currentIndex ? 'text-white' : 'text-muted-foreground'
-              }`}
-            >
+              }`}>
               {index + 1}
             </Text>
           )}
@@ -89,8 +80,8 @@ function PointsSummary({
   totalPoints: number;
 }) {
   return (
-    <View className="mx-4 px-4 py-3 rounded-lg bg-card border border-border flex-row items-center justify-between">
-      <Text className="text-sm font-medium text-muted-foreground">Points Earned</Text>
+    <View className="bg-card border-border mx-4 flex-row items-center justify-between rounded-lg border px-4 py-3">
+      <Text className="text-muted-foreground text-sm font-medium">Points Earned</Text>
       <Text className="text-lg font-bold text-cyan-500">
         {earnedPoints} / {totalPoints}
       </Text>
@@ -121,28 +112,25 @@ function CompletionScreen({
   }, [scaleAnim]);
 
   return (
-    <View className="flex-1 items-center justify-center px-4 gap-6 pb-8">
+    <View className="flex-1 items-center justify-center gap-6 px-4 pb-8">
       <Animated.View
         style={{
           transform: [{ scale: scaleAnim }],
-        }}
-      >
+        }}>
         <Icon as={CheckCircleIcon} className="size-16 text-green-500" />
       </Animated.View>
 
-      <Text className="text-2xl font-bold text-foreground text-center">
-        Lesson Complete!
-      </Text>
+      <Text className="text-foreground text-center text-2xl font-bold">Lesson Complete!</Text>
 
-      <View className="items-center gap-2 bg-card rounded-lg p-6 border border-border">
-        <Text className="text-sm text-muted-foreground">Points Earned</Text>
+      <View className="bg-card border-border items-center gap-2 rounded-lg border p-6">
+        <Text className="text-muted-foreground text-sm">Points Earned</Text>
         <Text className="text-5xl font-bold text-cyan-500">{earnedPoints}</Text>
-        <Text className="text-xs text-muted-foreground mt-2">
+        <Text className="text-muted-foreground mt-2 text-xs">
           out of {totalPoints} possible points
         </Text>
       </View>
 
-      <Button onPress={onBack} className="bg-cyan-500 px-8 py-3 rounded-lg">
+      <Button onPress={onBack} className="rounded-lg bg-cyan-500 px-8 py-3">
         <Text className="font-semibold text-white">Back to Lessons</Text>
       </Button>
     </View>
@@ -155,19 +143,15 @@ function CompletionScreen({
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
-      <Text className="text-center text-lg font-semibold text-foreground">
+      <Icon as={AlertCircleIcon} className="text-destructive size-12" />
+      <Text className="text-foreground text-center text-lg font-semibold">
         Couldn&apos;t load lesson
       </Text>
-      <Text className="text-center text-sm text-muted-foreground">
+      <Text className="text-muted-foreground text-center text-sm">
         Please check your connection and try again
       </Text>
-      <Button
-        onPress={onRetry}
-        variant="outline"
-        className="rounded-lg px-6 py-3"
-      >
-        <Text className="font-semibold text-foreground">Retry</Text>
+      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
+        <Text className="text-foreground font-semibold">Retry</Text>
       </Button>
     </View>
   );
@@ -181,9 +165,9 @@ export default function LessonDetailScreen() {
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
   const { data: lesson, loading, error, refresh } = useLesson(lessonId || '');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [completedExercises, setCompletedExercises] = useState<
-    Map<number, ExerciseResult>
-  >(new Map());
+  const [completedExercises, setCompletedExercises] = useState<Map<number, ExerciseResult>>(
+    new Map()
+  );
 
   const isComplete = lesson && currentIndex >= lesson.exercises.length;
   const currentExercise = lesson && lesson.exercises[currentIndex];
@@ -211,13 +195,13 @@ export default function LessonDetailScreen() {
           headerShown: true,
         }}
       />
-      <ScrollView className="flex-1 bg-background">
+      <ScrollView className="bg-background flex-1">
         {error && !lesson ? (
           <ErrorState onRetry={refresh} />
         ) : loading || !lesson ? (
-          <View className="px-4 py-6 gap-4">
-            <View className="h-2 rounded-full bg-muted" />
-            <View className="rounded-xl bg-card p-6 h-40" />
+          <View className="gap-4 px-4 py-6">
+            <View className="bg-muted h-2 rounded-full" />
+            <View className="bg-card h-40 rounded-xl p-6" />
           </View>
         ) : isComplete ? (
           <CompletionScreen
@@ -226,15 +210,13 @@ export default function LessonDetailScreen() {
             onBack={() => router.back()}
           />
         ) : (
-          <View className="px-4 py-4 gap-4">
+          <View className="gap-4 px-4 py-4">
             {/* Header */}
             <View className="gap-2">
-              <Text className="text-base font-semibold text-muted-foreground">
+              <Text className="text-muted-foreground text-base font-semibold">
                 Lesson: {lesson.title}
               </Text>
-              <Text className="text-sm text-muted-foreground">
-                {lesson.objective}
-              </Text>
+              <Text className="text-muted-foreground text-sm">{lesson.objective}</Text>
             </View>
 
             {/* Exercise indicators */}
@@ -246,10 +228,8 @@ export default function LessonDetailScreen() {
 
             {/* Progress bar and counter */}
             <View className="gap-3">
-              <ProgressBar
-                percentage={(currentIndex / lesson.exercises.length) * 100}
-              />
-              <Text className="text-sm text-muted-foreground text-center">
+              <ProgressBar percentage={(currentIndex / lesson.exercises.length) * 100} />
+              <Text className="text-muted-foreground text-center text-sm">
                 Exercise {currentIndex + 1} of {lesson.exercises.length}
               </Text>
             </View>

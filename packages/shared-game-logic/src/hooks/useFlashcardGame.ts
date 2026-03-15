@@ -1,44 +1,44 @@
-import { useState, useCallback, useEffect } from 'react'
-import { shuffleArray } from '../utils/scramble'
-import { useGameTimer } from './useGameTimer'
-import { useGameScoring } from './useGameScoring'
-import type { GameScore } from './useGameScoring'
+import { useState, useCallback, useEffect } from 'react';
+import { shuffleArray } from '../utils/scramble';
+import { useGameTimer } from './useGameTimer';
+import { useGameScoring } from './useGameScoring';
+import type { GameScore } from './useGameScoring';
 
 export interface FlashcardPair {
-  target: string
-  english: string
+  target: string;
+  english: string;
 }
 
-export type CardSide = 'target' | 'english'
+export type CardSide = 'target' | 'english';
 
 export interface FlashcardGameCard {
-  id: string
-  text: string
-  side: CardSide
-  pairIndex: number
-  isFlipped: boolean
-  isMatched: boolean
+  id: string;
+  text: string;
+  side: CardSide;
+  pairIndex: number;
+  isFlipped: boolean;
+  isMatched: boolean;
 }
 
-export type FlashcardGameState = 'idle' | 'playing' | 'completed'
+export type FlashcardGameState = 'idle' | 'playing' | 'completed';
 
 export interface FlashcardGameResult {
-  matches: FlashcardPair[]
-  score: GameScore
-  elapsedMs: number
+  matches: FlashcardPair[];
+  score: GameScore;
+  elapsedMs: number;
 }
 
 export interface FlashcardGameHook {
-  gameState: FlashcardGameState
-  cards: FlashcardGameCard[]
-  selectedCardId: string | null
-  lastMismatchIds: [string, string] | null
-  elapsedMs: number
-  remainingMs: number | null
-  mistakes: number
-  start: () => void
-  flipCard: (cardId: string) => void
-  result: FlashcardGameResult | null
+  gameState: FlashcardGameState;
+  cards: FlashcardGameCard[];
+  selectedCardId: string | null;
+  lastMismatchIds: [string, string] | null;
+  elapsedMs: number;
+  remainingMs: number | null;
+  mistakes: number;
+  start: () => void;
+  flipCard: (cardId: string) => void;
+  result: FlashcardGameResult | null;
 }
 
 /**
@@ -55,24 +55,27 @@ export interface FlashcardGameHook {
 export function useFlashcardGame(
   pairs: FlashcardPair[],
   basePoints: number,
-  timeLimitMs?: number,
+  timeLimitMs?: number
 ): FlashcardGameHook {
-  const [gameState, setGameState] = useState<FlashcardGameState>('idle')
-  const [cards, setCards] = useState<FlashcardGameCard[]>([])
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
-  const [lastMismatchIds, setLastMismatchIds] = useState<[string, string] | null>(null)
-  const [result, setResult] = useState<FlashcardGameResult | null>(null)
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [gameState, setGameState] = useState<FlashcardGameState>('idle');
+  const [cards, setCards] = useState<FlashcardGameCard[]>([]);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [lastMismatchIds, setLastMismatchIds] = useState<[string, string] | null>(null);
+  const [result, setResult] = useState<FlashcardGameResult | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const { elapsedMs, remainingMs, start: startTimer, reset: resetTimer } = useGameTimer(
-    timeLimitMs !== undefined ? 'countdown' : 'countup',
-    timeLimitMs,
-    () => handleTimeout(),
-  )
-  const scoring = useGameScoring()
+  const {
+    elapsedMs,
+    remainingMs,
+    start: startTimer,
+    reset: resetTimer,
+  } = useGameTimer(timeLimitMs !== undefined ? 'countdown' : 'countup', timeLimitMs, () =>
+    handleTimeout()
+  );
+  const scoring = useGameScoring();
 
   function buildCards(p: FlashcardPair[]): FlashcardGameCard[] {
-    const all: FlashcardGameCard[] = []
+    const all: FlashcardGameCard[] = [];
     p.forEach((pair, index) => {
       all.push({
         id: `${index}-target`,
@@ -81,7 +84,7 @@ export function useFlashcardGame(
         pairIndex: index,
         isFlipped: false,
         isMatched: false,
-      })
+      });
       all.push({
         id: `${index}-english`,
         text: pair.english,
@@ -89,89 +92,98 @@ export function useFlashcardGame(
         pairIndex: index,
         isFlipped: false,
         isMatched: false,
-      })
-    })
-    return shuffleArray(all)
+      });
+    });
+    return shuffleArray(all);
   }
 
   const start = useCallback(() => {
-    setCards(buildCards(pairs))
-    setSelectedCardId(null)
-    setLastMismatchIds(null)
-    setResult(null)
-    scoring.reset()
-    resetTimer()
-    setGameState('playing')
-    startTimer()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pairs])
+    setCards(buildCards(pairs));
+    setSelectedCardId(null);
+    setLastMismatchIds(null);
+    setResult(null);
+    scoring.reset();
+    resetTimer();
+    setGameState('playing');
+    startTimer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pairs]);
 
   function handleTimeout() {
-    setGameState('completed')
-    const finalScore = scoring.computeScore(basePoints, elapsedMs, timeLimitMs)
-    setResult({ matches: pairs.filter((_, i) => cards.find((c) => c.pairIndex === i && c.isMatched)), score: finalScore, elapsedMs })
+    setGameState('completed');
+    const finalScore = scoring.computeScore(basePoints, elapsedMs, timeLimitMs);
+    setResult({
+      matches: pairs.filter((_, i) => cards.find((c) => c.pairIndex === i && c.isMatched)),
+      score: finalScore,
+      elapsedMs,
+    });
   }
 
   const flipCard = useCallback(
     (cardId: string) => {
-      if (gameState !== 'playing' || isProcessing) return
+      if (gameState !== 'playing' || isProcessing) return;
 
       setCards((prev) => {
-        const card = prev.find((c) => c.id === cardId)
-        if (!card || card.isFlipped || card.isMatched) return prev
-        return prev.map((c) => (c.id === cardId ? { ...c, isFlipped: true } : c))
-      })
+        const card = prev.find((c) => c.id === cardId);
+        if (!card || card.isFlipped || card.isMatched) return prev;
+        return prev.map((c) => (c.id === cardId ? { ...c, isFlipped: true } : c));
+      });
 
       setSelectedCardId((prevSelected) => {
         if (prevSelected === null) {
-          return cardId
+          return cardId;
         }
 
         // Second card selected — evaluate
-        setIsProcessing(true)
+        setIsProcessing(true);
         setCards((prev) => {
-          const first = prev.find((c) => c.id === prevSelected)
-          const second = prev.find((c) => c.id === cardId)
+          const first = prev.find((c) => c.id === prevSelected);
+          const second = prev.find((c) => c.id === cardId);
 
-          if (!first || !second || first.pairIndex !== second.pairIndex || first.side === second.side) {
+          if (
+            !first ||
+            !second ||
+            first.pairIndex !== second.pairIndex ||
+            first.side === second.side
+          ) {
             // Mismatch
-            scoring.recordMistake()
-            setLastMismatchIds([prevSelected, cardId])
+            scoring.recordMistake();
+            setLastMismatchIds([prevSelected, cardId]);
             setTimeout(() => {
               setCards((cards) =>
                 cards.map((c) =>
-                  c.id === prevSelected || c.id === cardId ? { ...c, isFlipped: false } : c,
-                ),
-              )
-              setLastMismatchIds(null)
-              setIsProcessing(false)
-            }, 800)
-            return prev
+                  c.id === prevSelected || c.id === cardId ? { ...c, isFlipped: false } : c
+                )
+              );
+              setLastMismatchIds(null);
+              setIsProcessing(false);
+            }, 800);
+            return prev;
           }
 
           // Match
-          setLastMismatchIds(null)
+          setLastMismatchIds(null);
           const updated = prev.map((c) =>
-            c.id === prevSelected || c.id === cardId ? { ...c, isMatched: true } : c,
-          )
-          const allMatched = updated.every((c) => c.isMatched)
+            c.id === prevSelected || c.id === cardId ? { ...c, isMatched: true } : c
+          );
+          const allMatched = updated.every((c) => c.isMatched);
           if (allMatched) {
-            setGameState('completed')
-            const finalScore = scoring.computeScore(basePoints, elapsedMs, timeLimitMs)
-            setResult({ matches: pairs, score: finalScore, elapsedMs })
+            setGameState('completed');
+            const finalScore = scoring.computeScore(basePoints, elapsedMs, timeLimitMs);
+            setResult({ matches: pairs, score: finalScore, elapsedMs });
           }
-          setIsProcessing(false)
-          return updated
-        })
+          setIsProcessing(false);
+          return updated;
+        });
 
-        return null
-      })
+        return null;
+      });
     },
-    [gameState, isProcessing, scoring, basePoints, elapsedMs, timeLimitMs, pairs],
-  )
+    [gameState, isProcessing, scoring, basePoints, elapsedMs, timeLimitMs, pairs]
+  );
 
   // Keep elapsedMs in sync for the timeout handler
-  useEffect(() => {}, [elapsedMs])
+  useEffect(() => {}, [elapsedMs]);
 
   return {
     gameState,
@@ -184,5 +196,5 @@ export function useFlashcardGame(
     start,
     flipCard,
     result,
-  }
+  };
 }

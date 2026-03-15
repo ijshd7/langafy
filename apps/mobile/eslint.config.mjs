@@ -1,9 +1,9 @@
-import eslint from "@eslint/js";
-import importPlugin from "eslint-plugin-import";
-import reactPlugin from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-import globals from "globals";
-import tseslint from "typescript-eslint";
+import eslint from '@eslint/js';
+import importPlugin from 'eslint-plugin-import';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 /**
  * ESLint flat config for the React Native / Expo mobile app.
@@ -27,20 +27,20 @@ const eslintConfig = tseslint.config(
       react: reactPlugin,
     },
     settings: {
-      react: { version: "detect" },
+      react: { version: 'detect' },
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       // Not needed with Expo's new JSX transform
-      "react/react-in-jsx-scope": "off",
+      'react/react-in-jsx-scope': 'off',
       // TypeScript enforces prop types
-      "react/prop-types": "off",
+      'react/prop-types': 'off',
     },
   },
 
   // React Hooks rules
   {
-    plugins: { "react-hooks": reactHooks },
+    plugins: { 'react-hooks': reactHooks },
     rules: reactHooks.configs.recommended.rules,
   },
 
@@ -48,27 +48,20 @@ const eslintConfig = tseslint.config(
   {
     plugins: { import: importPlugin },
     settings: {
-      "import/resolver": {
+      'import/resolver': {
         typescript: {
-          project: "./tsconfig.json",
+          project: './tsconfig.json',
         },
         node: true,
       },
     },
     rules: {
-      "import/order": [
-        "warn",
+      'import/order': [
+        'warn',
         {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-          ],
-          "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
     },
@@ -95,7 +88,7 @@ const eslintConfig = tseslint.config(
       globals: {
         ...globals.node,
         // React Native / Expo globals
-        __DEV__: "readonly",
+        __DEV__: 'readonly',
       },
     },
   },
@@ -103,16 +96,16 @@ const eslintConfig = tseslint.config(
   // Files to ignore
   {
     ignores: [
-      ".expo/**",
-      "node_modules/**",
-      "dist/**",
-      "android/**",
-      "ios/**",
-      "babel.config.js",
-      "metro.config.js",
-      "tailwind.config.js",
+      '.expo/**',
+      'node_modules/**',
+      'dist/**',
+      'android/**',
+      'ios/**',
+      'babel.config.js',
+      'metro.config.js',
+      'tailwind.config.js',
     ],
-  },
+  }
 );
 
 export default eslintConfig;

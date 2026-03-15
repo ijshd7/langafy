@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.expo/
+dist/
+build/
+bin/
+obj/
+android/
+ios/
+*.min.js
+*.min.css

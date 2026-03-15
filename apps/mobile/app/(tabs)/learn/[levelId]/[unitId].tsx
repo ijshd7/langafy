@@ -1,19 +1,12 @@
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { AlertCircleIcon } from 'lucide-react-native';
 import React, { useEffect, useMemo } from 'react';
-import {
-  Animated,
-  RefreshControl,
-  ScrollView,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { Animated, RefreshControl, ScrollView, View, TouchableOpacity } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useLessons, type Lesson } from '@/hooks/useLessons';
-
 
 /**
  * Skeleton loading component
@@ -46,7 +39,7 @@ function SkeletonLine({
 
   return (
     <Animated.View
-      className="rounded-lg bg-muted"
+      className="bg-muted rounded-lg"
       style={{
         width: w,
         height,
@@ -65,19 +58,15 @@ function SkeletonLine({
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <View className="flex-1 items-center justify-center gap-4 px-4 py-8">
-      <Icon as={AlertCircleIcon} className="size-12 text-destructive" />
-      <Text className="text-center text-lg font-semibold text-foreground">
+      <Icon as={AlertCircleIcon} className="text-destructive size-12" />
+      <Text className="text-foreground text-center text-lg font-semibold">
         Couldn&apos;t load lessons
       </Text>
-      <Text className="text-center text-sm text-muted-foreground">
+      <Text className="text-muted-foreground text-center text-sm">
         Please check your connection and try again
       </Text>
-      <Button
-        onPress={onRetry}
-        variant="outline"
-        className="rounded-lg px-6 py-3"
-      >
-        <Text className="font-semibold text-foreground">Retry</Text>
+      <Button onPress={onRetry} variant="outline" className="rounded-lg px-6 py-3">
+        <Text className="text-foreground font-semibold">Retry</Text>
       </Button>
     </View>
   );
@@ -89,15 +78,13 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 function LessonCard({ lesson, onPress }: { lesson: Lesson; onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <View className="rounded-xl border border-border bg-card p-4">
-        <Text className="font-semibold text-foreground text-base mb-1">
-          {lesson.title}
-        </Text>
-        <Text className="text-sm text-muted-foreground mb-3" numberOfLines={2}>
+      <View className="border-border bg-card rounded-xl border p-4">
+        <Text className="text-foreground mb-1 text-base font-semibold">{lesson.title}</Text>
+        <Text className="text-muted-foreground mb-3 text-sm" numberOfLines={2}>
           {lesson.objective}
         </Text>
         {lesson.exerciseCount && (
-          <Text className="text-xs text-muted-foreground">
+          <Text className="text-muted-foreground text-xs">
             {lesson.exerciseCount} exercise{lesson.exerciseCount !== 1 ? 's' : ''}
           </Text>
         )}
@@ -125,15 +112,10 @@ export default function LessonListScreen() {
         }}
       />
       <ScrollView
-        className="flex-1 bg-background"
+        className="bg-background flex-1"
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
-            tintColor="#06B6D4"
-          />
-        }
-      >
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#06B6D4" />
+        }>
         {error && data === null ? (
           <ErrorState onRetry={refresh} />
         ) : (
@@ -153,9 +135,7 @@ export default function LessonListScreen() {
                 />
               ))
             ) : (
-              <Text className="text-center text-muted-foreground py-8">
-                No lessons available
-              </Text>
+              <Text className="text-muted-foreground py-8 text-center">No lessons available</Text>
             )}
           </View>
         )}

@@ -1,6 +1,14 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 
 import { useAuth } from '@/hooks/useAuth';
 
@@ -52,18 +60,17 @@ export default function SignupScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-background"
-    >
+      className="bg-background flex-1">
       <ScrollView className="flex-1" contentContainerClassName="flex-grow justify-center px-6">
         <View className="mb-8">
-          <Text className="text-3xl font-bold text-foreground mb-2">Create account</Text>
-          <Text className="text-base text-muted-foreground">Start learning a new language</Text>
+          <Text className="text-foreground mb-2 text-3xl font-bold">Create account</Text>
+          <Text className="text-muted-foreground text-base">Start learning a new language</Text>
         </View>
 
         <View className="mb-6">
-          <Text className="text-sm font-medium text-foreground mb-2">Email</Text>
+          <Text className="text-foreground mb-2 text-sm font-medium">Email</Text>
           <TextInput
-            className="border border-input rounded-lg px-4 py-3 bg-background text-foreground"
+            className="border-input bg-background text-foreground rounded-lg border px-4 py-3"
             placeholder="you@example.com"
             placeholderTextColor="#999"
             value={email}
@@ -76,9 +83,9 @@ export default function SignupScreen() {
         </View>
 
         <View className="mb-6">
-          <Text className="text-sm font-medium text-foreground mb-2">Password</Text>
+          <Text className="text-foreground mb-2 text-sm font-medium">Password</Text>
           <TextInput
-            className="border border-input rounded-lg px-4 py-3 bg-background text-foreground"
+            className="border-input bg-background text-foreground rounded-lg border px-4 py-3"
             placeholder="••••••"
             placeholderTextColor="#999"
             value={password}
@@ -90,9 +97,9 @@ export default function SignupScreen() {
         </View>
 
         <View className="mb-6">
-          <Text className="text-sm font-medium text-foreground mb-2">Confirm password</Text>
+          <Text className="text-foreground mb-2 text-sm font-medium">Confirm password</Text>
           <TextInput
-            className="border border-input rounded-lg px-4 py-3 bg-background text-foreground"
+            className="border-input bg-background text-foreground rounded-lg border px-4 py-3"
             placeholder="••••••"
             placeholderTextColor="#999"
             value={confirmPassword}
@@ -104,27 +111,24 @@ export default function SignupScreen() {
         </View>
 
         {(validationError || error) && (
-          <View className="bg-destructive/10 border border-destructive rounded-lg px-4 py-3 mb-6">
-            <Text className="text-sm text-destructive font-medium">
-              {validationError || error}
-            </Text>
+          <View className="bg-destructive/10 border-destructive mb-6 rounded-lg border px-4 py-3">
+            <Text className="text-destructive text-sm font-medium">{validationError || error}</Text>
           </View>
         )}
 
         <TouchableOpacity
           onPress={handleSignUp}
           disabled={loading}
-          className={`rounded-lg py-3 mb-6 ${loading ? 'bg-primary/50' : 'bg-primary'}`}
-        >
-          <Text className="text-center text-base font-semibold text-primary-foreground">
+          className={`mb-6 rounded-lg py-3 ${loading ? 'bg-primary/50' : 'bg-primary'}`}>
+          <Text className="text-primary-foreground text-center text-base font-semibold">
             {loading ? 'Creating account...' : 'Sign up'}
           </Text>
         </TouchableOpacity>
 
         <View className="flex-row justify-center">
-          <Text className="text-sm text-muted-foreground">Already have an account? </Text>
+          <Text className="text-muted-foreground text-sm">Already have an account? </Text>
           <TouchableOpacity onPress={() => router.push('/(auth)/login')} disabled={loading}>
-            <Text className="text-sm font-semibold text-primary">Sign in</Text>
+            <Text className="text-primary text-sm font-semibold">Sign in</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

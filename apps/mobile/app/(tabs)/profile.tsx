@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  SearchIcon,
-  RotateCw,
-  ChevronDown,
-  X,
-} from 'lucide-react-native';
+import { SearchIcon, RotateCw, ChevronDown, X } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -55,7 +50,7 @@ function SkeletonLine({
 
   return (
     <Animated.View
-      className="rounded-lg bg-muted"
+      className="bg-muted rounded-lg"
       style={{
         width: w,
         height,
@@ -71,26 +66,17 @@ function SkeletonLine({
 /**
  * Vocabulary card in list view
  */
-function VocabularyCard({
-  item,
-  onPress,
-}: {
-  item: VocabularyDto;
-  onPress: () => void;
-}) {
+function VocabularyCard({ item, onPress }: { item: VocabularyDto; onPress: () => void }) {
   const isDueForReview = item.nextReviewAt && new Date(item.nextReviewAt) <= new Date();
 
   return (
-    <Pressable
-      onPress={onPress}
-      className="rounded-lg border border-border bg-card p-4 mb-3"
-    >
-      <View className="flex-row items-start justify-between mb-3">
+    <Pressable onPress={onPress} className="border-border bg-card mb-3 rounded-lg border p-4">
+      <View className="mb-3 flex-row items-start justify-between">
         <View className="flex-1">
-          <Text className="text-lg font-bold text-cyan-400 mb-1">{item.wordTarget}</Text>
-          <Text className="text-sm text-foreground">{item.wordEn}</Text>
+          <Text className="mb-1 text-lg font-bold text-cyan-400">{item.wordTarget}</Text>
+          <Text className="text-foreground text-sm">{item.wordEn}</Text>
         </View>
-        <View className="flex-row gap-2 ml-4">
+        <View className="ml-4 flex-row gap-2">
           {isDueForReview && (
             <View className="rounded-full bg-emerald-500/30 px-2.5 py-1">
               <Text className="text-xs font-semibold text-emerald-300">Due</Text>
@@ -102,8 +88,8 @@ function VocabularyCard({
         </View>
       </View>
 
-      <Text className="text-xs text-muted-foreground mb-2">{item.partOfSpeech}</Text>
-      <Text className="text-sm text-muted-foreground italic" numberOfLines={2}>
+      <Text className="text-muted-foreground mb-2 text-xs">{item.partOfSpeech}</Text>
+      <Text className="text-muted-foreground text-sm italic" numberOfLines={2}>
         {item.exampleSentenceTarget}
       </Text>
     </Pressable>
@@ -150,54 +136,46 @@ function ReviewCard({
   });
 
   return (
-    <View className="flex-1 items-center justify-center px-4 gap-6">
+    <View className="flex-1 items-center justify-center gap-6 px-4">
       {/* Card */}
-      <TouchableOpacity
-        onPress={handleFlip}
-        activeOpacity={0.7}
-        className="w-full"
-      >
+      <TouchableOpacity onPress={handleFlip} activeOpacity={0.7} className="w-full">
         {/* Front side */}
         <Animated.View
-          className="rounded-2xl border-2 border-cyan-500/30 bg-cyan-500/10 p-8 items-center justify-center min-h-64"
+          className="min-h-64 items-center justify-center rounded-2xl border-2 border-cyan-500/30 bg-cyan-500/10 p-8"
           style={{
             transform: [{ rotateY: frontInterpolate }],
             opacity: flipAnim.interpolate({
               inputRange: [0, 0.5, 1],
               outputRange: [1, 0, 0],
             }),
-          }}
-        >
-          <Text className="text-sm text-muted-foreground mb-4 uppercase">
-            Tap to reveal
-          </Text>
-          <Text className="text-5xl font-extrabold text-cyan-300 text-center">
+          }}>
+          <Text className="text-muted-foreground mb-4 text-sm uppercase">Tap to reveal</Text>
+          <Text className="text-center text-5xl font-extrabold text-cyan-300">
             {item.wordTarget}
           </Text>
         </Animated.View>
 
         {/* Back side */}
         <Animated.View
-          className="absolute inset-0 rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/10 p-8 items-center justify-center min-h-64"
+          className="absolute inset-0 min-h-64 items-center justify-center rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/10 p-8"
           style={{
             transform: [{ rotateY: backInterpolate }],
             opacity: flipAnim.interpolate({
               inputRange: [0, 0.5, 1],
               outputRange: [0, 0, 1],
             }),
-          }}
-        >
+          }}>
           <View className="items-center gap-4">
             <Text className="text-3xl font-bold text-emerald-300">{item.wordEn}</Text>
-            <View className="rounded-lg bg-foreground/5 px-4 py-2">
-              <Text className="text-xs uppercase font-semibold text-muted-foreground">
+            <View className="bg-foreground/5 rounded-lg px-4 py-2">
+              <Text className="text-muted-foreground text-xs font-semibold uppercase">
                 {item.partOfSpeech}
               </Text>
             </View>
-            <Text className="text-sm text-muted-foreground italic text-center mt-4">
+            <Text className="text-muted-foreground mt-4 text-center text-sm italic">
               {item.exampleSentenceTarget}
             </Text>
-            <Text className="text-xs text-muted-foreground text-center mt-2">
+            <Text className="text-muted-foreground mt-2 text-center text-xs">
               {item.exampleSentenceEn}
             </Text>
           </View>
@@ -206,28 +184,27 @@ function ReviewCard({
 
       {/* Progress */}
       <View className="w-full items-center gap-3">
-        <View className="h-2 w-full rounded-full bg-muted overflow-hidden">
+        <View className="bg-muted h-2 w-full overflow-hidden rounded-full">
           <View
             className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400"
             style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
           />
         </View>
-        <Text className="text-sm font-semibold text-muted-foreground">
+        <Text className="text-muted-foreground text-sm font-semibold">
           {currentIndex + 1} of {total}
         </Text>
       </View>
 
       {/* Rating buttons */}
       <View className="w-full gap-3">
-        <Text className="text-sm font-medium text-muted-foreground text-center">
+        <Text className="text-muted-foreground text-center text-sm font-medium">
           How well did you remember this?
         </Text>
         <View className="gap-2">
           <Pressable
             onPress={() => onRate(0)}
             disabled={isSubmitting}
-            className="flex-row items-center gap-2 rounded-lg bg-red-500/10 border border-red-500/30 px-4 py-3 active:bg-red-500/20"
-          >
+            className="flex-row items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 active:bg-red-500/20">
             <Text className="flex-1 font-semibold text-red-300">Again</Text>
             <Text className="text-xs text-red-300/70">Forgot it</Text>
           </Pressable>
@@ -235,8 +212,7 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(2)}
             disabled={isSubmitting}
-            className="flex-row items-center gap-2 rounded-lg bg-orange-500/10 border border-orange-500/30 px-4 py-3 active:bg-orange-500/20"
-          >
+            className="flex-row items-center gap-2 rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 active:bg-orange-500/20">
             <Text className="flex-1 font-semibold text-orange-300">Hard</Text>
             <Text className="text-xs text-orange-300/70">Difficult</Text>
           </Pressable>
@@ -244,8 +220,7 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(3)}
             disabled={isSubmitting}
-            className="flex-row items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/30 px-4 py-3 active:bg-blue-500/20"
-          >
+            className="flex-row items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-3 active:bg-blue-500/20">
             <Text className="flex-1 font-semibold text-blue-300">Good</Text>
             <Text className="text-xs text-blue-300/70">Correct response</Text>
           </Pressable>
@@ -253,8 +228,7 @@ function ReviewCard({
           <Pressable
             onPress={() => onRate(5)}
             disabled={isSubmitting}
-            className="flex-row items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-3 active:bg-emerald-500/20"
-          >
+            className="flex-row items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 active:bg-emerald-500/20">
             <Text className="flex-1 font-semibold text-emerald-300">Easy</Text>
             <Text className="text-xs text-emerald-300/70">Perfect</Text>
           </Pressable>
@@ -326,16 +300,15 @@ export default function VocabularyScreen() {
   // Review mode
   if (viewMode === 'review' && currentReviewItem) {
     return (
-      <View className="flex-1 bg-background">
+      <View className="bg-background flex-1">
         {/* Header */}
-        <View className="border-b border-border bg-card px-4 py-4 pt-6">
+        <View className="border-border bg-card border-b px-4 py-4 pt-6">
           <View className="flex-row items-center justify-between">
-            <Text className="text-lg font-bold text-foreground">Vocabulary Review</Text>
+            <Text className="text-foreground text-lg font-bold">Vocabulary Review</Text>
             <Pressable
               onPress={() => setViewMode('list')}
-              className="rounded-lg p-2 active:bg-accent"
-            >
-              <Icon as={X} className="size-5 text-muted-foreground" />
+              className="active:bg-accent rounded-lg p-2">
+              <Icon as={X} className="text-muted-foreground size-5" />
             </Pressable>
           </View>
         </View>
@@ -355,23 +328,23 @@ export default function VocabularyScreen() {
   // List view
   return (
     <FlatList
-      className="flex-1 bg-background"
+      className="bg-background flex-1"
       contentContainerClassName="px-4 py-4"
       ListHeaderComponent={
         <View className="mb-6 gap-4">
           {/* Title */}
           <View>
-            <Text className="text-2xl font-bold text-foreground mb-1">Vocabulary</Text>
-            <Text className="text-sm text-muted-foreground">
+            <Text className="text-foreground mb-1 text-2xl font-bold">Vocabulary</Text>
+            <Text className="text-muted-foreground text-sm">
               {listData.data?.length === 0 ? 'No words yet' : `${listData.data?.length || 0} words`}
             </Text>
           </View>
 
           {/* Search input */}
-          <View className="flex-row items-center gap-3 rounded-lg border border-border bg-card px-4 py-2">
-            <Icon as={SearchIcon} className="size-4 text-muted-foreground" />
+          <View className="border-border bg-card flex-row items-center gap-3 rounded-lg border px-4 py-2">
+            <Icon as={SearchIcon} className="text-muted-foreground size-4" />
             <TextInput
-              className="flex-1 py-2 text-foreground placeholder:text-muted-foreground"
+              className="text-foreground placeholder:text-muted-foreground flex-1 py-2"
               placeholder="Search words..."
               placeholderTextColor="#94A3B8"
               value={searchTerm}
@@ -379,7 +352,7 @@ export default function VocabularyScreen() {
             />
             {searchTerm && (
               <Pressable onPress={() => setSearchTerm('')} className="p-1">
-                <Icon as={X} className="size-4 text-muted-foreground" />
+                <Icon as={X} className="text-muted-foreground size-4" />
               </Pressable>
             )}
           </View>
@@ -390,29 +363,28 @@ export default function VocabularyScreen() {
             <View>
               <Pressable
                 onPress={() => setShowCefrDropdown(!showCefrDropdown)}
-                className="flex-row items-center justify-between rounded-lg border border-border bg-card px-4 py-3"
-              >
-                <Text className="text-sm font-medium text-foreground">
+                className="border-border bg-card flex-row items-center justify-between rounded-lg border px-4 py-3">
+                <Text className="text-foreground text-sm font-medium">
                   {cefrFilter ? `Level: ${cefrFilter}` : 'All Levels'}
                 </Text>
                 <Icon
                   as={ChevronDown}
-                  className="size-4 text-muted-foreground"
+                  className="text-muted-foreground size-4"
                   style={{ transform: [{ rotate: showCefrDropdown ? '180deg' : '0deg' }] }}
                 />
               </Pressable>
 
               {showCefrDropdown && (
-                <View className="border border-t-0 border-border bg-card rounded-b-lg overflow-hidden">
+                <View className="border-border bg-card overflow-hidden rounded-b-lg border border-t-0">
                   <Pressable
                     onPress={() => {
                       setCefrFilter(null);
                       setShowCefrDropdown(false);
                       setPage(1);
                     }}
-                    className="border-b border-border px-4 py-3 active:bg-accent"
-                  >
-                    <Text className={`text-sm ${cefrFilter === null ? 'font-semibold text-cyan-400' : 'text-foreground'}`}>
+                    className="border-border active:bg-accent border-b px-4 py-3">
+                    <Text
+                      className={`text-sm ${cefrFilter === null ? 'font-semibold text-cyan-400' : 'text-foreground'}`}>
                       All Levels
                     </Text>
                   </Pressable>
@@ -425,9 +397,9 @@ export default function VocabularyScreen() {
                         setShowCefrDropdown(false);
                         setPage(1);
                       }}
-                      className="border-b border-border px-4 py-3 active:bg-accent last:border-b-0"
-                    >
-                      <Text className={`text-sm ${cefrFilter === level ? 'font-semibold text-cyan-400' : 'text-foreground'}`}>
+                      className="border-border active:bg-accent border-b px-4 py-3 last:border-b-0">
+                      <Text
+                        className={`text-sm ${cefrFilter === level ? 'font-semibold text-cyan-400' : 'text-foreground'}`}>
                         {level}
                       </Text>
                     </Pressable>
@@ -443,8 +415,7 @@ export default function VocabularyScreen() {
                   onPress={handleResetFilters}
                   variant="outline"
                   size="sm"
-                  className="flex-1 rounded-lg"
-                >
+                  className="flex-1 rounded-lg">
                   <Icon as={X} className="size-4" />
                   <Text>Reset</Text>
                 </Button>
@@ -454,10 +425,9 @@ export default function VocabularyScreen() {
                 <Button
                   onPress={handleStartReview}
                   size="sm"
-                  className="flex-1 rounded-lg bg-emerald-600"
-                >
+                  className="flex-1 rounded-lg bg-emerald-600">
                   <Icon as={RotateCw} className="size-4" />
-                  <Text className="text-white font-semibold">
+                  <Text className="font-semibold text-white">
                     Review {currentReviewItems.length}
                   </Text>
                 </Button>
@@ -467,8 +437,8 @@ export default function VocabularyScreen() {
 
           {/* Error state */}
           {listData.error && !listData.loading && (
-            <View className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
-              <Text className="text-sm text-destructive">{listData.error}</Text>
+            <View className="border-destructive/50 bg-destructive/10 rounded-lg border p-4">
+              <Text className="text-destructive text-sm">{listData.error}</Text>
             </View>
           )}
         </View>
@@ -488,10 +458,8 @@ export default function VocabularyScreen() {
       ListFooterComponent={
         !listData.loading && listData.data?.length === 0 ? (
           <View className="items-center justify-center py-12">
-            <Icon as={SearchIcon} className="size-8 text-muted-foreground mb-2" />
-            <Text className="text-center text-muted-foreground">
-              No vocabulary found
-            </Text>
+            <Icon as={SearchIcon} className="text-muted-foreground mb-2 size-8" />
+            <Text className="text-muted-foreground text-center">No vocabulary found</Text>
           </View>
         ) : null
       }

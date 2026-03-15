@@ -1,27 +1,147 @@
 [
-  { "code": "A1_001", "cefrLevel": "A1", "title": "Greetings & Introductions", "description": "Learn basic greetings and how to introduce yourself in Spanish", "sortOrder": 1 },
-  { "code": "A1_002", "cefrLevel": "A1", "title": "Numbers & Colors", "description": "Master Spanish numbers from 0-100 and learn color names", "sortOrder": 2 },
-  { "code": "A1_003", "cefrLevel": "A1", "title": "Family & People", "description": "Learn vocabulary for family members and how to describe people", "sortOrder": 3 },
-  { "code": "A1_004", "cefrLevel": "A1", "title": "Food & Drink", "description": "Discover essential vocabulary for food, drinks, and ordering at a café", "sortOrder": 4 },
+  {
+    "code": "A1_001",
+    "cefrLevel": "A1",
+    "title": "Greetings & Introductions",
+    "description": "Learn basic greetings and how to introduce yourself in Spanish",
+    "sortOrder": 1
+  },
+  {
+    "code": "A1_002",
+    "cefrLevel": "A1",
+    "title": "Numbers & Colors",
+    "description": "Master Spanish numbers from 0-100 and learn color names",
+    "sortOrder": 2
+  },
+  {
+    "code": "A1_003",
+    "cefrLevel": "A1",
+    "title": "Family & People",
+    "description": "Learn vocabulary for family members and how to describe people",
+    "sortOrder": 3
+  },
+  {
+    "code": "A1_004",
+    "cefrLevel": "A1",
+    "title": "Food & Drink",
+    "description": "Discover essential vocabulary for food, drinks, and ordering at a café",
+    "sortOrder": 4
+  },
 
-  { "code": "A2_001", "cefrLevel": "A2", "title": "Daily Routines", "description": "Talk about everyday activities and your daily schedule", "sortOrder": 5 },
-  { "code": "A2_002", "cefrLevel": "A2", "title": "Shopping & Money", "description": "Learn to shop, ask prices, and handle money in Spanish", "sortOrder": 6 },
-  { "code": "A2_003", "cefrLevel": "A2", "title": "Weather & Seasons", "description": "Describe the weather and talk about different seasons", "sortOrder": 7 },
-  { "code": "A2_004", "cefrLevel": "A2", "title": "Transportation & Directions", "description": "Navigate cities, use transport, and ask for directions", "sortOrder": 8 },
+  {
+    "code": "A2_001",
+    "cefrLevel": "A2",
+    "title": "Daily Routines",
+    "description": "Talk about everyday activities and your daily schedule",
+    "sortOrder": 5
+  },
+  {
+    "code": "A2_002",
+    "cefrLevel": "A2",
+    "title": "Shopping & Money",
+    "description": "Learn to shop, ask prices, and handle money in Spanish",
+    "sortOrder": 6
+  },
+  {
+    "code": "A2_003",
+    "cefrLevel": "A2",
+    "title": "Weather & Seasons",
+    "description": "Describe the weather and talk about different seasons",
+    "sortOrder": 7
+  },
+  {
+    "code": "A2_004",
+    "cefrLevel": "A2",
+    "title": "Transportation & Directions",
+    "description": "Navigate cities, use transport, and ask for directions",
+    "sortOrder": 8
+  },
 
-  { "code": "B1_001", "cefrLevel": "B1", "title": "Work & Career", "description": "Discuss jobs, workplaces, and professional life in Spanish", "sortOrder": 9 },
-  { "code": "B1_002", "cefrLevel": "B1", "title": "Travel & Vacation", "description": "Plan trips, book accommodations, and handle travel situations", "sortOrder": 10 },
-  { "code": "B1_003", "cefrLevel": "B1", "title": "Health & Body", "description": "Discuss health, describe symptoms, and understand medical vocabulary", "sortOrder": 11 },
-  { "code": "B1_004", "cefrLevel": "B1", "title": "Hobbies & Free Time", "description": "Talk about interests, hobbies, sports, and leisure activities", "sortOrder": 12 },
+  {
+    "code": "B1_001",
+    "cefrLevel": "B1",
+    "title": "Work & Career",
+    "description": "Discuss jobs, workplaces, and professional life in Spanish",
+    "sortOrder": 9
+  },
+  {
+    "code": "B1_002",
+    "cefrLevel": "B1",
+    "title": "Travel & Vacation",
+    "description": "Plan trips, book accommodations, and handle travel situations",
+    "sortOrder": 10
+  },
+  {
+    "code": "B1_003",
+    "cefrLevel": "B1",
+    "title": "Health & Body",
+    "description": "Discuss health, describe symptoms, and understand medical vocabulary",
+    "sortOrder": 11
+  },
+  {
+    "code": "B1_004",
+    "cefrLevel": "B1",
+    "title": "Hobbies & Free Time",
+    "description": "Talk about interests, hobbies, sports, and leisure activities",
+    "sortOrder": 12
+  },
 
-  { "code": "B2_001", "cefrLevel": "B2", "title": "Current Events & Media", "description": "Discuss news, media, and current events using complex language", "sortOrder": 13 },
-  { "code": "B2_002", "cefrLevel": "B2", "title": "Society & Culture", "description": "Explore social issues, culture, and diverse perspectives in Spanish", "sortOrder": 14 },
-  { "code": "B2_003", "cefrLevel": "B2", "title": "Environment & Nature", "description": "Discuss environmental issues, nature, and sustainability", "sortOrder": 15 },
+  {
+    "code": "B2_001",
+    "cefrLevel": "B2",
+    "title": "Current Events & Media",
+    "description": "Discuss news, media, and current events using complex language",
+    "sortOrder": 13
+  },
+  {
+    "code": "B2_002",
+    "cefrLevel": "B2",
+    "title": "Society & Culture",
+    "description": "Explore social issues, culture, and diverse perspectives in Spanish",
+    "sortOrder": 14
+  },
+  {
+    "code": "B2_003",
+    "cefrLevel": "B2",
+    "title": "Environment & Nature",
+    "description": "Discuss environmental issues, nature, and sustainability",
+    "sortOrder": 15
+  },
 
-  { "code": "C1_001", "cefrLevel": "C1", "title": "Business & Economics", "description": "Master professional Spanish for business, finance, and negotiation", "sortOrder": 16 },
-  { "code": "C1_002", "cefrLevel": "C1", "title": "Arts & Literature", "description": "Engage with Spanish literature, arts, and cultural criticism", "sortOrder": 17 },
-  { "code": "C1_003", "cefrLevel": "C1", "title": "Abstract Ideas & Debate", "description": "Express nuanced opinions and engage in sophisticated debate", "sortOrder": 18 },
+  {
+    "code": "C1_001",
+    "cefrLevel": "C1",
+    "title": "Business & Economics",
+    "description": "Master professional Spanish for business, finance, and negotiation",
+    "sortOrder": 16
+  },
+  {
+    "code": "C1_002",
+    "cefrLevel": "C1",
+    "title": "Arts & Literature",
+    "description": "Engage with Spanish literature, arts, and cultural criticism",
+    "sortOrder": 17
+  },
+  {
+    "code": "C1_003",
+    "cefrLevel": "C1",
+    "title": "Abstract Ideas & Debate",
+    "description": "Express nuanced opinions and engage in sophisticated debate",
+    "sortOrder": 18
+  },
 
-  { "code": "C2_001", "cefrLevel": "C2", "title": "Rhetoric & Persuasion", "description": "Master advanced rhetoric, persuasive writing, and public speaking in Spanish", "sortOrder": 19 },
-  { "code": "C2_002", "cefrLevel": "C2", "title": "Idiomatic Mastery", "description": "Master Spanish idioms, proverbs, and native-level expression", "sortOrder": 20 }
+  {
+    "code": "C2_001",
+    "cefrLevel": "C2",
+    "title": "Rhetoric & Persuasion",
+    "description": "Master advanced rhetoric, persuasive writing, and public speaking in Spanish",
+    "sortOrder": 19
+  },
+  {
+    "code": "C2_002",
+    "cefrLevel": "C2",
+    "title": "Idiomatic Mastery",
+    "description": "Master Spanish idioms, proverbs, and native-level expression",
+    "sortOrder": 20
+  }
 ]

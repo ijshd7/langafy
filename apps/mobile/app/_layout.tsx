@@ -43,7 +43,7 @@ function RootLayoutNav() {
   // Show splash screen while loading auth state
   if (loading) {
     return (
-      <View className="flex-1 bg-background justify-center items-center">
+      <View className="bg-background flex-1 items-center justify-center">
         <ActivityIndicator size="large" color="#6366f1" />
       </View>
     );

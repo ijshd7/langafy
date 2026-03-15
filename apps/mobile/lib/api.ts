@@ -40,10 +40,7 @@ class ApiClient {
   private tokenProvider?: () => Promise<string | null>;
 
   constructor(baseUrl?: string) {
-    this.baseUrl =
-      baseUrl ||
-      Constants.expoConfig?.extra?.apiUrl ||
-      'http://localhost:5000/api';
+    this.baseUrl = baseUrl || Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5000/api';
   }
 
   /**
@@ -57,10 +54,7 @@ class ApiClient {
   /**
    * Build the full URL with query parameters
    */
-  private buildUrl(
-    endpoint: string,
-    params?: Record<string, string | number | boolean>
-  ): string {
+  private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
     const url = new URL(endpoint, this.baseUrl);
 
     if (params) {
@@ -118,12 +112,7 @@ class ApiClient {
       // Handle API error response structure
       if (typeof errorData === 'object' && errorData !== null && 'error' in errorData) {
         const apiError = errorData as { error: { code: string; message: string } };
-        throw new ApiError(
-          response.status,
-          apiError.error.code,
-          apiError.error.message,
-          errorData
-        );
+        throw new ApiError(response.status, apiError.error.code, apiError.error.message, errorData);
       }
 
       // Handle generic error response
@@ -164,11 +153,7 @@ class ApiClient {
   /**
    * Generic POST request
    */
-  async post<T>(
-    endpoint: string,
-    data?: unknown,
-    options?: ApiRequestOptions
-  ): Promise<T> {
+  async post<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
     const url = this.buildUrl(endpoint, options?.params);
     const headers = await this.buildHeaders(options);
 
@@ -185,11 +170,7 @@ class ApiClient {
   /**
    * Generic PUT request
    */
-  async put<T>(
-    endpoint: string,
-    data?: unknown,
-    options?: ApiRequestOptions
-  ): Promise<T> {
+  async put<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
     const url = this.buildUrl(endpoint, options?.params);
     const headers = await this.buildHeaders(options);
 

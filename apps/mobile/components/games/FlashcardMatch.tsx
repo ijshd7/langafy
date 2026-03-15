@@ -1,10 +1,6 @@
 import { useFlashcardGame } from '@langafy/shared-game-logic';
 import type { FlashcardGameCard } from '@langafy/shared-game-logic';
-import type {
-  Exercise,
-  ExerciseResult,
-  FlashcardMatchConfig,
-} from '@langafy/shared-types';
+import type { Exercise, ExerciseResult, FlashcardMatchConfig } from '@langafy/shared-types';
 import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useState } from 'react';
 import { View, Pressable, ScrollView, ActivityIndicator } from 'react-native';
@@ -25,11 +21,7 @@ interface FlashcardMatchProps {
   basePoints: number;
 }
 
-export function FlashcardMatch({
-  exercise,
-  onComplete,
-  basePoints,
-}: FlashcardMatchProps) {
+export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMatchProps) {
   const config = exercise.config as FlashcardMatchConfig;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -46,7 +38,7 @@ export function FlashcardMatch({
   } = useFlashcardGame(
     config.pairs,
     basePoints,
-    config.timeLimit ? config.timeLimit * 1000 : undefined,
+    config.timeLimit ? config.timeLimit * 1000 : undefined
   );
 
   // Auto-start game on mount
@@ -54,33 +46,36 @@ export function FlashcardMatch({
     start();
   }, [start]);
 
-  const handleSubmit = useCallback(async (gameResult: typeof result) => {
-    if (!gameResult) return;
+  const handleSubmit = useCallback(
+    async (gameResult: typeof result) => {
+      if (!gameResult) return;
 
-    try {
-      setIsSubmitting(true);
+      try {
+        setIsSubmitting(true);
 
-      const exResult: ExerciseResult = {
-        correct: gameResult.matches.length === config.pairs.length,
-        score: Math.round(gameResult.score.finalScore),
-        maxScore: basePoints,
-        timeTaken: gameResult.elapsedMs,
-      };
+        const exResult: ExerciseResult = {
+          correct: gameResult.matches.length === config.pairs.length,
+          score: Math.round(gameResult.score.finalScore),
+          maxScore: basePoints,
+          timeTaken: gameResult.elapsedMs,
+        };
 
-      if (exResult.correct) {
-        onComplete(exResult);
-      } else {
-        onComplete({
-          ...exResult,
-          correctAnswer: `Match all ${config.pairs.length} pairs`,
-        });
+        if (exResult.correct) {
+          onComplete(exResult);
+        } else {
+          onComplete({
+            ...exResult,
+            correctAnswer: `Match all ${config.pairs.length} pairs`,
+          });
+        }
+      } catch (error) {
+        console.error('Error submitting game result:', error);
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      console.error('Error submitting game result:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [config.pairs.length, basePoints, onComplete]);
+    },
+    [config.pairs.length, basePoints, onComplete]
+  );
 
   // Handle game completion
   useEffect(() => {
@@ -112,9 +107,7 @@ export function FlashcardMatch({
         <View className="flex-row items-center justify-between rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-4">
           <View>
             <Text className="text-xs font-medium text-gray-600">Time</Text>
-            <Text className="text-2xl font-bold text-blue-600">
-              {formatTime(elapsedMs)}
-            </Text>
+            <Text className="text-2xl font-bold text-blue-600">{formatTime(elapsedMs)}</Text>
           </View>
 
           <View className="items-center">
@@ -141,11 +134,7 @@ export function FlashcardMatch({
                   isSelected={selectedCardId === card.id}
                   isMismatched={lastMismatchIds?.includes(card.id) ?? false}
                   onPress={() => flipCard(card.id)}
-                  disabled={
-                    gameState === 'completed' ||
-                    card.isMatched ||
-                    selectedCardId !== null
-                  }
+                  disabled={gameState === 'completed' || card.isMatched || selectedCardId !== null}
                 />
               ))}
             </View>
@@ -195,8 +184,7 @@ export function FlashcardMatch({
           <View className="gap-1 rounded border border-gray-200 bg-gray-50 p-2">
             <Text className="text-xs text-gray-500">State: {gameState}</Text>
             <Text className="text-xs text-gray-500">
-              Cards flipped: {cards.filter((c) => c.isFlipped || c.isMatched).length}/
-              {cards.length}
+              Cards flipped: {cards.filter((c) => c.isFlipped || c.isMatched).length}/{cards.length}
             </Text>
           </View>
         )}
@@ -254,10 +242,7 @@ function FlashcardTile({
   const animatedStyle = useAnimatedStyle(() => {
     const rotation = interpolate(rotateZ.value, [0, 180], [0, 180], Extrapolate.CLAMP);
     return {
-      transform: [
-        { rotateY: `${rotation}deg` },
-        { translateX: isMismatched ? shakeX.value : 0 },
-      ],
+      transform: [{ rotateY: `${rotation}deg` }, { translateX: isMismatched ? shakeX.value : 0 }],
     };
   });
 
@@ -282,8 +267,7 @@ function FlashcardTile({
       className="flex-1 overflow-hidden rounded-lg"
       style={{
         opacity: disabled && !card.isMatched ? 0.5 : 1,
-      }}
-    >
+      }}>
       <Animated.View
         style={[
           {
@@ -292,8 +276,7 @@ function FlashcardTile({
             perspective: 1000,
           },
           animatedStyle,
-        ]}
-      >
+        ]}>
         {/* Front face (question mark) */}
         <Animated.View
           style={[
@@ -309,8 +292,7 @@ function FlashcardTile({
               borderColor: card.isMatched ? '#86efac' : '#93c5fd',
             },
             frontfaceHiddenStyle,
-          ]}
-        >
+          ]}>
           <Text className="text-4xl font-light text-blue-400">?</Text>
         </Animated.View>
 
@@ -331,15 +313,12 @@ function FlashcardTile({
               transform: [{ rotateY: '180deg' }],
             },
             backfaceHiddenStyle,
-          ]}
-        >
+          ]}>
           <View className="items-center gap-1">
             <Text className="text-xs font-medium text-gray-500">
               {card.side === 'target' ? 'ES' : 'EN'}
             </Text>
-            <Text className="text-center text-sm font-semibold text-gray-800">
-              {card.text}
-            </Text>
+            <Text className="text-center text-sm font-semibold text-gray-800">{card.text}</Text>
           </View>
         </Animated.View>
       </Animated.View>

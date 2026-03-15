@@ -1,19 +1,18 @@
-'use client'
+'use client';
 
-import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
-import { AlertCircle } from 'lucide-react'
+import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types';
+import { AlertCircle } from 'lucide-react';
 
-import { FlashcardMatch } from '../games/FlashcardMatch'
-import { WordScramble } from '../games/WordScramble'
+import { FlashcardMatch } from '../games/FlashcardMatch';
+import { WordScramble } from '../games/WordScramble';
 
-import { FillInTheBlank } from './FillInTheBlank'
-import { MultipleChoice } from './MultipleChoice'
-
+import { FillInTheBlank } from './FillInTheBlank';
+import { MultipleChoice } from './MultipleChoice';
 
 interface ExerciseRendererProps {
-  exercise: Exercise
-  onComplete: (result: ExerciseResult) => void
-  isLoading?: boolean
+  exercise: Exercise;
+  onComplete: (result: ExerciseResult) => void;
+  isLoading?: boolean;
 }
 
 /**
@@ -22,44 +21,60 @@ interface ExerciseRendererProps {
  * Delegates to the correct exercise component based on exercise type.
  * Handles the onComplete callback to advance to the next exercise.
  */
-export function ExerciseRenderer({ exercise, onComplete, isLoading = false }: ExerciseRendererProps) {
+export function ExerciseRenderer({
+  exercise,
+  onComplete,
+  isLoading = false,
+}: ExerciseRendererProps) {
   switch (exercise.type) {
     case ExerciseType.MultipleChoice:
-      return <MultipleChoice exercise={exercise} onComplete={onComplete} isLoading={isLoading} />
+      return <MultipleChoice exercise={exercise} onComplete={onComplete} isLoading={isLoading} />;
 
     case ExerciseType.FillBlank:
-      return <FillInTheBlank exercise={exercise} onComplete={onComplete} isLoading={isLoading} />
+      return <FillInTheBlank exercise={exercise} onComplete={onComplete} isLoading={isLoading} />;
 
     case ExerciseType.WordScramble:
-      return <WordScramble exercise={exercise} onComplete={onComplete} basePoints={exercise.points} />
+      return (
+        <WordScramble exercise={exercise} onComplete={onComplete} basePoints={exercise.points} />
+      );
 
     case ExerciseType.FlashcardMatch:
-      return <FlashcardMatch exercise={exercise} onComplete={onComplete} basePoints={exercise.points} />
+      return (
+        <FlashcardMatch exercise={exercise} onComplete={onComplete} basePoints={exercise.points} />
+      );
 
     case ExerciseType.FreeResponse:
       return (
-        <div className="w-full max-w-2xl mx-auto p-6 rounded-lg bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800">
+        <div className="mx-auto w-full max-w-2xl rounded-lg border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-950">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-yellow-600 dark:text-yellow-400" />
             <div>
-              <h3 className="font-semibold text-yellow-900 dark:text-yellow-100">Free Response Coming Soon</h3>
-              <p className="text-sm text-yellow-800 dark:text-yellow-200 mt-1">This exercise type will be available in an upcoming update.</p>
+              <h3 className="font-semibold text-yellow-900 dark:text-yellow-100">
+                Free Response Coming Soon
+              </h3>
+              <p className="mt-1 text-sm text-yellow-800 dark:text-yellow-200">
+                This exercise type will be available in an upcoming update.
+              </p>
             </div>
           </div>
         </div>
-      )
+      );
 
     default:
       return (
-        <div className="w-full max-w-2xl mx-auto p-6 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800">
+        <div className="mx-auto w-full max-w-2xl rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-950">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" />
             <div>
-              <h3 className="font-semibold text-red-900 dark:text-red-100">Unknown Exercise Type</h3>
-              <p className="text-sm text-red-800 dark:text-red-200 mt-1">The exercise type &quot;{exercise.type}&quot; is not recognized.</p>
+              <h3 className="font-semibold text-red-900 dark:text-red-100">
+                Unknown Exercise Type
+              </h3>
+              <p className="mt-1 text-sm text-red-800 dark:text-red-200">
+                The exercise type &quot;{exercise.type}&quot; is not recognized.
+              </p>
             </div>
           </div>
         </div>
-      )
+      );
   }
 }

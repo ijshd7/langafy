@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
 
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/AuthContext';
 
 export function LayoutClient({ children }: { children: ReactNode }) {
-  return <AuthProvider>{children}</AuthProvider>
+  return <AuthProvider>{children}</AuthProvider>;
 }

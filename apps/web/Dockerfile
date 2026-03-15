@@ -4,9 +4,10 @@ WORKDIR /app
 
 COPY package.json ./
 COPY packages/shared-types/package.json ./packages/shared-types/
+COPY packages/shared-game-logic/package.json ./packages/shared-game-logic/
 COPY apps/web/package.json ./apps/web/
 
-RUN npm install --workspace=packages/shared-types --workspace=apps/web
+RUN npm install --workspace=packages/shared-types --workspace=@langafy/shared-game-logic --workspace=apps/web
 
 # Stage 2: Build
 FROM node:20-alpine AS builder
@@ -16,6 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 
 COPY package.json ./
 COPY packages/shared-types/ ./packages/shared-types/
+COPY packages/shared-game-logic/ ./packages/shared-game-logic/
 COPY apps/web/ ./apps/web/
 
 RUN npm run build --workspace=packages/shared-types

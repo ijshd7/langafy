@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
 import Link from 'next/link'
-import { ChevronRight, Flame, Trophy, BookOpen, Zap } from 'lucide-react'
+import { ChevronRight, Flame, Trophy, BookOpen, Zap, MessageCircle } from 'lucide-react'
 
 /**
  * Mock progress data structure - will be replaced with actual API response
@@ -426,21 +426,41 @@ export default function DashboardPage() {
         </div>
 
         {/* Additional resources section */}
-        <div className="mt-16 rounded-xl bg-linear-to-r from-slate-800/50 to-slate-700/30 border border-slate-700/50 p-8 backdrop-blur-sm">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <BookOpen className="h-6 w-6 text-emerald-400" />
-              <div>
-                <h3 className="font-semibold text-slate-100">Explore Vocabulary</h3>
-                <p className="text-sm text-slate-400">Review and practice vocabulary from all levels</p>
+        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="rounded-xl bg-linear-to-r from-slate-800/50 to-slate-700/30 border border-slate-700/50 p-8 backdrop-blur-sm">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <BookOpen className="h-6 w-6 text-emerald-400" />
+                <div>
+                  <h3 className="font-semibold text-slate-100">Explore Vocabulary</h3>
+                  <p className="text-sm text-slate-400">Review and practice vocabulary from all levels</p>
+                </div>
               </div>
+              <Link
+                href="/vocabulary"
+                className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-500 to-emerald-500 px-6 py-2 font-medium text-slate-900 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+              >
+                View Dictionary <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
-            <Link
-              href="/vocabulary"
-              className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-500 to-emerald-500 px-6 py-2 font-medium text-slate-900 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
-            >
-              View Dictionary <ChevronRight className="h-4 w-4" />
-            </Link>
+          </div>
+
+          <div className="rounded-xl bg-linear-to-r from-cyan-900/30 to-emerald-900/20 border border-cyan-700/40 p-8 backdrop-blur-sm">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <MessageCircle className="h-6 w-6 text-cyan-400" />
+                <div>
+                  <h3 className="font-semibold text-slate-100">AI Conversation Practice</h3>
+                  <p className="text-sm text-slate-400">Chat with an AI tutor to practice speaking</p>
+                </div>
+              </div>
+              <Link
+                href="/practice/conversation"
+                className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-500/80 to-emerald-500/80 px-6 py-2 font-medium text-white hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+              >
+                Start Chatting <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

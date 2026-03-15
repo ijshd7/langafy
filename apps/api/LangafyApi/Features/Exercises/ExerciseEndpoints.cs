@@ -31,6 +31,10 @@ public static class ExerciseEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
     }
 
+    // Clients send camelCase JSON (web/mobile); use case-insensitive options for deserialization.
+    private static readonly System.Text.Json.JsonSerializerOptions _jsonOptions =
+        new() { PropertyNameCaseInsensitive = true };
+
     /// <summary>
     /// Submits and validates an exercise answer, records user progress.
     /// </summary>
@@ -82,35 +86,35 @@ public static class ExerciseEndpoints
                 {
                     case ExerciseType.MultipleChoice:
                         {
-                            var submission = System.Text.Json.JsonSerializer.Deserialize<MultipleChoiceSubmission>(body)
+                            var submission = System.Text.Json.JsonSerializer.Deserialize<MultipleChoiceSubmission>(body, _jsonOptions)
                                 ?? throw new InvalidOperationException("Invalid submission format.");
                             result = validator.ValidateMultipleChoice(exercise, submission);
                             break;
                         }
                     case ExerciseType.FillBlank:
                         {
-                            var submission = System.Text.Json.JsonSerializer.Deserialize<FillBlankSubmission>(body)
+                            var submission = System.Text.Json.JsonSerializer.Deserialize<FillBlankSubmission>(body, _jsonOptions)
                                 ?? throw new InvalidOperationException("Invalid submission format.");
                             result = validator.ValidateFillBlank(exercise, submission);
                             break;
                         }
                     case ExerciseType.WordScramble:
                         {
-                            var submission = System.Text.Json.JsonSerializer.Deserialize<WordScrambleSubmission>(body)
+                            var submission = System.Text.Json.JsonSerializer.Deserialize<WordScrambleSubmission>(body, _jsonOptions)
                                 ?? throw new InvalidOperationException("Invalid submission format.");
                             result = validator.ValidateWordScramble(exercise, submission);
                             break;
                         }
                     case ExerciseType.FlashcardMatch:
                         {
-                            var submission = System.Text.Json.JsonSerializer.Deserialize<FlashcardMatchSubmission>(body)
+                            var submission = System.Text.Json.JsonSerializer.Deserialize<FlashcardMatchSubmission>(body, _jsonOptions)
                                 ?? throw new InvalidOperationException("Invalid submission format.");
                             result = validator.ValidateFlashcardMatch(exercise, submission);
                             break;
                         }
                     case ExerciseType.FreeResponse:
                         {
-                            var submission = System.Text.Json.JsonSerializer.Deserialize<FreeResponseSubmission>(body)
+                            var submission = System.Text.Json.JsonSerializer.Deserialize<FreeResponseSubmission>(body, _jsonOptions)
                                 ?? throw new InvalidOperationException("Invalid submission format.");
                             result = validator.ValidateFreeResponse(exercise, submission);
                             break;

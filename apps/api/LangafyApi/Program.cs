@@ -92,18 +92,19 @@ builder.Services.AddHttpClient("OpenRouter", client =>
     options.Retry.Delay = TimeSpan.FromSeconds(1);
     options.Retry.BackoffType = Polly.DelayBackoffType.Exponential;
 
-    // Circuit breaker (sampling-based, Polly v8):
-    // Opens when >= 80% of requests fail within a 10s window, with at least 5 requests.
-    // Stays open for 30s before transitioning to half-open.
-    options.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
-    options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(10);
-    options.CircuitBreaker.MinimumThroughput = 5;
-    options.CircuitBreaker.FailureRatio = 0.8;
-
     // Per-attempt timeout and total timeout covering all retry attempts
     var timeoutSecs = builder.Configuration.GetValue("OpenRouter:TimeoutSeconds", 30);
     options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(timeoutSecs);
     options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(timeoutSecs * 4);
+
+    // Circuit breaker (sampling-based, Polly v8):
+    // Opens when >= 80% of requests fail, with at least 5 requests in the window.
+    // Stays open for 30s before transitioning to half-open.
+    // SamplingDuration must be >= 2× AttemptTimeout (Microsoft.Extensions.Http.Resilience rule).
+    options.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
+    options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(timeoutSecs * 2);
+    options.CircuitBreaker.MinimumThroughput = 5;
+    options.CircuitBreaker.FailureRatio = 0.8;
 });
 
 // Register the conversation AI service
@@ -253,3 +254,6 @@ app.MapVocabularyEndpoints();
 app.MapConversationEndpoints();
 
 app.Run();
+
+// Expose Program to the test assembly for WebApplicationFactory<Program>
+public partial class Program { }

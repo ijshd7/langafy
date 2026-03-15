@@ -1,5 +1,6 @@
 using LangafyApi.Data;
 using LangafyApi.Features.Auth;
+using LangafyApi.Features.Conversations;
 using LangafyApi.Features.Exercises;
 using LangafyApi.Features.Languages;
 using LangafyApi.Features.Lessons;
@@ -246,5 +247,6 @@ app.MapLessonEndpoints();
 app.MapExerciseEndpoints();
 app.MapProgressEndpoints();
 app.MapVocabularyEndpoints();
+app.MapConversationEndpoints();
 
 app.Run();

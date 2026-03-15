@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { Exercise, ExerciseResult, FillBlankConfig } from '@langafy/shared-types'
-import { apiClient } from '@/lib/api'
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+
+import { apiClient } from '@/lib/api'
+
 
 interface FillInTheBlankProps {
   exercise: Exercise

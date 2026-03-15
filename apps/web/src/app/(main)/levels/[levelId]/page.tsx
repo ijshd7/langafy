@@ -1,11 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { ChevronRight, BookOpen, Lock, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
-import Link from 'next/link'
-import { ChevronRight, BookOpen, Lock, CheckCircle2 } from 'lucide-react'
+
 
 interface Unit {
   id: string

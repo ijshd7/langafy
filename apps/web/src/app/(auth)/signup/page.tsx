@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { AlertCircle, Loader2 } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { useAuth, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { AlertCircle, Loader2 } from 'lucide-react'
+
 
 const signupSchema = z
   .object({

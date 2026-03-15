@@ -1,11 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { ChevronRight, Flame, Trophy, BookOpen, Zap, MessageCircle } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
-import Link from 'next/link'
-import { ChevronRight, Flame, Trophy, BookOpen, Zap, MessageCircle } from 'lucide-react'
+
 
 /**
  * Mock progress data structure - will be replaced with actual API response

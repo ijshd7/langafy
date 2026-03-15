@@ -1,11 +1,12 @@
 'use client'
 
+import { ChevronRight, BookOpen, Clock, Search, Filter, RotateCcw } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
-import Link from 'next/link'
-import { ChevronRight, BookOpen, Clock, Zap, Search, Filter, RotateCcw } from 'lucide-react'
 
 interface VocabularyDto {
   id: number
@@ -205,7 +206,7 @@ function ReviewCard({
               <strong>How to rate:</strong> How easily did you recall this word?
             </p>
             <div className="space-y-1 text-xs text-slate-500">
-              <p>• <strong>Again</strong> = Complete blackout, don't remember</p>
+              <p>• <strong>Again</strong> = Complete blackout, don&apos;t remember</p>
               <p>• <strong>Hard</strong> = Correct but required effort</p>
               <p>• <strong>Good</strong> = Correct after hesitation</p>
               <p>• <strong>Easy</strong> = Correct without hesitation</p>
@@ -217,12 +218,7 @@ function ReviewCard({
   )
 }
 
-type PageProps = {
-  params: Promise<Record<string, never>>
-}
-
-export default function VocabularyPage(props: PageProps) {
-  const router = useRouter()
+export default function VocabularyPage() {
   const user = useCurrentUser()
   const authLoading = useAuthLoading()
 
@@ -338,10 +334,6 @@ export default function VocabularyPage(props: PageProps) {
       setReviewLoading(false)
     }
   }
-
-  useEffect(() => {
-    props.params
-  }, [props.params])
 
   if (authLoading || (loading && viewMode === 'list')) {
     return (
@@ -583,4 +575,3 @@ export default function VocabularyPage(props: PageProps) {
 }
 
 // Import CheckCircle icon
-import { CheckCircle } from 'lucide-react'

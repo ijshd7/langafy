@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useFlashcardGame, type FlashcardGameResult } from '@langafy/shared-game-logic';
 import type {
   Exercise,
   ExerciseResult,
   FlashcardMatchConfig,
 } from '@langafy/shared-types';
-import { useFlashcardGame, type FlashcardGameResult } from '@langafy/shared-game-logic';
+import { motion } from 'framer-motion';
+import { useCallback, useEffect, useState } from 'react';
 
 interface FlashcardMatchProps {
   exercise: Exercise;
@@ -29,7 +29,6 @@ export function FlashcardMatch({
     selectedCardId,
     lastMismatchIds,
     elapsedMs,
-    remainingMs,
     mistakes,
     start,
     flipCard,
@@ -45,14 +44,7 @@ export function FlashcardMatch({
     start();
   }, [start]);
 
-  // Handle game completion
-  useEffect(() => {
-    if (result && gameState === 'completed') {
-      handleSubmit(result);
-    }
-  }, [result, gameState]);
-
-  const handleSubmit = async (gameResult: FlashcardGameResult) => {
+  const handleSubmit = useCallback(async (gameResult: FlashcardGameResult) => {
     try {
       setIsSubmitting(true);
 
@@ -78,7 +70,14 @@ export function FlashcardMatch({
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [config.pairs.length, basePoints, onComplete]);
+
+  // Handle game completion
+  useEffect(() => {
+    if (result && gameState === 'completed') {
+      handleSubmit(result);
+    }
+  }, [result, gameState, handleSubmit]);
 
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);

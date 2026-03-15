@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { AlertCircle, Loader2 } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { useAuth, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { AlertCircle, Loader2 } from 'lucide-react'
+
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -166,7 +168,7 @@ export default function LoginPage() {
 
         {/* Signup Link */}
         <p className="text-center text-sm text-slate-400">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link
             href="/signup"
             className="font-medium text-blue-400 transition-colors hover:text-blue-300"

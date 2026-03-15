@@ -1,9 +1,10 @@
 'use client'
 
 import { ReactNode, useEffect, createContext } from 'react'
-import { useAuthStore, initializeAuth } from '@/stores/authStore'
+
 import { apiClient } from '@/lib/api'
 import * as firebase from '@/lib/firebase'
+import { useAuthStore, initializeAuth } from '@/stores/authStore'
 
 /**
  * Auth Context type for accessing auth state

@@ -1,13 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
+import { ChevronRight, CheckCircle2, Zap } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+
+import { ExerciseRenderer } from '@/components/exercises'
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
 import { apiClient } from '@/lib/api'
-import Link from 'next/link'
-import { ChevronRight, CheckCircle2, Zap } from 'lucide-react'
-import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
-import { ExerciseRenderer } from '@/components/exercises'
+
+
 
 interface ApiLesson {
   id: number

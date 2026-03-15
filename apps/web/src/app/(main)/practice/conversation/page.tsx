@@ -1,10 +1,5 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
-import { apiClient } from '@/lib/api'
-import { getAuthToken } from '@/lib/firebase'
 import {
   MessageCircle,
   Plus,
@@ -24,6 +19,13 @@ import {
   Volume2,
   VolumeX,
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useRef, useState, useCallback } from 'react'
+
+import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth'
+import { apiClient } from '@/lib/api'
+import { getAuthToken } from '@/lib/firebase'
+
 
 // ---------------------------------------------------------------------------
 // Types matching the API DTOs
@@ -522,7 +524,6 @@ export default function ConversationPage() {
   }, [messages, ttsEnabled, activeConversation])
 
   const startRecording = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Ctor: (new () => SpeechRecognition) | undefined =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition
@@ -710,7 +711,6 @@ export default function ConversationPage() {
       let buffer = ''
       let accumulated = ''
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read()
         if (done) break

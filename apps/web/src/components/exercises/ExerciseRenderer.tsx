@@ -1,11 +1,14 @@
 'use client'
 
 import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types'
-import { MultipleChoice } from './MultipleChoice'
-import { FillInTheBlank } from './FillInTheBlank'
-import { WordScramble } from '../games/WordScramble'
-import { FlashcardMatch } from '../games/FlashcardMatch'
 import { AlertCircle } from 'lucide-react'
+
+import { FlashcardMatch } from '../games/FlashcardMatch'
+import { WordScramble } from '../games/WordScramble'
+
+import { FillInTheBlank } from './FillInTheBlank'
+import { MultipleChoice } from './MultipleChoice'
+
 
 interface ExerciseRendererProps {
   exercise: Exercise
@@ -53,7 +56,7 @@ export function ExerciseRenderer({ exercise, onComplete, isLoading = false }: Ex
             <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
             <div>
               <h3 className="font-semibold text-red-900 dark:text-red-100">Unknown Exercise Type</h3>
-              <p className="text-sm text-red-800 dark:text-red-200 mt-1">The exercise type "{exercise.type}" is not recognized.</p>
+              <p className="text-sm text-red-800 dark:text-red-200 mt-1">The exercise type &quot;{exercise.type}&quot; is not recognized.</p>
             </div>
           </div>
         </div>

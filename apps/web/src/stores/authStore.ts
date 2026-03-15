@@ -1,5 +1,6 @@
-import { create } from 'zustand'
 import { User as FirebaseUser } from 'firebase/auth'
+import { create } from 'zustand'
+
 import * as firebase from '@/lib/firebase'
 
 /**

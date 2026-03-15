@@ -1,11 +1,12 @@
-import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react-native';
+import { useWordScramble } from '@langafy/shared-game-logic';
+import { Exercise, ExerciseType } from '@langafy/shared-types';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+
+import { WordScramble } from './WordScramble';
 
 jest.mock('@langafy/shared-game-logic', () => ({
   useWordScramble: jest.fn(),
 }));
-
-import { useWordScramble } from '@langafy/shared-game-logic';
 
 const mockUseWordScramble = jest.mocked(useWordScramble);
 
@@ -55,11 +56,6 @@ function defaultHookValue(overrides = {}) {
     ...overrides,
   };
 }
-
-let WordScramble: typeof import('./WordScramble').WordScramble;
-beforeAll(() => {
-  ({ WordScramble } = require('./WordScramble'));
-});
 
 describe('WordScramble', () => {
   beforeEach(() => {

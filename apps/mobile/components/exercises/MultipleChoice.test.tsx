@@ -7,6 +7,8 @@ jest.mock('@/lib/api', () => ({
 
 import { apiClient } from '@/lib/api';
 
+import { MultipleChoice } from './MultipleChoice';
+
 const mockPost = jest.mocked(apiClient.post);
 
 const exercise: Exercise = {
@@ -30,12 +32,6 @@ const wrongResult: ExerciseResult = {
   maxScore: 10,
   correctAnswer: 'hola',
 };
-
-// Lazy import after mock is set up
-let MultipleChoice: typeof import('./MultipleChoice').MultipleChoice;
-beforeAll(() => {
-  ({ MultipleChoice } = require('./MultipleChoice'));
-});
 
 describe('MultipleChoice', () => {
   beforeEach(() => {

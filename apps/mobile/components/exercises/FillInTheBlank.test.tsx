@@ -7,6 +7,8 @@ jest.mock('@/lib/api', () => ({
 
 import { apiClient } from '@/lib/api';
 
+import { FillInTheBlank } from './FillInTheBlank';
+
 const mockPost = jest.mocked(apiClient.post);
 
 const exercise: Exercise = {
@@ -29,11 +31,6 @@ const wrongResult: ExerciseResult = {
   maxScore: 10,
   correctAnswer: 'gatos',
 };
-
-let FillInTheBlank: typeof import('./FillInTheBlank').FillInTheBlank;
-beforeAll(() => {
-  ({ FillInTheBlank } = require('./FillInTheBlank'));
-});
 
 describe('FillInTheBlank', () => {
   beforeEach(() => {

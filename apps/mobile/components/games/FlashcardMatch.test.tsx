@@ -1,12 +1,12 @@
-import type { FlashcardGameCard } from '@langafy/shared-game-logic';
-import { Exercise, ExerciseResult, ExerciseType } from '@langafy/shared-types';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react-native';
+import { useFlashcardGame, type FlashcardGameCard } from '@langafy/shared-game-logic';
+import { Exercise, ExerciseType } from '@langafy/shared-types';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+
+import { FlashcardMatch } from './FlashcardMatch';
 
 jest.mock('@langafy/shared-game-logic', () => ({
   useFlashcardGame: jest.fn(),
 }));
-
-import { useFlashcardGame } from '@langafy/shared-game-logic';
 
 const mockUseFlashcardGame = jest.mocked(useFlashcardGame);
 
@@ -50,11 +50,6 @@ function defaultHookValue(overrides = {}) {
     ...overrides,
   };
 }
-
-let FlashcardMatch: typeof import('./FlashcardMatch').FlashcardMatch;
-beforeAll(() => {
-  ({ FlashcardMatch } = require('./FlashcardMatch'));
-});
 
 describe('FlashcardMatch', () => {
   beforeEach(() => {

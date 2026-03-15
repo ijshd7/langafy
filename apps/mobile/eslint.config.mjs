@@ -93,6 +93,20 @@ const eslintConfig = tseslint.config(
     },
   },
 
+  // Test file overrides
+  {
+    files: ['**/*.test.ts', '**/*.test.tsx'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      // jest.mock() factory functions require require() — no ES module imports inside callbacks
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
   // Files to ignore
   {
     ignores: [
@@ -104,6 +118,8 @@ const eslintConfig = tseslint.config(
       'babel.config.js',
       'metro.config.js',
       'tailwind.config.js',
+      // Jest setup file: uses jest globals and require() legitimately
+      'jest.setup.js',
     ],
   }
 );

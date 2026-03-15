@@ -5,8 +5,10 @@ using LangafyApi.Features.Languages;
 using LangafyApi.Features.Lessons;
 using LangafyApi.Features.Progress;
 using LangafyApi.Features.Vocabulary;
+using LangafyApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
@@ -57,6 +59,54 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add database seeder for development
 builder.Services.AddScoped<DbSeeder>();
+
+// Bind OpenRouter configuration
+builder.Services.Configure<OpenRouterOptions>(
+    builder.Configuration.GetSection(OpenRouterOptions.SectionName));
+
+// Register the OpenRouter HttpClient with base address, auth header, and resilience pipeline.
+//
+// Resilience pipeline (Polly v8 via Microsoft.Extensions.Http.Resilience):
+//   - Retry: up to 3 attempts with exponential backoff on transient HTTP errors (5xx, timeouts)
+//   - Circuit breaker: opens after 5 consecutive failures; half-open after 30 seconds
+//
+// If the primary model exhausts retries, OpenRouterConversationService falls back to the
+// configured fallback model by catching the final exception and retrying the request.
+var openRouterApiKey = builder.Configuration["OpenRouter:ApiKey"] ?? string.Empty;
+var openRouterBaseUrl = builder.Configuration["OpenRouter:BaseUrl"] ?? "https://openrouter.ai/api/v1";
+
+builder.Services.AddHttpClient("OpenRouter", client =>
+{
+    client.BaseAddress = new Uri(openRouterBaseUrl);
+    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openRouterApiKey}");
+    client.DefaultRequestHeaders.Add("HTTP-Referer", "https://langafy.app");
+    client.DefaultRequestHeaders.Add("X-Title", "Langafy Language Learning");
+    client.Timeout = TimeSpan.FromSeconds(
+        builder.Configuration.GetValue("OpenRouter:TimeoutSeconds", 30));
+})
+.AddStandardResilienceHandler(options =>
+{
+    // Retry: up to 3 attempts with exponential backoff on transient HTTP errors (5xx)
+    options.Retry.MaxRetryAttempts = 3;
+    options.Retry.Delay = TimeSpan.FromSeconds(1);
+    options.Retry.BackoffType = Polly.DelayBackoffType.Exponential;
+
+    // Circuit breaker (sampling-based, Polly v8):
+    // Opens when >= 80% of requests fail within a 10s window, with at least 5 requests.
+    // Stays open for 30s before transitioning to half-open.
+    options.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
+    options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(10);
+    options.CircuitBreaker.MinimumThroughput = 5;
+    options.CircuitBreaker.FailureRatio = 0.8;
+
+    // Per-attempt timeout and total timeout covering all retry attempts
+    var timeoutSecs = builder.Configuration.GetValue("OpenRouter:TimeoutSeconds", 30);
+    options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(timeoutSecs);
+    options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(timeoutSecs * 4);
+});
+
+// Register the conversation AI service
+builder.Services.AddScoped<IConversationAIService, OpenRouterConversationService>();
 
 // Add Firebase JWT authentication
 var firebaseProjectId = builder.Configuration["Firebase:ProjectId"]

@@ -97,12 +97,25 @@ public static class ConversationEndpoints
     private static async Task<IResult> StartConversation(
         StartConversationRequest request,
         HttpContext context,
-        AppDbContext dbContext)
+        AppDbContext dbContext,
+        IConversationRateLimitService rateLimitService)
     {
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
             if (user == null) return Results.Unauthorized();
+
+            var rateLimit = await rateLimitService.CheckAndIncrementAsync(
+                user.Id, RateLimitKeys.StartConversation, context.RequestAborted);
+            if (rateLimit != null)
+            {
+                context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
+                return Results.Problem(
+                    statusCode: StatusCodes.Status429TooManyRequests,
+                    title: "Rate limit exceeded",
+                    detail: $"You can start at most 10 conversations per day. Try again in {rateLimit.RetryAfterSeconds} seconds."
+                );
+            }
 
             if (string.IsNullOrWhiteSpace(request.LanguageCode))
                 return Results.BadRequest("LanguageCode is required.");
@@ -165,12 +178,25 @@ public static class ConversationEndpoints
         SendMessageRequest request,
         HttpContext context,
         AppDbContext dbContext,
-        IConversationAIService aiService)
+        IConversationAIService aiService,
+        IConversationRateLimitService rateLimitService)
     {
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
             if (user == null) return Results.Unauthorized();
+
+            var rateLimit = await rateLimitService.CheckAndIncrementAsync(
+                user.Id, RateLimitKeys.SendMessage, context.RequestAborted);
+            if (rateLimit != null)
+            {
+                context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
+                return Results.Problem(
+                    statusCode: StatusCodes.Status429TooManyRequests,
+                    title: "Rate limit exceeded",
+                    detail: $"You can send at most 30 messages per hour. Try again in {rateLimit.RetryAfterSeconds} seconds."
+                );
+            }
 
             if (string.IsNullOrWhiteSpace(request.Message))
                 return Results.BadRequest("Message cannot be empty.");
@@ -232,7 +258,8 @@ public static class ConversationEndpoints
         SendMessageRequest request,
         HttpContext context,
         AppDbContext dbContext,
-        IConversationAIService aiService)
+        IConversationAIService aiService,
+        IConversationRateLimitService rateLimitService)
     {
         var user = await ResolveUserAsync(context, dbContext);
         if (user == null)
@@ -241,10 +268,22 @@ public static class ConversationEndpoints
             return;
         }
 
+        // Rate limit check — streaming and non-streaming share the same counter
+        var ct = context.RequestAborted;
+        var rateLimit = await rateLimitService.CheckAndIncrementAsync(user.Id, RateLimitKeys.SendMessage, ct);
+        if (rateLimit != null)
+        {
+            context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
+            await context.Response.WriteAsync(
+                $"Rate limit exceeded. You can send at most 30 messages per hour. Try again in {rateLimit.RetryAfterSeconds} seconds.", ct);
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(request.Message))
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsync("Message cannot be empty.");
+            await context.Response.WriteAsync("Message cannot be empty.", ct);
             return;
         }
 
@@ -260,7 +299,6 @@ public static class ConversationEndpoints
         context.Response.Headers["Cache-Control"] = "no-cache";
         context.Response.Headers["X-Accel-Buffering"] = "no"; // disable nginx response buffering
 
-        var ct = context.RequestAborted;
         var responseBuffer = new StringBuilder();
 
         try

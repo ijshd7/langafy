@@ -482,6 +482,38 @@ namespace LangafyApi.Migrations
                     b.ToTable("Vocabulary");
                 });
 
+            modelBuilder.Entity("LangafyApi.Data.Entities.RateLimitEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("EndpointKey")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("WindowStart")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "EndpointKey", "WindowStart")
+                        .IsUnique();
+
+                    b.ToTable("RateLimitEntries");
+                });
+
             modelBuilder.Entity("LangafyApi.Data.Entities.Conversation", b =>
                 {
                     b.HasOne("LangafyApi.Data.Entities.Language", "Language")
@@ -575,6 +607,17 @@ namespace LangafyApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Language");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LangafyApi.Data.Entities.RateLimitEntry", b =>
+                {
+                    b.HasOne("LangafyApi.Data.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

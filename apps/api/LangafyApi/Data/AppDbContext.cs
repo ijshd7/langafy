@@ -30,6 +30,9 @@ public class AppDbContext : DbContext
     public DbSet<Conversation> Conversations => Set<Conversation>();
     public DbSet<Message> Messages => Set<Message>();
 
+    // Rate limiting
+    public DbSet<RateLimitEntry> RateLimitEntries => Set<RateLimitEntry>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -244,6 +247,22 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.Conversation)
                 .WithMany(c => c.Messages)
                 .HasForeignKey(e => e.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // RateLimitEntry configuration
+        modelBuilder.Entity<RateLimitEntry>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            // Unique index enables efficient lookups and prevents duplicate windows
+            entity.HasIndex(e => new { e.UserId, e.EndpointKey, e.WindowStart }).IsUnique();
+            entity.Property(e => e.EndpointKey).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.WindowStart).IsRequired();
+            entity.Property(e => e.Count).IsRequired().HasDefaultValue(0);
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

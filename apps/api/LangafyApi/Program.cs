@@ -109,6 +109,9 @@ builder.Services.AddHttpClient("OpenRouter", client =>
 // Register the conversation AI service
 builder.Services.AddScoped<IConversationAIService, OpenRouterConversationService>();
 
+// Register the database-backed conversation rate limiter
+builder.Services.AddScoped<IConversationRateLimitService, DbConversationRateLimitService>();
+
 // Add Firebase JWT authentication
 var firebaseProjectId = builder.Configuration["Firebase:ProjectId"]
     ?? throw new InvalidOperationException("Firebase ProjectId configuration is missing.");

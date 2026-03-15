@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace LangafyApi.Features.Conversations;
 
 /// <summary>
@@ -8,6 +10,8 @@ public class StartConversationRequest
     /// <summary>
     /// Language code for the conversation (e.g., "es" for Spanish).
     /// </summary>
+    [Required]
+    [MaxLength(10)]
     public string LanguageCode { get; set; } = string.Empty;
 
     /// <summary>
@@ -20,6 +24,7 @@ public class StartConversationRequest
     /// Optional topic or theme for the conversation.
     /// Defaults to "General conversation" if not provided.
     /// </summary>
+    [MaxLength(200)]
     public string? Topic { get; set; }
 }
 
@@ -29,8 +34,10 @@ public class StartConversationRequest
 public class SendMessageRequest
 {
     /// <summary>
-    /// The user's message content.
+    /// The user's message content. Maximum 2000 characters to control AI token costs.
     /// </summary>
+    [Required]
+    [MaxLength(2000)]
     public string Message { get; set; } = string.Empty;
 }
 

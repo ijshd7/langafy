@@ -15,6 +15,9 @@ namespace LangafyApi.Features.Conversations;
 /// - Streaming (SSE): POST /api/conversations/{id}/messages/stream
 ///   Delivers the AI response token-by-token via Server-Sent Events (text/event-stream).
 ///   Both messages are persisted after the stream completes successfully.
+///
+/// Unhandled exceptions propagate to the global exception handler in Program.cs, which
+/// suppresses internal details in production (returns "Please try again later.").
 /// </summary>
 public static class ConversationEndpoints
 {
@@ -94,83 +97,72 @@ public static class ConversationEndpoints
         AppDbContext dbContext,
         IConversationRateLimitService rateLimitService)
     {
-        try
+        var user = await ResolveUserAsync(context, dbContext);
+        if (user == null)
         {
-            var user = await ResolveUserAsync(context, dbContext);
-            if (user == null)
-            {
-                return Results.Unauthorized();
-            }
-
-            var rateLimit = await rateLimitService.CheckAndIncrementAsync(
-                user.Id, RateLimitKeys.StartConversation, context.RequestAborted);
-            if (rateLimit != null)
-            {
-                context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
-                return Results.Problem(
-                    statusCode: StatusCodes.Status429TooManyRequests,
-                    title: "Rate limit exceeded",
-                    detail: $"You can start at most 10 conversations per day. Try again in {rateLimit.RetryAfterSeconds} seconds."
-                );
-            }
-
-            if (string.IsNullOrWhiteSpace(request.LanguageCode))
-            {
-                return Results.BadRequest("LanguageCode is required.");
-            }
-
-            var language = await dbContext.Languages
-                .FirstOrDefaultAsync(l => l.Code == request.LanguageCode && l.IsActive);
-            if (language == null)
-            {
-                return Results.BadRequest($"Language '{request.LanguageCode}' not found or not active.");
-            }
-
-            if (request.LessonId.HasValue)
-            {
-                var lessonExists = await dbContext.Lessons.AnyAsync(l => l.Id == request.LessonId.Value);
-                if (!lessonExists)
-                {
-                    return Results.BadRequest($"Lesson {request.LessonId} not found.");
-                }
-            }
-
-            // Use the user's current CEFR level for this language, defaulting to A1
-            var cefrLevel = await dbContext.UserLanguages
-                .Where(ul => ul.UserId == user.Id && ul.LanguageId == language.Id)
-                .Select(ul => ul.CurrentCefrLevel)
-                .FirstOrDefaultAsync() ?? "A1";
-
-            var conversation = new Conversation
-            {
-                UserId = user.Id,
-                LanguageId = language.Id,
-                LessonId = request.LessonId,
-                CefrLevel = cefrLevel,
-                Topic = string.IsNullOrWhiteSpace(request.Topic) ? "General conversation" : request.Topic.Trim(),
-                CreatedAt = DateTime.UtcNow
-            };
-
-            dbContext.Conversations.Add(conversation);
-            await dbContext.SaveChangesAsync();
-
-            return Results.Created($"/api/conversations/{conversation.Id}", new StartConversationResponse
-            {
-                Id = conversation.Id,
-                LanguageCode = language.Code,
-                CefrLevel = cefrLevel,
-                Topic = conversation.Topic,
-                CreatedAt = conversation.CreatedAt
-            });
+            return Results.Unauthorized();
         }
-        catch (Exception ex)
+
+        var rateLimit = await rateLimitService.CheckAndIncrementAsync(
+            user.Id, RateLimitKeys.StartConversation, context.RequestAborted);
+        if (rateLimit != null)
         {
+            context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
             return Results.Problem(
-                detail: ex.Message,
-                statusCode: StatusCodes.Status500InternalServerError,
-                title: "An error occurred while starting the conversation"
+                statusCode: StatusCodes.Status429TooManyRequests,
+                title: "Rate limit exceeded",
+                detail: $"You can start at most 10 conversations per day. Try again in {rateLimit.RetryAfterSeconds} seconds."
             );
         }
+
+        if (string.IsNullOrWhiteSpace(request.LanguageCode))
+        {
+            return Results.BadRequest("LanguageCode is required.");
+        }
+
+        var language = await dbContext.Languages
+            .FirstOrDefaultAsync(l => l.Code == request.LanguageCode && l.IsActive);
+        if (language == null)
+        {
+            return Results.BadRequest($"Language '{request.LanguageCode}' not found or not active.");
+        }
+
+        if (request.LessonId.HasValue)
+        {
+            var lessonExists = await dbContext.Lessons.AnyAsync(l => l.Id == request.LessonId.Value);
+            if (!lessonExists)
+            {
+                return Results.BadRequest($"Lesson {request.LessonId} not found.");
+            }
+        }
+
+        // Use the user's current CEFR level for this language, defaulting to A1
+        var cefrLevel = await dbContext.UserLanguages
+            .Where(ul => ul.UserId == user.Id && ul.LanguageId == language.Id)
+            .Select(ul => ul.CurrentCefrLevel)
+            .FirstOrDefaultAsync() ?? "A1";
+
+        var conversation = new Conversation
+        {
+            UserId = user.Id,
+            LanguageId = language.Id,
+            LessonId = request.LessonId,
+            CefrLevel = cefrLevel,
+            Topic = string.IsNullOrWhiteSpace(request.Topic) ? "General conversation" : request.Topic.Trim(),
+            CreatedAt = DateTime.UtcNow
+        };
+
+        dbContext.Conversations.Add(conversation);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Created($"/api/conversations/{conversation.Id}", new StartConversationResponse
+        {
+            Id = conversation.Id,
+            LanguageCode = language.Code,
+            CefrLevel = cefrLevel,
+            Topic = conversation.Topic,
+            CreatedAt = conversation.CreatedAt
+        });
     }
 
     /// <summary>
@@ -184,72 +176,67 @@ public static class ConversationEndpoints
         IConversationAIService aiService,
         IConversationRateLimitService rateLimitService)
     {
-        try
+        var user = await ResolveUserAsync(context, dbContext);
+        if (user == null)
         {
-            var user = await ResolveUserAsync(context, dbContext);
-            if (user == null)
-            {
-                return Results.Unauthorized();
-            }
-
-            var rateLimit = await rateLimitService.CheckAndIncrementAsync(
-                user.Id, RateLimitKeys.SendMessage, context.RequestAborted);
-            if (rateLimit != null)
-            {
-                context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
-                return Results.Problem(
-                    statusCode: StatusCodes.Status429TooManyRequests,
-                    title: "Rate limit exceeded",
-                    detail: $"You can send at most 30 messages per hour. Try again in {rateLimit.RetryAfterSeconds} seconds."
-                );
-            }
-
-            if (string.IsNullOrWhiteSpace(request.Message))
-            {
-                return Results.BadRequest("Message cannot be empty.");
-            }
-
-            var conversation = await LoadConversationForUserAsync(dbContext, id, user.Id);
-            if (conversation == null)
-            {
-                return Results.NotFound($"Conversation {id} not found.");
-            }
-
-            var aiResponse = await aiService.GenerateResponseAsync(
-                conversation, request.Message, context.RequestAborted);
-
-            var now = DateTime.UtcNow;
-            var userMessage = new Message
-            {
-                ConversationId = conversation.Id,
-                Role = MessageRole.User,
-                Content = request.Message,
-                CreatedAt = now
-            };
-            var assistantMessage = new Message
-            {
-                ConversationId = conversation.Id,
-                Role = MessageRole.Assistant,
-                Content = aiResponse,
-                CreatedAt = now.AddMilliseconds(1) // ensure deterministic ordering
-            };
-            dbContext.Messages.AddRange(userMessage, assistantMessage);
-            await dbContext.SaveChangesAsync();
-
-            return Results.Ok(new SendMessageResponse
-            {
-                UserMessage = ToMessageDto(userMessage),
-                AssistantMessage = ToMessageDto(assistantMessage)
-            });
+            return Results.Unauthorized();
         }
-        catch (Exception ex)
+
+        var rateLimit = await rateLimitService.CheckAndIncrementAsync(
+            user.Id, RateLimitKeys.SendMessage, context.RequestAborted);
+        if (rateLimit != null)
         {
+            context.Response.Headers["Retry-After"] = rateLimit.RetryAfterSeconds.ToString();
             return Results.Problem(
-                detail: ex.Message,
-                statusCode: StatusCodes.Status500InternalServerError,
-                title: "An error occurred while sending the message"
+                statusCode: StatusCodes.Status429TooManyRequests,
+                title: "Rate limit exceeded",
+                detail: $"You can send at most 30 messages per hour. Try again in {rateLimit.RetryAfterSeconds} seconds."
             );
         }
+
+        if (string.IsNullOrWhiteSpace(request.Message))
+        {
+            return Results.BadRequest("Message cannot be empty.");
+        }
+
+        // Enforce max length as a defense-in-depth check (DTO [MaxLength] handles deserialization)
+        if (request.Message.Length > 2000)
+        {
+            return Results.BadRequest("Message exceeds the maximum length of 2000 characters.");
+        }
+
+        var conversation = await LoadConversationForUserAsync(dbContext, id, user.Id);
+        if (conversation == null)
+        {
+            return Results.NotFound($"Conversation {id} not found.");
+        }
+
+        var aiResponse = await aiService.GenerateResponseAsync(
+            conversation, request.Message, context.RequestAborted);
+
+        var now = DateTime.UtcNow;
+        var userMessage = new Message
+        {
+            ConversationId = conversation.Id,
+            Role = MessageRole.User,
+            Content = request.Message,
+            CreatedAt = now
+        };
+        var assistantMessage = new Message
+        {
+            ConversationId = conversation.Id,
+            Role = MessageRole.Assistant,
+            Content = aiResponse,
+            CreatedAt = now.AddMilliseconds(1) // ensure deterministic ordering
+        };
+        dbContext.Messages.AddRange(userMessage, assistantMessage);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok(new SendMessageResponse
+        {
+            UserMessage = ToMessageDto(userMessage),
+            AssistantMessage = ToMessageDto(assistantMessage)
+        });
     }
 
     /// <summary>
@@ -294,6 +281,13 @@ public static class ConversationEndpoints
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsync("Message cannot be empty.", ct);
+            return;
+        }
+
+        if (request.Message.Length > 2000)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsync("Message exceeds the maximum length of 2000 characters.", ct);
             return;
         }
 
@@ -357,55 +351,44 @@ public static class ConversationEndpoints
         HttpContext context,
         AppDbContext dbContext)
     {
-        try
+        var user = await ResolveUserAsync(context, dbContext);
+        if (user == null)
         {
-            var user = await ResolveUserAsync(context, dbContext);
-            if (user == null)
-            {
-                return Results.Unauthorized();
-            }
-
-            var conversation = await dbContext.Conversations
-                .Include(c => c.Language)
-                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id);
-
-            if (conversation == null)
-            {
-                return Results.NotFound($"Conversation {id} not found.");
-            }
-
-            var messages = await dbContext.Messages
-                .Where(m => m.ConversationId == id && m.Role != MessageRole.System)
-                .OrderBy(m => m.CreatedAt)
-                .Select(m => new MessageDto
-                {
-                    Id = m.Id,
-                    Role = m.Role == MessageRole.User ? "user" : "assistant",
-                    Content = m.Content,
-                    CreatedAt = m.CreatedAt
-                })
-                .ToListAsync();
-
-            return Results.Ok(new ConversationDetailDto
-            {
-                Id = conversation.Id,
-                LanguageCode = conversation.Language.Code,
-                LanguageName = conversation.Language.Name,
-                CefrLevel = conversation.CefrLevel,
-                Topic = conversation.Topic,
-                LessonId = conversation.LessonId,
-                CreatedAt = conversation.CreatedAt,
-                Messages = messages
-            });
+            return Results.Unauthorized();
         }
-        catch (Exception ex)
+
+        var conversation = await dbContext.Conversations
+            .Include(c => c.Language)
+            .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id);
+
+        if (conversation == null)
         {
-            return Results.Problem(
-                detail: ex.Message,
-                statusCode: StatusCodes.Status500InternalServerError,
-                title: "An error occurred while retrieving the conversation"
-            );
+            return Results.NotFound($"Conversation {id} not found.");
         }
+
+        var messages = await dbContext.Messages
+            .Where(m => m.ConversationId == id && m.Role != MessageRole.System)
+            .OrderBy(m => m.CreatedAt)
+            .Select(m => new MessageDto
+            {
+                Id = m.Id,
+                Role = m.Role == MessageRole.User ? "user" : "assistant",
+                Content = m.Content,
+                CreatedAt = m.CreatedAt
+            })
+            .ToListAsync();
+
+        return Results.Ok(new ConversationDetailDto
+        {
+            Id = conversation.Id,
+            LanguageCode = conversation.Language.Code,
+            LanguageName = conversation.Language.Name,
+            CefrLevel = conversation.CefrLevel,
+            Topic = conversation.Topic,
+            LessonId = conversation.LessonId,
+            CreatedAt = conversation.CreatedAt,
+            Messages = messages
+        });
     }
 
     /// <summary>
@@ -418,61 +401,50 @@ public static class ConversationEndpoints
         int page = 1,
         int pageSize = 20)
     {
-        try
+        var user = await ResolveUserAsync(context, dbContext);
+        if (user == null)
         {
-            var user = await ResolveUserAsync(context, dbContext);
-            if (user == null)
-            {
-                return Results.Unauthorized();
-            }
-
-            page = Math.Max(1, page);
-            pageSize = Math.Clamp(pageSize, 1, 100);
-
-            var query = dbContext.Conversations
-                .Include(c => c.Language)
-                .Where(c => c.UserId == user.Id);
-
-            if (!string.IsNullOrWhiteSpace(language))
-            {
-                query = query.Where(c => c.Language.Code == language);
-            }
-
-            var total = await query.CountAsync();
-
-            var items = await query
-                .OrderByDescending(c => c.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(c => new ConversationSummaryDto
-                {
-                    Id = c.Id,
-                    LanguageCode = c.Language.Code,
-                    LanguageName = c.Language.Name,
-                    CefrLevel = c.CefrLevel,
-                    Topic = c.Topic,
-                    LessonId = c.LessonId,
-                    CreatedAt = c.CreatedAt,
-                    MessageCount = c.Messages.Count(m => m.Role != MessageRole.System)
-                })
-                .ToListAsync();
-
-            return Results.Ok(new ConversationListResponse
-            {
-                Items = items,
-                Total = total,
-                Page = page,
-                PageSize = pageSize
-            });
+            return Results.Unauthorized();
         }
-        catch (Exception ex)
+
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        var query = dbContext.Conversations
+            .Include(c => c.Language)
+            .Where(c => c.UserId == user.Id);
+
+        if (!string.IsNullOrWhiteSpace(language))
         {
-            return Results.Problem(
-                detail: ex.Message,
-                statusCode: StatusCodes.Status500InternalServerError,
-                title: "An error occurred while listing conversations"
-            );
+            query = query.Where(c => c.Language.Code == language);
         }
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(c => new ConversationSummaryDto
+            {
+                Id = c.Id,
+                LanguageCode = c.Language.Code,
+                LanguageName = c.Language.Name,
+                CefrLevel = c.CefrLevel,
+                Topic = c.Topic,
+                LessonId = c.LessonId,
+                CreatedAt = c.CreatedAt,
+                MessageCount = c.Messages.Count(m => m.Role != MessageRole.System)
+            })
+            .ToListAsync();
+
+        return Results.Ok(new ConversationListResponse
+        {
+            Items = items,
+            Total = total,
+            Page = page,
+            PageSize = pageSize
+        });
     }
 
     /// <summary>
@@ -483,35 +455,24 @@ public static class ConversationEndpoints
         HttpContext context,
         AppDbContext dbContext)
     {
-        try
+        var user = await ResolveUserAsync(context, dbContext);
+        if (user == null)
         {
-            var user = await ResolveUserAsync(context, dbContext);
-            if (user == null)
-            {
-                return Results.Unauthorized();
-            }
-
-            var conversation = await dbContext.Conversations
-                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id);
-
-            if (conversation == null)
-            {
-                return Results.NotFound($"Conversation {id} not found.");
-            }
-
-            dbContext.Conversations.Remove(conversation);
-            await dbContext.SaveChangesAsync();
-
-            return Results.NoContent();
+            return Results.Unauthorized();
         }
-        catch (Exception ex)
+
+        var conversation = await dbContext.Conversations
+            .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id);
+
+        if (conversation == null)
         {
-            return Results.Problem(
-                detail: ex.Message,
-                statusCode: StatusCodes.Status500InternalServerError,
-                title: "An error occurred while deleting the conversation"
-            );
+            return Results.NotFound($"Conversation {id} not found.");
         }
+
+        dbContext.Conversations.Remove(conversation);
+        await dbContext.SaveChangesAsync();
+
+        return Results.NoContent();
     }
 
     // -------------------------------------------------------------------------

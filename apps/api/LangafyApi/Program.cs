@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using LangafyApi.Data;
 using LangafyApi.Features.Auth;
 using LangafyApi.Features.Conversations;
@@ -8,6 +9,7 @@ using LangafyApi.Features.Progress;
 using LangafyApi.Features.Vocabulary;
 using LangafyApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.IdentityModel.Tokens;
@@ -134,6 +136,31 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+// Add IP-based rate limiting for auth endpoint brute-force protection.
+// Fixed window: 10 requests per minute per IP on POST /api/auth/sync.
+// Uses built-in ASP.NET Core rate limiting (no extra NuGet required in .NET 8+).
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("AuthSyncPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, ct) =>
+    {
+        context.HttpContext.Response.Headers["Retry-After"] = "60";
+        await context.HttpContext.Response.WriteAsync(
+            "Too many requests. Please try again in 60 seconds.", ct);
+    };
+});
+
 // Add CORS configuration
 builder.Services.AddCors(options =>
 {
@@ -221,6 +248,9 @@ app.Use(async (context, next) =>
 
 // CORS middleware
 app.UseCors("AllowFrontend");
+
+// Rate limiting middleware (must come before auth so IP limits apply to unauthenticated requests)
+app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
 {

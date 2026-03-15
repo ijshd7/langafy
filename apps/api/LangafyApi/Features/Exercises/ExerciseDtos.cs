@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace LangafyApi.Features.Exercises;
@@ -10,6 +11,7 @@ public abstract class ExerciseSubmissionRequest
     /// <summary>
     /// Time in milliseconds spent on this exercise.
     /// </summary>
+    [Range(0, int.MaxValue)]
     public int TimeSpentMs { get; set; }
 }
 
@@ -21,6 +23,7 @@ public class MultipleChoiceSubmission : ExerciseSubmissionRequest
     /// <summary>
     /// Index of the selected answer option (0-based).
     /// </summary>
+    [Range(0, 99)]
     public int SelectedIndex { get; set; }
 }
 
@@ -32,6 +35,7 @@ public class FillBlankSubmission : ExerciseSubmissionRequest
     /// <summary>
     /// The answer provided by the user.
     /// </summary>
+    [MaxLength(500)]
     public string Answer { get; set; } = string.Empty;
 }
 
@@ -43,6 +47,7 @@ public class WordScrambleSubmission : ExerciseSubmissionRequest
     /// <summary>
     /// The word the user arranged from the scrambled letters.
     /// </summary>
+    [MaxLength(100)]
     public string Answer { get; set; } = string.Empty;
 }
 
@@ -66,11 +71,13 @@ public class FlashcardMatchPair
     /// <summary>
     /// The target language word (e.g., "Hola").
     /// </summary>
+    [MaxLength(200)]
     public string Target { get; set; } = string.Empty;
 
     /// <summary>
     /// The English translation (e.g., "Hello").
     /// </summary>
+    [MaxLength(200)]
     public string En { get; set; } = string.Empty;
 }
 
@@ -82,6 +89,7 @@ public class FreeResponseSubmission : ExerciseSubmissionRequest
     /// <summary>
     /// The text response provided by the user.
     /// </summary>
+    [MaxLength(5000)]
     public string Response { get; set; } = string.Empty;
 }
 

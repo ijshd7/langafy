@@ -32,6 +32,9 @@ jobs:
       - name: Build shared-types
         run: npm run build --workspace=@langafy/shared-types
 
+      - name: Build shared-game-logic
+        run: npm run build --workspace=@langafy/shared-game-logic
+
       - name: Test shared-game-logic
         run: npm run test --workspace=@langafy/shared-game-logic
 
@@ -40,6 +43,13 @@ jobs:
         with:
           name: shared-types-dist
           path: packages/shared-types/dist
+          retention-days: 1
+
+      - name: Upload shared-game-logic dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-game-logic-dist
+          path: packages/shared-game-logic/dist
           retention-days: 1
 
   # ──────────────────────────────────────────────────────────────────────────
@@ -98,6 +108,12 @@ jobs:
         with:
           name: shared-types-dist
           path: packages/shared-types/dist
+
+      - name: Download shared-game-logic dist
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-game-logic-dist
+          path: packages/shared-game-logic/dist
 
       - name: Lint
         run: npm run lint --workspace=web

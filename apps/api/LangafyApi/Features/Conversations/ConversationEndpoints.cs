@@ -1,8 +1,8 @@
+using System.Text;
 using LangafyApi.Data;
 using LangafyApi.Data.Entities;
 using LangafyApi.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 
 namespace LangafyApi.Features.Conversations;
 
@@ -103,7 +103,10 @@ public static class ConversationEndpoints
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
-            if (user == null) return Results.Unauthorized();
+            if (user == null)
+            {
+                return Results.Unauthorized();
+            }
 
             var rateLimit = await rateLimitService.CheckAndIncrementAsync(
                 user.Id, RateLimitKeys.StartConversation, context.RequestAborted);
@@ -118,18 +121,24 @@ public static class ConversationEndpoints
             }
 
             if (string.IsNullOrWhiteSpace(request.LanguageCode))
+            {
                 return Results.BadRequest("LanguageCode is required.");
+            }
 
             var language = await dbContext.Languages
                 .FirstOrDefaultAsync(l => l.Code == request.LanguageCode && l.IsActive);
             if (language == null)
+            {
                 return Results.BadRequest($"Language '{request.LanguageCode}' not found or not active.");
+            }
 
             if (request.LessonId.HasValue)
             {
                 var lessonExists = await dbContext.Lessons.AnyAsync(l => l.Id == request.LessonId.Value);
                 if (!lessonExists)
+                {
                     return Results.BadRequest($"Lesson {request.LessonId} not found.");
+                }
             }
 
             // Use the user's current CEFR level for this language, defaulting to A1
@@ -184,7 +193,10 @@ public static class ConversationEndpoints
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
-            if (user == null) return Results.Unauthorized();
+            if (user == null)
+            {
+                return Results.Unauthorized();
+            }
 
             var rateLimit = await rateLimitService.CheckAndIncrementAsync(
                 user.Id, RateLimitKeys.SendMessage, context.RequestAborted);
@@ -199,11 +211,15 @@ public static class ConversationEndpoints
             }
 
             if (string.IsNullOrWhiteSpace(request.Message))
+            {
                 return Results.BadRequest("Message cannot be empty.");
+            }
 
             var conversation = await LoadConversationForUserAsync(dbContext, id, user.Id);
             if (conversation == null)
+            {
                 return Results.NotFound($"Conversation {id} not found.");
+            }
 
             var aiResponse = await aiService.GenerateResponseAsync(
                 conversation, request.Message, context.RequestAborted);
@@ -350,14 +366,19 @@ public static class ConversationEndpoints
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
-            if (user == null) return Results.Unauthorized();
+            if (user == null)
+            {
+                return Results.Unauthorized();
+            }
 
             var conversation = await dbContext.Conversations
                 .Include(c => c.Language)
                 .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id);
 
             if (conversation == null)
+            {
                 return Results.NotFound($"Conversation {id} not found.");
+            }
 
             var messages = await dbContext.Messages
                 .Where(m => m.ConversationId == id && m.Role != MessageRole.System)
@@ -406,7 +427,10 @@ public static class ConversationEndpoints
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
-            if (user == null) return Results.Unauthorized();
+            if (user == null)
+            {
+                return Results.Unauthorized();
+            }
 
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 100);
@@ -416,7 +440,9 @@ public static class ConversationEndpoints
                 .Where(c => c.UserId == user.Id);
 
             if (!string.IsNullOrWhiteSpace(language))
+            {
                 query = query.Where(c => c.Language.Code == language);
+            }
 
             var total = await query.CountAsync();
 
@@ -466,13 +492,18 @@ public static class ConversationEndpoints
         try
         {
             var user = await ResolveUserAsync(context, dbContext);
-            if (user == null) return Results.Unauthorized();
+            if (user == null)
+            {
+                return Results.Unauthorized();
+            }
 
             var conversation = await dbContext.Conversations
                 .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id);
 
             if (conversation == null)
+            {
                 return Results.NotFound($"Conversation {id} not found.");
+            }
 
             dbContext.Conversations.Remove(conversation);
             await dbContext.SaveChangesAsync();
@@ -500,7 +531,11 @@ public static class ConversationEndpoints
     private static async Task<AppUser?> ResolveUserAsync(HttpContext context, AppDbContext dbContext)
     {
         var firebaseUid = context.User.FindFirst("sub")?.Value;
-        if (string.IsNullOrEmpty(firebaseUid)) return null;
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return null;
+        }
+
         return await dbContext.Users.FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
     }
 

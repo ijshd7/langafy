@@ -5,6 +5,7 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class Language
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
     /// <summary>
@@ -28,6 +29,8 @@ public class Language
     public bool IsActive { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public ICollection<Unit> Units { get; set; } = new List<Unit>();
+    /// <inheritdoc/>
     public ICollection<Vocabulary> VocabularyItems { get; set; } = new List<Vocabulary>();
 }

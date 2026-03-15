@@ -21,6 +21,7 @@ public class DbSeeder
         Converters = { new JsonStringEnumConverter() }
     };
 
+    /// <inheritdoc/>
     public DbSeeder(AppDbContext context, ILogger<DbSeeder> logger, IWebHostEnvironment env)
     {
         _context = context;
@@ -183,7 +184,9 @@ public class DbSeeder
     {
         var filePath = Path.Combine(langCodeDir.FullName, "units.json");
         if (!File.Exists(filePath))
+        {
             return;
+        }
 
         var json = await File.ReadAllTextAsync(filePath);
         var unitSeedData = JsonSerializer.Deserialize<List<UnitSeedDto>>(json, _jsonOptions)
@@ -225,7 +228,9 @@ public class DbSeeder
     {
         var filePath = Path.Combine(langCodeDir.FullName, "lessons.json");
         if (!File.Exists(filePath))
+        {
             return;
+        }
 
         var json = await File.ReadAllTextAsync(filePath);
         var lessonSeedData = JsonSerializer.Deserialize<List<LessonSeedDto>>(json, _jsonOptions)
@@ -269,7 +274,9 @@ public class DbSeeder
     {
         var filePath = Path.Combine(langCodeDir.FullName, "exercises.json");
         if (!File.Exists(filePath))
+        {
             return;
+        }
 
         var json = await File.ReadAllTextAsync(filePath);
         var exerciseSeedData = JsonSerializer.Deserialize<List<ExerciseSeedDto>>(json, _jsonOptions)
@@ -314,7 +321,9 @@ public class DbSeeder
     {
         var filePath = Path.Combine(langCodeDir.FullName, "vocabulary.json");
         if (!File.Exists(filePath))
+        {
             return;
+        }
 
         var json = await File.ReadAllTextAsync(filePath);
         var vocabSeedData = JsonSerializer.Deserialize<List<VocabularySeedDto>>(json, _jsonOptions)

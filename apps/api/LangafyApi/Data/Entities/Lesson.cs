@@ -6,8 +6,10 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class Lesson
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int UnitId { get; set; }
 
     /// <summary>
@@ -31,6 +33,8 @@ public class Lesson
     public int SortOrder { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public Unit Unit { get; set; } = null!;
+    /// <inheritdoc/>
     public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
 }

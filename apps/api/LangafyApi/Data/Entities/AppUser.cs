@@ -5,6 +5,7 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class AppUser
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
     /// <summary>
@@ -33,8 +34,12 @@ public class AppUser
     public DateTime LastActiveAt { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public ICollection<UserLanguage> UserLanguages { get; set; } = new List<UserLanguage>();
+    /// <inheritdoc/>
     public ICollection<UserProgress> UserProgress { get; set; } = new List<UserProgress>();
+    /// <inheritdoc/>
     public ICollection<UserVocabulary> UserVocabulary { get; set; } = new List<UserVocabulary>();
+    /// <inheritdoc/>
     public ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
 }

@@ -5,8 +5,11 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public enum MessageRole
 {
+    /// <inheritdoc/>
     System,
+    /// <inheritdoc/>
     User,
+    /// <inheritdoc/>
     Assistant
 }
 
@@ -15,8 +18,10 @@ public enum MessageRole
 /// </summary>
 public class Message
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int ConversationId { get; set; }
 
     /// <summary>
@@ -35,5 +40,6 @@ public class Message
     public DateTime CreatedAt { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public Conversation Conversation { get; set; } = null!;
 }

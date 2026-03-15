@@ -5,9 +5,12 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class Vocabulary
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int LanguageId { get; set; }
+    /// <inheritdoc/>
     public int CefrLevelId { get; set; }
 
     /// <summary>
@@ -36,7 +39,10 @@ public class Vocabulary
     public string ExampleSentenceEn { get; set; } = string.Empty;
 
     // Navigation properties
+    /// <inheritdoc/>
     public Language Language { get; set; } = null!;
+    /// <inheritdoc/>
     public CefrLevel CefrLevel { get; set; } = null!;
+    /// <inheritdoc/>
     public ICollection<UserVocabulary> UserVocabularyItems { get; set; } = new List<UserVocabulary>();
 }

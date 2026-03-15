@@ -28,6 +28,7 @@ public class OpenRouterConversationService : IConversationAIService
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
+    /// <inheritdoc/>
     public OpenRouterConversationService(
         IHttpClientFactory httpClientFactory,
         IOptions<OpenRouterOptions> options,
@@ -198,11 +199,21 @@ public class OpenRouterConversationService : IConversationAIService
         while (!reader.EndOfStream && !ct.IsCancellationRequested)
         {
             var line = await reader.ReadLineAsync(ct);
-            if (string.IsNullOrWhiteSpace(line)) continue;
-            if (!line.StartsWith("data: ", StringComparison.Ordinal)) continue;
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
+            if (!line.StartsWith("data: ", StringComparison.Ordinal))
+            {
+                continue;
+            }
 
             var data = line["data: ".Length..];
-            if (data == "[DONE]") break;
+            if (data == "[DONE]")
+            {
+                break;
+            }
 
             string? content = null;
             try

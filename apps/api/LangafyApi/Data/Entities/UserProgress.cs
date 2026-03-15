@@ -5,9 +5,12 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class UserProgress
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int UserId { get; set; }
+    /// <inheritdoc/>
     public int ExerciseId { get; set; }
 
     /// <summary>
@@ -31,6 +34,8 @@ public class UserProgress
     public DateTime? CompletedAt { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public AppUser User { get; set; } = null!;
+    /// <inheritdoc/>
     public Exercise Exercise { get; set; } = null!;
 }

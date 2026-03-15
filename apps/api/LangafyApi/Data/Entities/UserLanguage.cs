@@ -6,9 +6,12 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class UserLanguage
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int UserId { get; set; }
+    /// <inheritdoc/>
     public int LanguageId { get; set; }
 
     /// <summary>
@@ -29,6 +32,8 @@ public class UserLanguage
     public DateTime StartedAt { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public AppUser User { get; set; } = null!;
+    /// <inheritdoc/>
     public Language Language { get; set; } = null!;
 }

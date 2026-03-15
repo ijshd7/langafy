@@ -6,6 +6,9 @@ namespace LangafyApi.Services;
 /// </summary>
 public class OpenRouterOptions
 {
+    /// <summary>
+    /// The configuration section name in appsettings.json.
+    /// </summary>
     public const string SectionName = "OpenRouter";
 
     /// <summary>

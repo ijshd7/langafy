@@ -56,12 +56,13 @@ public class DbConversationRateLimitService : IConversationRateLimitService
     // Maps endpoint key → (request limit, window size)
     private static readonly Dictionary<string, (int Limit, TimeSpan Window)> Policies = new()
     {
-        [RateLimitKeys.SendMessage]       = (30, TimeSpan.FromHours(1)),
+        [RateLimitKeys.SendMessage] = (30, TimeSpan.FromHours(1)),
         [RateLimitKeys.StartConversation] = (10, TimeSpan.FromDays(1)),
     };
 
     private readonly AppDbContext _db;
 
+    /// <inheritdoc/>
     public DbConversationRateLimitService(AppDbContext db) => _db = db;
 
     /// <inheritdoc />
@@ -69,10 +70,12 @@ public class DbConversationRateLimitService : IConversationRateLimitService
         int userId, string endpointKey, CancellationToken ct = default)
     {
         if (!Policies.TryGetValue(endpointKey, out var policy))
+        {
             return null; // Unknown key — allow through
+        }
 
         var windowStart = TruncateToWindow(DateTime.UtcNow, policy.Window);
-        var windowEnd   = windowStart + policy.Window;
+        var windowEnd = windowStart + policy.Window;
 
         var entry = await _db.RateLimitEntries
             .FirstOrDefaultAsync(e =>
@@ -84,10 +87,10 @@ public class DbConversationRateLimitService : IConversationRateLimitService
         {
             _db.RateLimitEntries.Add(new RateLimitEntry
             {
-                UserId      = userId,
+                UserId = userId,
                 EndpointKey = endpointKey,
                 WindowStart = windowStart,
-                Count       = 1
+                Count = 1
             });
             await _db.SaveChangesAsync(ct);
             return null; // First request in window — allowed

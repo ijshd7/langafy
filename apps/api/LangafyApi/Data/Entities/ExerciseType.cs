@@ -5,9 +5,14 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public enum ExerciseType
 {
+    /// <inheritdoc/>
     MultipleChoice,
+    /// <inheritdoc/>
     FillBlank,
+    /// <inheritdoc/>
     WordScramble,
+    /// <inheritdoc/>
     FlashcardMatch,
+    /// <inheritdoc/>
     FreeResponse
 }

@@ -44,7 +44,7 @@ public class UnitDto
     public int Id { get; set; }
 
     /// <summary>
-    /// Title of the unit (e.g., "Greetings & Introductions").
+    /// Title of the unit (e.g., "Greetings &amp; Introductions").
     /// </summary>
     public string Title { get; set; } = string.Empty;
 

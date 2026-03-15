@@ -8,8 +8,10 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class Exercise
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int LessonId { get; set; }
 
     /// <summary>
@@ -34,5 +36,6 @@ public class Exercise
     public int Points { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public Lesson Lesson { get; set; } = null!;
 }

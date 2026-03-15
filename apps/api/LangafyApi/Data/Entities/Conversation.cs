@@ -5,10 +5,14 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class Conversation
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int UserId { get; set; }
+    /// <inheritdoc/>
     public int LanguageId { get; set; }
+    /// <inheritdoc/>
     public int? LessonId { get; set; }
 
     /// <summary>
@@ -28,8 +32,12 @@ public class Conversation
     public DateTime CreatedAt { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public AppUser User { get; set; } = null!;
+    /// <inheritdoc/>
     public Language Language { get; set; } = null!;
+    /// <inheritdoc/>
     public Lesson? Lesson { get; set; }
+    /// <inheritdoc/>
     public ICollection<Message> Messages { get; set; } = new List<Message>();
 }

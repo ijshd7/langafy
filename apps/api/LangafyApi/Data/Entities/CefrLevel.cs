@@ -5,6 +5,7 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class CefrLevel
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
     /// <summary>
@@ -28,5 +29,6 @@ public class CefrLevel
     public int SortOrder { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public ICollection<Unit> Units { get; set; } = new List<Unit>();
 }

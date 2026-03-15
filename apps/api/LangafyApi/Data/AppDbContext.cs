@@ -8,31 +8,46 @@ namespace LangafyApi.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
+    /// <inheritdoc/>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
     // CEFR Content Hierarchy
+    /// <inheritdoc/>
     public DbSet<Language> Languages => Set<Language>();
+    /// <inheritdoc/>
     public DbSet<CefrLevel> CefrLevels => Set<CefrLevel>();
+    /// <inheritdoc/>
     public DbSet<Unit> Units => Set<Unit>();
+    /// <inheritdoc/>
     public DbSet<Lesson> Lessons => Set<Lesson>();
+    /// <inheritdoc/>
     public DbSet<Exercise> Exercises => Set<Exercise>();
 
     // User and Progress
+    /// <inheritdoc/>
     public DbSet<AppUser> Users => Set<AppUser>();
+    /// <inheritdoc/>
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
+    /// <inheritdoc/>
     public DbSet<UserProgress> UserProgress => Set<UserProgress>();
+    /// <inheritdoc/>
     public DbSet<UserVocabulary> UserVocabulary => Set<UserVocabulary>();
+    /// <inheritdoc/>
     public DbSet<Vocabulary> Vocabulary => Set<Vocabulary>();
 
     // Conversations
+    /// <inheritdoc/>
     public DbSet<Conversation> Conversations => Set<Conversation>();
+    /// <inheritdoc/>
     public DbSet<Message> Messages => Set<Message>();
 
     // Rate limiting
+    /// <inheritdoc/>
     public DbSet<RateLimitEntry> RateLimitEntries => Set<RateLimitEntry>();
 
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

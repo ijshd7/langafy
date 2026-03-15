@@ -65,8 +65,15 @@ public static class VocabularyEndpoints
         try
         {
             // Validate pagination parameters
-            if (page < 1) page = 1;
-            if (pageSize < 1 || pageSize > 100) pageSize = 20;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (pageSize < 1 || pageSize > 100)
+            {
+                pageSize = 20;
+            }
 
             // Get authenticated user
             var firebaseUid = context.User.FindFirst("sub")?.Value;
@@ -278,8 +285,15 @@ public static class VocabularyEndpoints
         try
         {
             // Validate pagination parameters
-            if (page < 1) page = 1;
-            if (pageSize < 1 || pageSize > 100) pageSize = 20;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (pageSize < 1 || pageSize > 100)
+            {
+                pageSize = 20;
+            }
 
             // Get authenticated user
             var firebaseUid = context.User.FindFirst("sub")?.Value;

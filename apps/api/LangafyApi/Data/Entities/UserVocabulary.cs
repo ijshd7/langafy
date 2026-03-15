@@ -6,9 +6,12 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class UserVocabulary
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
+    /// <inheritdoc/>
     public int UserId { get; set; }
+    /// <inheritdoc/>
     public int VocabularyId { get; set; }
 
     /// <summary>
@@ -33,6 +36,8 @@ public class UserVocabulary
     public DateTime NextReviewAt { get; set; }
 
     // Navigation properties
+    /// <inheritdoc/>
     public AppUser User { get; set; } = null!;
+    /// <inheritdoc/>
     public Vocabulary Vocabulary { get; set; } = null!;
 }

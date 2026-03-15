@@ -6,6 +6,7 @@ namespace LangafyApi.Data.Entities;
 /// </summary>
 public class RateLimitEntry
 {
+    /// <inheritdoc/>
     public int Id { get; set; }
 
     /// <summary>The user whose request is being counted.</summary>
@@ -25,5 +26,6 @@ public class RateLimitEntry
     public int Count { get; set; }
 
     // Navigation
+    /// <inheritdoc/>
     public AppUser User { get; set; } = null!;
 }

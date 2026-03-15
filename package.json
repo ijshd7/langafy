@@ -15,7 +15,7 @@
     "seed": "node scripts/seed.js",
     "seed:reset": "node scripts/seed.js --reset",
     "seed:help": "node scripts/seed.js --help",
-    "lint": "npm -w web run lint && npm -w mobile run lint",
+    "lint": "npm -w web run lint && npm -w mobile run lint && dotnet format apps/api/LangafyApi/LangafyApi.csproj --verify-no-changes",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",

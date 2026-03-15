@@ -205,7 +205,9 @@ public class ExerciseValidator
                 for (int i = 0; i < configPairs.Count; i++)
                 {
                     if (matchedConfigIndices.Contains(i))
+                    {
                         continue;
+                    }
 
                     var pair = configPairs[i];
                     string configTarget = pair.TryGetProperty("target", out var t) ? t.GetString() ?? "" : "";

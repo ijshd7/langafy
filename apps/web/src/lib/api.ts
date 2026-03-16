@@ -71,11 +71,11 @@ class ApiClient {
   /**
    * Build request headers including authorization if token is available
    */
-  private async buildHeaders(options?: ApiRequestOptions): Promise<HeadersInit> {
+  private async buildHeaders(options?: ApiRequestOptions, hasBody = false): Promise<HeadersInit> {
     const headers = new Headers(options?.headers || {});
 
-    // Set Content-Type if not already set
-    if (!headers.has('Content-Type') && options?.body) {
+    // Set Content-Type if not already set and a body will be sent
+    if (!headers.has('Content-Type') && (options?.body || hasBody)) {
       headers.set('Content-Type', 'application/json');
     }
 
@@ -155,7 +155,7 @@ class ApiClient {
    */
   async post<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
     const url = this.buildUrl(endpoint, options?.params);
-    const headers = await this.buildHeaders(options);
+    const headers = await this.buildHeaders(options, !!data);
 
     const response = await fetch(url, {
       ...options,
@@ -172,7 +172,7 @@ class ApiClient {
    */
   async put<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
     const url = this.buildUrl(endpoint, options?.params);
-    const headers = await this.buildHeaders(options);
+    const headers = await this.buildHeaders(options, !!data);
 
     const response = await fetch(url, {
       ...options,

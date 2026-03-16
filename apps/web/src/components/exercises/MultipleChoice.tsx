@@ -44,10 +44,25 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
     setError(null);
 
     try {
-      const result = await apiClient.post<ExerciseResult>(`/exercises/${exercise.id}/submit`, {
+      const apiResult = await apiClient.post<{
+        isCorrect: boolean;
+        score: number;
+        pointsEarned: number;
+        correctAnswer?: string;
+        feedback: string;
+        explanation?: string;
+      }>(`/exercises/${exercise.id}/submit`, {
         type: 'MultipleChoice',
         selectedIndex,
       });
+
+      const result: ExerciseResult = {
+        correct: apiResult.isCorrect,
+        score: apiResult.pointsEarned,
+        maxScore: exercise.points,
+        correctAnswer: apiResult.correctAnswer,
+        explanation: apiResult.explanation,
+      };
 
       setResult(result);
       setSubmitted(true);

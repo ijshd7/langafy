@@ -6,6 +6,8 @@ import type { NextConfig } from 'next';
 // Bundle analysis: run `ANALYZE=true npm run build` to generate reports in .next/analyze/
 const withAnalyzer = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' });
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
+
 const nextConfig: NextConfig = {
   output: 'standalone',
   transpilePackages: ['@langafy/shared-types', '@langafy/shared-game-logic'],
@@ -40,7 +42,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com",
+              `connect-src 'self' ${apiUrl} https://*.googleapis.com https://*.firebaseapp.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com`,
               "frame-src https://accounts.google.com https://*.firebaseapp.com",
               "object-src 'none'",
               "base-uri 'self'",

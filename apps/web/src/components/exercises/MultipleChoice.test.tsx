@@ -27,6 +27,17 @@ const exercise: Exercise = {
   } as MultipleChoiceConfig,
 };
 
+// API response shape (what apiClient.post returns)
+const correctApiResponse = { isCorrect: true, score: 100, pointsEarned: 10, feedback: 'Correct!' };
+const wrongApiResponse = {
+  isCorrect: false,
+  score: 0,
+  pointsEarned: 0,
+  correctAnswer: 'hola',
+  feedback: 'Incorrect',
+};
+
+// Mapped ExerciseResult shape (what onComplete receives)
 const correctResult: ExerciseResult = { correct: true, score: 10, maxScore: 10 };
 const wrongResult: ExerciseResult = {
   correct: false,
@@ -72,7 +83,7 @@ describe('MultipleChoice', () => {
   it('shows correct feedback and auto-advances after 2 seconds on correct answer', async () => {
     vi.useFakeTimers();
     const onComplete = vi.fn();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<MultipleChoice exercise={exercise} onComplete={onComplete} />);
 
@@ -93,7 +104,7 @@ describe('MultipleChoice', () => {
   it('shows incorrect feedback and Continue button on wrong answer', async () => {
     const user = userEvent.setup();
     const onComplete = vi.fn();
-    mockPost.mockResolvedValue(wrongResult);
+    mockPost.mockResolvedValue(wrongApiResponse);
 
     render(<MultipleChoice exercise={exercise} onComplete={onComplete} />);
 
@@ -111,7 +122,7 @@ describe('MultipleChoice', () => {
   it('calls onComplete when Continue button is clicked after wrong answer', async () => {
     const user = userEvent.setup();
     const onComplete = vi.fn();
-    mockPost.mockResolvedValue(wrongResult);
+    mockPost.mockResolvedValue(wrongApiResponse);
 
     render(<MultipleChoice exercise={exercise} onComplete={onComplete} />);
 
@@ -125,7 +136,7 @@ describe('MultipleChoice', () => {
 
   it('disables all options after submission', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<MultipleChoice exercise={exercise} onComplete={vi.fn()} />);
 
@@ -143,7 +154,7 @@ describe('MultipleChoice', () => {
 
   it('shows explanation after submission', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<MultipleChoice exercise={exercise} onComplete={vi.fn()} />);
 
@@ -155,7 +166,7 @@ describe('MultipleChoice', () => {
 
   it('submits with correct payload', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<MultipleChoice exercise={exercise} onComplete={vi.fn()} />);
 

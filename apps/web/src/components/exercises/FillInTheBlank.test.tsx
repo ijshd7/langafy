@@ -26,6 +26,17 @@ const exercise: Exercise = {
   } as FillBlankConfig,
 };
 
+// API response shape (what apiClient.post returns)
+const correctApiResponse = { isCorrect: true, score: 100, pointsEarned: 10, feedback: 'Correct!' };
+const wrongApiResponse = {
+  isCorrect: false,
+  score: 0,
+  pointsEarned: 0,
+  correctAnswer: 'llamas',
+  feedback: 'Incorrect',
+};
+
+// Mapped ExerciseResult shape (what onComplete receives)
 const correctResult: ExerciseResult = { correct: true, score: 10, maxScore: 10 };
 const wrongResult: ExerciseResult = {
   correct: false,
@@ -68,7 +79,7 @@ describe('FillInTheBlank', () => {
 
   it('submits the trimmed answer with correct payload', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<FillInTheBlank exercise={exercise} onComplete={vi.fn()} />);
 
@@ -84,7 +95,7 @@ describe('FillInTheBlank', () => {
 
   it('shows correct feedback on correct answer', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<FillInTheBlank exercise={exercise} onComplete={vi.fn()} />);
 
@@ -97,7 +108,7 @@ describe('FillInTheBlank', () => {
   it('shows incorrect feedback and Continue button on wrong answer', async () => {
     const user = userEvent.setup();
     const onComplete = vi.fn();
-    mockPost.mockResolvedValue(wrongResult);
+    mockPost.mockResolvedValue(wrongApiResponse);
 
     render(<FillInTheBlank exercise={exercise} onComplete={onComplete} />);
 
@@ -112,7 +123,7 @@ describe('FillInTheBlank', () => {
 
   it('submits on Enter key press', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<FillInTheBlank exercise={exercise} onComplete={vi.fn()} />);
 
@@ -125,7 +136,7 @@ describe('FillInTheBlank', () => {
   it('auto-advances after 2 seconds on correct answer', async () => {
     vi.useFakeTimers();
     const onComplete = vi.fn();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<FillInTheBlank exercise={exercise} onComplete={onComplete} />);
 
@@ -145,7 +156,7 @@ describe('FillInTheBlank', () => {
 
   it('shows explanation after submission', async () => {
     const user = userEvent.setup();
-    mockPost.mockResolvedValue(correctResult);
+    mockPost.mockResolvedValue(correctApiResponse);
 
     render(<FillInTheBlank exercise={exercise} onComplete={vi.fn()} />);
 

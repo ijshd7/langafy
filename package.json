@@ -21,6 +21,12 @@
     "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",
     "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env build --no-cache && docker compose -f docker/docker-compose.yml --env-file .env up",
     "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down -v",
+    "test:web": "npm -w web run test",
+    "test:mobile": "npm -w mobile run test",
+    "test:api": "dotnet test apps/api/LangafyApi.Tests/LangafyApi.Tests.csproj",
+    "test:shared": "npm -w @langafy/shared-game-logic run test",
+    "test:all": "npm run test:shared && npm run test:web && npm run test:mobile && npm run test:api",
+    "test:regression": "npm -w web run test:regression",
     "bump:patch": "node scripts/bump.js patch",
     "bump:minor": "node scripts/bump.js minor",
     "bump:major": "node scripts/bump.js major"

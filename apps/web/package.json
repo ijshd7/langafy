@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:regression": "playwright test --config=playwright.regression.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

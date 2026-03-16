@@ -1,5 +1,6 @@
 using LangafyApi.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LangafyApi.Features.Lessons;
 
@@ -51,23 +52,34 @@ public static class LessonEndpoints
 
     /// <summary>
     /// Gets all CEFR levels ordered by sort order.
+    /// Cached for 5 minutes — levels change only when new content is deployed.
     /// </summary>
-    private static async Task<IResult> GetLevels(AppDbContext dbContext)
+    private static async Task<IResult> GetLevels(
+        AppDbContext dbContext,
+        IMemoryCache cache,
+        HttpContext httpContext)
     {
         try
         {
-            var levels = await dbContext.CefrLevels
-                .OrderBy(l => l.SortOrder)
-                .Select(l => new CefrLevelDto
-                {
-                    Id = l.Id,
-                    Code = l.Code,
-                    Name = l.Name,
-                    Description = l.Description,
-                    SortOrder = l.SortOrder
-                })
-                .ToListAsync();
+            const string cacheKey = "content:levels";
+            if (!cache.TryGetValue(cacheKey, out List<CefrLevelDto>? levels) || levels == null)
+            {
+                levels = await dbContext.CefrLevels
+                    .OrderBy(l => l.SortOrder)
+                    .Select(l => new CefrLevelDto
+                    {
+                        Id = l.Id,
+                        Code = l.Code,
+                        Name = l.Name,
+                        Description = l.Description,
+                        SortOrder = l.SortOrder
+                    })
+                    .ToListAsync();
 
+                cache.Set(cacheKey, levels, TimeSpan.FromMinutes(5));
+            }
+
+            httpContext.Response.Headers.CacheControl = "public, max-age=300";
             return Results.Ok(levels);
         }
         catch (Exception ex)
@@ -82,53 +94,63 @@ public static class LessonEndpoints
 
     /// <summary>
     /// Gets all units for a specific language and CEFR level.
+    /// Cached per language+level for 5 minutes.
     /// </summary>
     private static async Task<IResult> GetUnitsByLanguageAndLevel(
         string code,
         int levelId,
-        AppDbContext dbContext)
+        AppDbContext dbContext,
+        IMemoryCache cache,
+        HttpContext httpContext)
     {
         try
         {
-            // Verify language exists
-            var language = await dbContext.Languages
-                .FirstOrDefaultAsync(l => l.Code == code);
-
-            if (language == null)
+            var cacheKey = $"content:units:{code}:{levelId}";
+            if (!cache.TryGetValue(cacheKey, out List<UnitDto>? units) || units == null)
             {
-                return Results.NotFound($"Language '{code}' not found.");
-            }
+                // Verify language exists
+                var language = await dbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == code);
 
-            // Verify CEFR level exists
-            var cefrLevel = await dbContext.CefrLevels
-                .FirstOrDefaultAsync(c => c.Id == levelId);
-
-            if (cefrLevel == null)
-            {
-                return Results.NotFound($"CEFR level with ID {levelId} not found.");
-            }
-
-            // Get units for this language and level
-            var units = await dbContext.Units
-                .Where(u => u.LanguageId == language.Id && u.CefrLevelId == levelId)
-                .OrderBy(u => u.SortOrder)
-                .Select(u => new UnitDto
+                if (language == null)
                 {
-                    Id = u.Id,
-                    Title = u.Title,
-                    Description = u.Description,
-                    CefrLevel = new CefrLevelDto
-                    {
-                        Id = u.CefrLevel.Id,
-                        Code = u.CefrLevel.Code,
-                        Name = u.CefrLevel.Name,
-                        Description = u.CefrLevel.Description,
-                        SortOrder = u.CefrLevel.SortOrder
-                    },
-                    SortOrder = u.SortOrder
-                })
-                .ToListAsync();
+                    return Results.NotFound($"Language '{code}' not found.");
+                }
 
+                // Verify CEFR level exists
+                var cefrLevel = await dbContext.CefrLevels
+                    .FirstOrDefaultAsync(c => c.Id == levelId);
+
+                if (cefrLevel == null)
+                {
+                    return Results.NotFound($"CEFR level with ID {levelId} not found.");
+                }
+
+                // Get units for this language and level
+                units = await dbContext.Units
+                    .Where(u => u.LanguageId == language.Id && u.CefrLevelId == levelId)
+                    .OrderBy(u => u.SortOrder)
+                    .Select(u => new UnitDto
+                    {
+                        Id = u.Id,
+                        Title = u.Title,
+                        Description = u.Description,
+                        CefrLevel = new CefrLevelDto
+                        {
+                            Id = u.CefrLevel.Id,
+                            Code = u.CefrLevel.Code,
+                            Name = u.CefrLevel.Name,
+                            Description = u.CefrLevel.Description,
+                            SortOrder = u.CefrLevel.SortOrder
+                        },
+                        SortOrder = u.SortOrder
+                    })
+                    .ToListAsync();
+
+                cache.Set(cacheKey, units, TimeSpan.FromMinutes(5));
+            }
+
+            httpContext.Response.Headers.CacheControl = "public, max-age=300";
             return Results.Ok(units);
         }
         catch (Exception ex)

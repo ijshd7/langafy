@@ -27,6 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Preconnect to the API origin so the TCP + TLS handshake is done before the
+            first authenticated request, shaving ~100-300ms on initial data fetches. */}
+        {process.env.NEXT_PUBLIC_API_URL && (
+          <link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL} />
+        )}
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Skip-to-content link — first focusable element; visible only on focus */}
         <a

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,12 +57,27 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Add Entity Framework Core with PostgreSQL
+// Add Entity Framework Core with PostgreSQL.
+// Configure Npgsql connection pool size for Cloud Run horizontal scaling:
+// MaxPoolSize=20 per instance prevents exhausting PostgreSQL's connection limit
+// when Cloud Run scales out (e.g., 10 instances × 20 = 200 max connections).
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+var npgsqlConnBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+// Set MaxPoolSize for Cloud Run: cap at 20 per instance to avoid exhausting
+// PostgreSQL's max_connections when the service scales out horizontally.
+// Override via Database:MaxPoolSize in appsettings or environment.
+npgsqlConnBuilder.MaxPoolSize = builder.Configuration.GetValue("Database:MaxPoolSize", 20);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(npgsqlConnBuilder.ConnectionString));
 
 // Add database seeder for development
 builder.Services.AddScoped<DbSeeder>();
+
+// Add in-process memory cache for static content (CEFR levels, languages).
+// Endpoints invalidate their own entries on write; 5-minute expiry ensures
+// eventual consistency without requiring a distributed cache for MVP.
+builder.Services.AddMemoryCache();
 
 // Bind OpenRouter configuration
 builder.Services.Configure<OpenRouterOptions>(
@@ -273,6 +289,13 @@ app.UseHttpsRedirection();
 // Add authentication and authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health check endpoint — used by Cloud Run readiness probes and uptime monitors
+app.MapGet("/api/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }))
+    .WithName("HealthCheck")
+    .WithTags("Health")
+    .WithSummary("API health check")
+    .AllowAnonymous();
 
 // Map endpoint groups
 app.MapAuthEndpoints();

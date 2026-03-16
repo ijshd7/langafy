@@ -65,9 +65,17 @@ function SkeletonLine({
 }
 
 /**
- * Vocabulary card in list view
+ * Vocabulary card in list view.
+ * Memoized to prevent re-renders when the parent FlatList re-renders due to
+ * unrelated state changes (e.g., pagination, search input).
  */
-function VocabularyCard({ item, onPress }: { item: VocabularyDto; onPress: () => void }) {
+const VocabularyCard = React.memo(function VocabularyCard({
+  item,
+  onPress,
+}: {
+  item: VocabularyDto;
+  onPress: () => void;
+}) {
   const isDueForReview = item.nextReviewAt && new Date(item.nextReviewAt) <= new Date();
 
   return (
@@ -99,7 +107,7 @@ function VocabularyCard({ item, onPress }: { item: VocabularyDto; onPress: () =>
       </Text>
     </Pressable>
   );
-}
+});
 
 /**
  * Flashcard review component with flip animation

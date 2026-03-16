@@ -2,6 +2,7 @@ using LangafyApi.Data;
 using LangafyApi.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LangafyApi.Features.Languages;
 
@@ -52,23 +53,34 @@ public static class LanguageEndpoints
 
     /// <summary>
     /// Gets all active languages.
+    /// Cached for 5 minutes — language list is stable between deployments.
     /// </summary>
-    private static async Task<IResult> GetLanguages(AppDbContext dbContext)
+    private static async Task<IResult> GetLanguages(
+        AppDbContext dbContext,
+        IMemoryCache cache,
+        HttpContext httpContext)
     {
         try
         {
-            var languages = await dbContext.Languages
-                .Where(l => l.IsActive)
-                .OrderBy(l => l.Code)
-                .Select(l => new LanguageDto
-                {
-                    Code = l.Code,
-                    Name = l.Name,
-                    NativeName = l.NativeName,
-                    IsActive = l.IsActive
-                })
-                .ToListAsync();
+            const string cacheKey = "content:languages";
+            if (!cache.TryGetValue(cacheKey, out List<LanguageDto>? languages) || languages == null)
+            {
+                languages = await dbContext.Languages
+                    .Where(l => l.IsActive)
+                    .OrderBy(l => l.Code)
+                    .Select(l => new LanguageDto
+                    {
+                        Code = l.Code,
+                        Name = l.Name,
+                        NativeName = l.NativeName,
+                        IsActive = l.IsActive
+                    })
+                    .ToListAsync();
 
+                cache.Set(cacheKey, languages, TimeSpan.FromMinutes(5));
+            }
+
+            httpContext.Response.Headers.CacheControl = "public, max-age=300";
             return Results.Ok(languages);
         }
         catch (Exception ex)

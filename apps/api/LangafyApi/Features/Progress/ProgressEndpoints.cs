@@ -47,6 +47,7 @@ public static class ProgressEndpoints
 
             var user = await dbContext.Users
                 .Include(u => u.UserLanguages)
+                .ThenInclude(ul => ul.Language) // Eagerly load Language to avoid lazy-load trap
                 .FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
 
             if (user == null)
@@ -83,18 +84,32 @@ public static class ProgressEndpoints
                 return Results.BadRequest($"User is not studying language '{targetLanguageCode}'.");
             }
 
-            // Get all CEFR levels with units and lessons for this language
+            // Get all CEFR levels with units and lessons for this language.
+            // AsSplitQuery prevents the cartesian explosion that results from JOINing
+            // 3 levels of navigation properties (levels × units × lessons × exercises).
             var levels = await dbContext.CefrLevels
                 .Include(l => l.Units.Where(u => u.LanguageId == targetLanguage.Id))
                 .ThenInclude(u => u.Lessons)
                 .ThenInclude(l => l.Exercises)
                 .OrderBy(l => l.SortOrder)
+                .AsSplitQuery()
                 .ToListAsync();
 
-            // Get all user progress for this language
-            var userProgress = await dbContext.UserProgress
-                .Where(p => p.UserId == user.Id)
+            // Scope progress query to only exercises in the target language.
+            // Extract IDs from already-loaded data to avoid an extra DB round-trip.
+            var languageExerciseIds = levels
+                .SelectMany(l => l.Units)
+                .SelectMany(u => u.Lessons)
+                .SelectMany(l => l.Exercises)
+                .Select(e => e.Id)
+                .ToList();
+
+            var userProgressList = await dbContext.UserProgress
+                .Where(p => p.UserId == user.Id && languageExerciseIds.Contains(p.ExerciseId))
                 .ToListAsync();
+
+            // Dictionary for O(1) lookups in the nested exercise loop below
+            var progressByExerciseId = userProgressList.ToDictionary(p => p.ExerciseId);
 
             // Build progress summary
             var levelProgressList = new List<LevelProgressDto>();
@@ -150,7 +165,7 @@ public static class ProgressEndpoints
                             lessonProgress.MaxPoints += exercise.Points;
                             totalMaxPoints += exercise.Points;
 
-                            var progress = userProgress.FirstOrDefault(p => p.ExerciseId == exercise.Id);
+                            progressByExerciseId.TryGetValue(exercise.Id, out var progress);
                             if (progress != null)
                             {
                                 totalAttemptedExercises++;
@@ -208,9 +223,8 @@ public static class ProgressEndpoints
             }
 
             // Calculate streaks
-            var userProgressOrdered = userProgress.OrderByDescending(p => p.CompletedAt).ToList();
-            int currentStreak = ProgressCalculator.CalculateStreak(userProgress, DateTime.UtcNow);
-            int longestStreak = ProgressCalculator.CalculateLongestStreak(userProgress);
+            int currentStreak = ProgressCalculator.CalculateStreak(userProgressList, DateTime.UtcNow);
+            int longestStreak = ProgressCalculator.CalculateLongestStreak(userProgressList);
 
             // Calculate overall completion percentage
             int overallCompletionPercentage = totalMaxPoints > 0
@@ -229,7 +243,7 @@ public static class ProgressEndpoints
                 LongestStreak = longestStreak,
                 OverallCompletionPercentage = overallCompletionPercentage,
                 Levels = levelProgressList,
-                LastActivityAt = userProgressOrdered.FirstOrDefault()?.CompletedAt
+                LastActivityAt = userProgressList.OrderByDescending(p => p.CompletedAt).FirstOrDefault()?.CompletedAt
             };
 
             return Results.Ok(progressSummary);

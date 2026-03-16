@@ -57,11 +57,8 @@ function buildFakeFirebaseJwt(): string {
 async function mockNetwork(page: Page) {
   const FAKE_JWT = buildFakeFirebaseJwt();
 
-  // Generic fallback for any unmatched API server call (localhost:5000)
-  // NOTE: apiClient uses `new URL(path, baseUrl)` — when path starts with '/',
-  // the URL constructor drops baseUrl's path, so '/auth/sync' resolves to
-  // http://localhost:5000/auth/sync (not /api/auth/sync).
-  await page.route(/localhost:5000/, (route) =>
+  // Generic fallback for any unmatched API server call (localhost:5000/api)
+  await page.route(/localhost:5000\/api/, (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
   );
 
@@ -138,8 +135,8 @@ async function mockNetwork(page: Page) {
 
   // --- App API ---
 
-  // POST /auth/sync — sync Firebase user to the database (API server on :5000)
-  await page.route(/localhost:5000\/auth\/sync/, (route) =>
+  // POST /api/auth/sync — sync Firebase user to the database (API server on :5000)
+  await page.route(/localhost:5000\/api\/auth\/sync/, (route) =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -153,31 +150,51 @@ async function mockNetwork(page: Page) {
     })
   );
 
-  // GET /progress — dashboard progress summary (API server on :5000)
-  await page.route(/localhost:5000\/progress/, (route) =>
+  // GET /api/progress — dashboard progress summary (API server on :5000)
+  await page.route(/localhost:5000\/api\/progress/, (route) =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        totalPoints: 0,
+        languageCode: 'es',
+        languageName: 'Spanish',
+        currentCefrLevel: 'A1',
+        totalExercisesCompleted: 0,
+        totalExercisesAttempted: 0,
+        totalPointsEarned: 0,
         currentStreak: 0,
+        longestStreak: 0,
+        overallCompletionPercentage: 0,
+        lastActivityAt: null,
         levels: [
           {
-            id: '1',
+            id: 1,
             code: 'A1',
             name: 'Beginner',
+            totalUnits: 1,
+            completedUnits: 0,
             completionPercentage: 0,
+            pointsEarned: 0,
+            maxPoints: 10,
             units: [
               {
-                id: '1',
+                id: 1,
                 title: 'Greetings & Introductions',
+                description: 'Learn basic greetings',
+                totalLessons: 1,
+                completedLessons: 0,
                 completionPercentage: 0,
+                pointsEarned: 0,
+                maxPoints: 10,
                 lessons: [
                   {
                     id: 'smoke-lesson-1',
                     title: 'Basic Greetings',
-                    completed: false,
+                    totalExercises: 1,
+                    completedExercises: 0,
                     completionPercentage: 0,
+                    pointsEarned: 0,
+                    maxPoints: 10,
                   },
                 ],
               },
@@ -188,10 +205,10 @@ async function mockNetwork(page: Page) {
     })
   );
 
-  // GET /lessons/smoke-lesson-1 — lesson detail with one exercise (API server on :5000)
+  // GET /api/lessons/smoke-lesson-1 — lesson detail with one exercise (API server on :5000)
   // NOTE: lesson page maps data.unit.title and data.unit.cefrLevel.code, so the response
   // must use the nested ApiLesson shape, not flat fields like unitName/levelCode.
-  await page.route(/localhost:5000\/lessons\/smoke-lesson-1/, (route) =>
+  await page.route(/localhost:5000\/api\/lessons\/smoke-lesson-1/, (route) =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -224,8 +241,8 @@ async function mockNetwork(page: Page) {
     })
   );
 
-  // POST /exercises/smoke-exercise-1/submit — correct answer result (API server on :5000)
-  await page.route(/localhost:5000\/exercises\/smoke-exercise-1\/submit/, (route) =>
+  // POST /api/exercises/smoke-exercise-1/submit — correct answer result (API server on :5000)
+  await page.route(/localhost:5000\/api\/exercises\/smoke-exercise-1\/submit/, (route) =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',

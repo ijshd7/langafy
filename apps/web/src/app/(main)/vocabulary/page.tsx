@@ -245,24 +245,6 @@ export default function VocabularyPage() {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [reviewLoading, setReviewLoading] = useState(false);
 
-  // Token provider setup
-  useEffect(() => {
-    const initTokenProvider = async () => {
-      const { getAuth } = await import('firebase/auth');
-      const auth = getAuth();
-
-      apiClient.setTokenProvider(async () => {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          return await currentUser.getIdToken();
-        }
-        return null;
-      });
-    };
-
-    initTokenProvider();
-  }, []);
-
   // Fetch vocabulary list
   useEffect(() => {
     const fetchVocabulary = async () => {

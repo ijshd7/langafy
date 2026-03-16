@@ -49,7 +49,7 @@ export default defineConfig({
       NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: 'e2e-test-project.appspot.com',
       NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '000000000001',
       NEXT_PUBLIC_FIREBASE_APP_ID: '1:000000000001:web:e2etestfakeappid001',
-      NEXT_PUBLIC_API_URL: 'http://localhost:5000/api',
+      NEXT_PUBLIC_API_URL: 'http://localhost:5000',
     },
   },
 });

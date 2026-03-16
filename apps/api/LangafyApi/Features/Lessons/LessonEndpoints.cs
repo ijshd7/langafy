@@ -33,6 +33,14 @@ public static class LessonEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError);
 
+        group.MapGet("/languages/{code}/levels/by-code/{cefrCode}/units", GetUnitsByLanguageAndLevelCode)
+            .WithName("GetUnitsByLanguageAndLevelCode")
+            .WithSummary("List units for a language and CEFR level code")
+            .WithDescription("Returns all units for a specified language and CEFR level code (e.g., A1, B2).")
+            .Produces<List<UnitDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status500InternalServerError);
+
         group.MapGet("/units/{id}/lessons", GetLessonsByUnit)
             .WithName("GetLessonsByUnit")
             .WithSummary("List lessons within a unit")
@@ -129,6 +137,75 @@ public static class LessonEndpoints
                 // Get units for this language and level
                 units = await dbContext.Units
                     .Where(u => u.LanguageId == language.Id && u.CefrLevelId == levelId)
+                    .OrderBy(u => u.SortOrder)
+                    .Select(u => new UnitDto
+                    {
+                        Id = u.Id,
+                        Title = u.Title,
+                        Description = u.Description,
+                        CefrLevel = new CefrLevelDto
+                        {
+                            Id = u.CefrLevel.Id,
+                            Code = u.CefrLevel.Code,
+                            Name = u.CefrLevel.Name,
+                            Description = u.CefrLevel.Description,
+                            SortOrder = u.CefrLevel.SortOrder
+                        },
+                        SortOrder = u.SortOrder
+                    })
+                    .ToListAsync();
+
+                cache.Set(cacheKey, units, TimeSpan.FromMinutes(5));
+            }
+
+            httpContext.Response.Headers.CacheControl = "public, max-age=300";
+            return Results.Ok(units);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                detail: ex.Message,
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "An error occurred while fetching units"
+            );
+        }
+    }
+
+    /// <summary>
+    /// Gets all units for a specific language and CEFR level code (e.g., "A1", "B2").
+    /// Resolves the CEFR code to an ID, then delegates to the same query logic.
+    /// </summary>
+    private static async Task<IResult> GetUnitsByLanguageAndLevelCode(
+        string code,
+        string cefrCode,
+        AppDbContext dbContext,
+        IMemoryCache cache,
+        HttpContext httpContext)
+    {
+        try
+        {
+            var normalizedCode = cefrCode.ToUpperInvariant();
+            var cacheKey = $"content:units:{code}:code:{normalizedCode}";
+            if (!cache.TryGetValue(cacheKey, out List<UnitDto>? units) || units == null)
+            {
+                var language = await dbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == code);
+
+                if (language == null)
+                {
+                    return Results.NotFound($"Language '{code}' not found.");
+                }
+
+                var cefrLevel = await dbContext.CefrLevels
+                    .FirstOrDefaultAsync(c => c.Code == normalizedCode);
+
+                if (cefrLevel == null)
+                {
+                    return Results.NotFound($"CEFR level '{cefrCode}' not found.");
+                }
+
+                units = await dbContext.Units
+                    .Where(u => u.LanguageId == language.Id && u.CefrLevelId == cefrLevel.Id)
                     .OrderBy(u => u.SortOrder)
                     .Select(u => new UnitDto
                     {

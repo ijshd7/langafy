@@ -6,7 +6,17 @@ import type { NextConfig } from 'next';
 // Bundle analysis: run `ANALYZE=true npm run build` to generate reports in .next/analyze/
 const withAnalyzer = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' });
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
+// Extract just the origin (scheme + host + port) for CSP connect-src.
+// CSP path matching without a trailing slash is exact-match only, so using the
+// full URL (e.g. http://localhost:5000/api) would block sub-paths like /api/progress.
+const apiOrigin = (() => {
+  try {
+    const u = new URL(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000');
+    return u.origin;
+  } catch {
+    return 'http://localhost:5000';
+  }
+})();
 
 const nextConfig: NextConfig = {
   output: 'standalone',
@@ -42,7 +52,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              `connect-src 'self' ${apiUrl} https://*.googleapis.com https://*.firebaseapp.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com`,
+              `connect-src 'self' ${apiOrigin} https://*.googleapis.com https://*.firebaseapp.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com`,
               "frame-src https://accounts.google.com https://*.firebaseapp.com",
               "object-src 'none'",
               "base-uri 'self'",

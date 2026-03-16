@@ -206,6 +206,9 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.Authority = $"https://securetoken.google.com/{firebaseProjectId}";
+        // Preserve JWT claim names as-is (e.g. "sub", "email") instead of
+        // remapping them to XML-namespace URIs like ClaimTypes.NameIdentifier.
+        options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,

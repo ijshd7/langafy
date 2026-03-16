@@ -8,8 +8,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useAuth, useAuthLoading } from '@/hooks/useAuth';
-import { apiClient } from '@/lib/api';
+import { useAuth, useAuthLoading, useCurrentUser } from '@/hooks/useAuth';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -21,6 +20,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const { signIn } = useAuth();
+  const user = useCurrentUser();
   const authLoading = useAuthLoading();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,16 +38,20 @@ export default function LoginPage() {
     },
   });
 
+  // Already authenticated — send to dashboard (after all hooks)
+  if (!authLoading && user) {
+    router.replace('/dashboard');
+    return null;
+  }
+
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
       // Sign in with Firebase
+      // AuthContext handles syncing the user with the backend API
       await signIn(data.email, data.password);
-
-      // Sync user with API
-      await apiClient.post('/auth/sync', {});
 
       // Redirect to dashboard
       router.push('/dashboard');

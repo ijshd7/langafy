@@ -51,3 +51,10 @@ export function useCurrentUser() {
 export function useAuthLoading() {
   return useAuthStore((state) => state.loading);
 }
+
+/**
+ * Hook for checking if backend auth sync is in progress
+ */
+export function useAuthSyncing() {
+  return useAuthStore((state) => state.syncing);
+}

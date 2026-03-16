@@ -8,21 +8,75 @@ import { useEffect, useState } from 'react';
 import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth';
 import { apiClient } from '@/lib/api';
 
+// ---------- Types ----------
+
+interface LessonProgress {
+  id: number;
+  title: string;
+  totalExercises: number;
+  completedExercises: number;
+  completionPercentage: number;
+  pointsEarned: number;
+  maxPoints: number;
+}
+
+interface UnitProgressApi {
+  id: number;
+  title: string;
+  description: string;
+  totalLessons: number;
+  completedLessons: number;
+  completionPercentage: number;
+  pointsEarned: number;
+  maxPoints: number;
+  lessons: LessonProgress[];
+}
+
+interface LevelProgressApi {
+  id: number;
+  code: string;
+  name: string;
+  units: UnitProgressApi[];
+}
+
+interface ProgressSummaryApi {
+  levels: LevelProgressApi[];
+}
+
+interface ApiUnit {
+  id: number;
+  title: string;
+  description: string;
+  sortOrder: number;
+  cefrLevel: { id: number; code: string; name: string };
+}
+
+interface ApiLesson {
+  id: number;
+  title: string;
+  description: string;
+  objective: string;
+  sortOrder: number;
+}
+
+// Display types
 interface Unit {
-  id: string;
+  id: number;
   name: string;
   description: string;
   lessons: Lesson[];
 }
 
 interface Lesson {
-  id: string;
+  id: number;
   title: string;
   description: string;
   objective: string;
   completionPercentage: number;
   exerciseCount: number;
 }
+
+// ---------- Sub-components ----------
 
 function UnitsSkeleton() {
   return (
@@ -54,12 +108,16 @@ function LessonCard({ lesson, onLessonClick }: { lesson: Lesson; onLessonClick: 
       className="group w-full rounded-lg border border-slate-600/50 bg-gradient-to-r from-slate-700/40 to-slate-600/30 p-4 text-left transition-all duration-200 hover:border-slate-500 hover:from-slate-700/60 hover:to-slate-600/50">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-slate-100 transition-colors group-hover:text-cyan-300" aria-hidden="true">
+          <h3
+            className="truncate font-semibold text-slate-100 transition-colors group-hover:text-cyan-300"
+            aria-hidden="true">
             {lesson.title}
           </h3>
-          <p className="mt-1 line-clamp-2 text-sm text-slate-400">{lesson.description}</p>
+          {lesson.description && (
+            <p className="mt-1 line-clamp-2 text-sm text-slate-400">{lesson.description}</p>
+          )}
           <div className="mt-3 flex items-center gap-4 text-xs text-slate-500" aria-hidden="true">
-            <span>{lesson.exerciseCount} exercises</span>
+            {lesson.exerciseCount > 0 && <span>{lesson.exerciseCount} exercises</span>}
             <span>{Math.round(lesson.completionPercentage)}% Complete</span>
           </div>
         </div>
@@ -67,7 +125,10 @@ function LessonCard({ lesson, onLessonClick }: { lesson: Lesson; onLessonClick: 
           {isCompleted ? (
             <CheckCircle2 className="h-5 w-5 text-emerald-400" aria-hidden="true" />
           ) : (
-            <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true" />
+            <ChevronRight
+              className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400"
+              aria-hidden="true"
+            />
           )}
         </div>
       </div>
@@ -95,17 +156,17 @@ function UnitSection({
   onLessonClick,
 }: {
   unit: Unit;
-  onLessonClick: (lessonId: string) => void;
+  onLessonClick: (lessonId: number) => void;
 }) {
   const completedLessons = unit.lessons.filter((l) => l.completionPercentage === 100).length;
   const totalLessons = unit.lessons.length;
-  const completionPercentage = (completedLessons / totalLessons) * 100;
+  const completionPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
 
   return (
     <div className="bg-linear-to-br space-y-4 rounded-xl border border-slate-700/40 from-slate-800/40 to-slate-700/20 p-6">
       <div className="space-y-2">
         <h2 className="text-xl font-semibold text-slate-100">{unit.name}</h2>
-        <p className="text-sm text-slate-400">{unit.description}</p>
+        {unit.description && <p className="text-sm text-slate-400">{unit.description}</p>}
       </div>
 
       <div className="space-y-2">
@@ -142,6 +203,8 @@ function UnitSection({
   );
 }
 
+// ---------- Main page ----------
+
 type LevelPageProps = {
   params: Promise<{ levelId: string }>;
 };
@@ -156,20 +219,6 @@ export default function LevelPage(props: LevelPageProps) {
   const [levelId, setLevelId] = useState<string>('');
 
   useEffect(() => {
-    const initTokenProvider = async () => {
-      const { getAuth } = await import('firebase/auth');
-      const auth = getAuth();
-
-      apiClient.setTokenProvider(async () => {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          return await currentUser.getIdToken();
-        }
-        return null;
-      });
-    };
-
-    initTokenProvider();
     props.params.then((p) => setLevelId(p.levelId));
   }, [props.params]);
 
@@ -181,58 +230,52 @@ export default function LevelPage(props: LevelPageProps) {
         setLoading(true);
         setError(null);
 
-        // Mock data for demo - replace with API call once endpoint is available
-        const mockUnits: Unit[] = [
-          {
-            id: 'unit-1',
-            name: 'Greetings & Introductions',
-            description: 'Learn how to greet people and introduce yourself in Spanish',
-            lessons: [
-              {
-                id: 'lesson-1',
-                title: 'Basic Greetings',
-                description:
-                  'Learn common Spanish greetings like hola, buenos días, and buenas noches',
-                objective: 'Understand and use basic greetings',
-                completionPercentage: 100,
-                exerciseCount: 5,
-              },
-              {
-                id: 'lesson-2',
-                title: 'Introductions',
-                description: 'Learn how to introduce yourself and ask others their names',
-                objective: 'Introduce yourself and others in Spanish',
-                completionPercentage: 60,
-                exerciseCount: 6,
-              },
-            ],
-          },
-          {
-            id: 'unit-2',
-            name: 'Numbers & Colors',
-            description: 'Master numbers and color vocabulary in Spanish',
-            lessons: [
-              {
-                id: 'lesson-3',
-                title: 'Numbers 1-20',
-                description: 'Learn to count from 1 to 20 in Spanish',
-                objective: 'Count and recognize numbers 1-20',
-                completionPercentage: 40,
-                exerciseCount: 7,
-              },
-              {
-                id: 'lesson-4',
-                title: 'Basic Colors',
-                description: 'Learn primary and secondary colors in Spanish',
-                objective: 'Name colors and describe objects',
-                completionPercentage: 0,
-                exerciseCount: 6,
-              },
-            ],
-          },
-        ];
+        // Try progress endpoint first — has full hierarchy with completion data
+        const progress = await apiClient.get<ProgressSummaryApi>('/progress');
+        const targetLevel = progress.levels.find(
+          (l) => l.code.toUpperCase() === levelId.toUpperCase()
+        );
 
-        setUnits(mockUnits);
+        if (targetLevel && targetLevel.units.length > 0) {
+          const mappedUnits: Unit[] = targetLevel.units.map((u) => ({
+            id: u.id,
+            name: u.title,
+            description: u.description,
+            lessons: u.lessons.map((l) => ({
+              id: l.id,
+              title: l.title,
+              description: '',
+              objective: '',
+              completionPercentage: l.completionPercentage,
+              exerciseCount: l.totalExercises,
+            })),
+          }));
+          setUnits(mappedUnits);
+        } else {
+          // Fallback: fetch units directly via CEFR code endpoint
+          const apiUnits = await apiClient.get<ApiUnit[]>(
+            `/languages/es/levels/by-code/${levelId.toUpperCase()}/units`
+          );
+          const mappedUnits = await Promise.all(
+            apiUnits.map(async (u) => {
+              const lessons = await apiClient.get<ApiLesson[]>(`/units/${u.id}/lessons`);
+              return {
+                id: u.id,
+                name: u.title,
+                description: u.description,
+                lessons: lessons.map((l) => ({
+                  id: l.id,
+                  title: l.title,
+                  description: l.description,
+                  objective: l.objective,
+                  completionPercentage: 0,
+                  exerciseCount: 0,
+                })),
+              };
+            })
+          );
+          setUnits(mappedUnits);
+        }
       } catch (err) {
         console.error('Failed to fetch units:', err);
         setError(err instanceof Error ? err.message : 'Failed to load units');
@@ -244,7 +287,7 @@ export default function LevelPage(props: LevelPageProps) {
     fetchUnits();
   }, [user, authLoading, levelId]);
 
-  const handleLessonClick = (lessonId: string) => {
+  const handleLessonClick = (lessonId: number) => {
     router.push(`/lessons/${lessonId}`);
   };
 
@@ -271,7 +314,10 @@ export default function LevelPage(props: LevelPageProps) {
   }
 
   return (
-    <main id="main-content" tabIndex={-1} className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute right-1/4 top-20 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-32 left-1/3 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />

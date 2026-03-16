@@ -82,8 +82,8 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
     <div className="mx-auto w-full max-w-2xl space-y-6">
       {/* Question */}
       <div className="space-y-2">
-        <p className="text-muted-foreground text-sm">Question</p>
-        <h3 id="mc-question" className="text-foreground text-xl font-semibold">{config.question}</h3>
+        <p className="text-sm text-slate-400">Question</p>
+        <h3 id="mc-question" className="text-xl font-semibold text-white">{config.question}</h3>
       </div>
 
       {/* Options Grid */}

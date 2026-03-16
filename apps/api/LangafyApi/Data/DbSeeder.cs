@@ -166,26 +166,28 @@ public class DbSeeder
                 continue;
             }
 
-            await SeedUnitsAsync(language, langCodeDir);
+            var unitsByCode = await SeedUnitsAsync(language, langCodeDir);
             await _context.SaveChangesAsync();
 
-            await SeedLessonsAsync(language, langCodeDir);
+            var lessonsByCode = await SeedLessonsAsync(language, langCodeDir, unitsByCode);
             await _context.SaveChangesAsync();
 
-            await SeedExercisesAsync(language, langCodeDir);
+            await SeedExercisesAsync(language, langCodeDir, lessonsByCode);
             await SeedVocabularyAsync(language, langCodeDir);
         }
     }
 
     /// <summary>
     /// Seeds units for a specific language from units.json.
+    /// Returns a dictionary mapping seed code → Unit entity (IDs populated after SaveChanges).
     /// </summary>
-    private async Task SeedUnitsAsync(Language language, DirectoryInfo langCodeDir)
+    private async Task<Dictionary<string, Unit>> SeedUnitsAsync(Language language, DirectoryInfo langCodeDir)
     {
+        var unitsByCode = new Dictionary<string, Unit>();
         var filePath = Path.Combine(langCodeDir.FullName, "units.json");
         if (!File.Exists(filePath))
         {
-            return;
+            return unitsByCode;
         }
 
         var json = await File.ReadAllTextAsync(filePath);
@@ -205,45 +207,50 @@ public class DbSeeder
 
             var existing = await _context.Units
                 .FirstOrDefaultAsync(u => u.Language.Code == language.Code && u.Title == unit.Title);
-            if (existing == null)
+            if (existing != null)
             {
-                _context.Units.Add(new Unit
+                unitsByCode[unit.Code] = existing;
+            }
+            else
+            {
+                var entity = new Unit
                 {
                     LanguageId = language.Id,
                     CefrLevelId = cefrLevel.Id,
                     Title = unit.Title,
                     Description = unit.Description,
                     SortOrder = unit.SortOrder
-                });
+                };
+                _context.Units.Add(entity);
+                unitsByCode[unit.Code] = entity;
             }
         }
 
         _logger.LogInformation("Seeded {Count} units for {LanguageCode}.", unitSeedData.Count, language.Code);
+        return unitsByCode;
     }
 
     /// <summary>
     /// Seeds lessons for a specific language from lessons.json.
+    /// Returns a dictionary mapping seed code → Lesson entity (IDs populated after SaveChanges).
     /// </summary>
-    private async Task SeedLessonsAsync(Language language, DirectoryInfo langCodeDir)
+    private async Task<Dictionary<string, Lesson>> SeedLessonsAsync(
+        Language language, DirectoryInfo langCodeDir, Dictionary<string, Unit> unitsByCode)
     {
+        var lessonsByCode = new Dictionary<string, Lesson>();
         var filePath = Path.Combine(langCodeDir.FullName, "lessons.json");
         if (!File.Exists(filePath))
         {
-            return;
+            return lessonsByCode;
         }
 
         var json = await File.ReadAllTextAsync(filePath);
         var lessonSeedData = JsonSerializer.Deserialize<List<LessonSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Failed to deserialize lessons.json for {language.Code}");
 
-        var units = await _context.Units
-            .Where(u => u.Language.Code == language.Code)
-            .ToListAsync();
-
         foreach (var lesson in lessonSeedData)
         {
-            var unit = units.FirstOrDefault(u => u.Title.Contains(lesson.UnitCode.Split("_").Last()));
-            if (unit == null)
+            if (!unitsByCode.TryGetValue(lesson.UnitCode, out var unit))
             {
                 _logger.LogWarning("Unit {UnitCode} not found for lesson {Code}", lesson.UnitCode, lesson.Code);
                 continue;
@@ -251,26 +258,34 @@ public class DbSeeder
 
             var existing = await _context.Lessons
                 .FirstOrDefaultAsync(l => l.UnitId == unit.Id && l.Title == lesson.Title);
-            if (existing == null)
+            if (existing != null)
             {
-                _context.Lessons.Add(new Lesson
+                lessonsByCode[lesson.Code] = existing;
+            }
+            else
+            {
+                var entity = new Lesson
                 {
                     UnitId = unit.Id,
                     Title = lesson.Title,
                     Description = lesson.Description,
                     Objective = lesson.Objective,
                     SortOrder = lesson.SortOrder
-                });
+                };
+                _context.Lessons.Add(entity);
+                lessonsByCode[lesson.Code] = entity;
             }
         }
 
         _logger.LogInformation("Seeded {Count} lessons for {LanguageCode}.", lessonSeedData.Count, language.Code);
+        return lessonsByCode;
     }
 
     /// <summary>
     /// Seeds exercises for a specific language from exercises.json.
     /// </summary>
-    private async Task SeedExercisesAsync(Language language, DirectoryInfo langCodeDir)
+    private async Task SeedExercisesAsync(
+        Language language, DirectoryInfo langCodeDir, Dictionary<string, Lesson> lessonsByCode)
     {
         var filePath = Path.Combine(langCodeDir.FullName, "exercises.json");
         if (!File.Exists(filePath))
@@ -282,15 +297,9 @@ public class DbSeeder
         var exerciseSeedData = JsonSerializer.Deserialize<List<ExerciseSeedDto>>(json, _jsonOptions)
             ?? throw new InvalidOperationException($"Failed to deserialize exercises.json for {language.Code}");
 
-        var lessons = await _context.Lessons
-            .Include(l => l.Unit)
-            .Where(l => l.Unit.Language.Code == language.Code)
-            .ToListAsync();
-
         foreach (var exercise in exerciseSeedData)
         {
-            var lesson = lessons.FirstOrDefault(l => l.Title.Contains(exercise.LessonCode.Split("_").Last()));
-            if (lesson == null)
+            if (!lessonsByCode.TryGetValue(exercise.LessonCode, out var lesson))
             {
                 _logger.LogWarning("Lesson {LessonCode} not found for exercise {Code}", exercise.LessonCode, exercise.Code);
                 continue;

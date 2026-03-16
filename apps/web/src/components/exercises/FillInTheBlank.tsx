@@ -77,8 +77,8 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
     <div className="mx-auto w-full max-w-2xl space-y-6">
       {/* Instruction */}
       <div className="space-y-2">
-        <p className="text-muted-foreground text-sm">Fill in the blank</p>
-        <h3 className="text-foreground text-lg font-medium">Complete the sentence:</h3>
+        <p className="text-sm text-slate-400">Fill in the blank</p>
+        <h3 className="text-lg font-medium text-white">Complete the sentence:</h3>
       </div>
 
       {/* Sentence with Blank */}
@@ -97,7 +97,7 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
 
       {/* Answer Input */}
       <div className="space-y-2">
-        <label htmlFor="answer" className="text-foreground block text-sm font-medium">
+        <label htmlFor="answer" className="block text-sm font-medium text-slate-300">
           Your answer
         </label>
         <input

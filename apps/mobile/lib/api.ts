@@ -40,7 +40,9 @@ class ApiClient {
   private tokenProvider?: () => Promise<string | null>;
 
   constructor(baseUrl?: string) {
-    this.baseUrl = baseUrl || Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5000/api';
+    const raw = baseUrl || Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5000';
+    // Ensure the base always includes the /api prefix
+    this.baseUrl = raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
   }
 
   /**
@@ -55,7 +57,10 @@ class ApiClient {
    * Build the full URL with query parameters
    */
   private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    const url = new URL(endpoint, this.baseUrl);
+    // Concatenate base + endpoint instead of using new URL(path, base),
+    // which drops the base path when endpoint starts with '/'.
+    const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = new URL(`${this.baseUrl}${path}`);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

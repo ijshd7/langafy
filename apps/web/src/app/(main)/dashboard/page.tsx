@@ -5,40 +5,81 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { useCurrentUser, useAuthLoading } from '@/hooks/useAuth';
+import { useCurrentUser, useAuthLoading, useAuthSyncing } from '@/hooks/useAuth';
 import { apiClient } from '@/lib/api';
 
-/**
- * Mock progress data structure - will be replaced with actual API response
- * This matches the expected API response from GET /api/progress
- */
-interface ProgressSummary {
-  totalPoints: number;
-  currentStreak: number;
-  levelProgress: {
-    level: string;
-    levelName: string;
-    percentage: number;
-    units: {
-      id: string;
-      name: string;
-      percentage: number;
-    }[];
-  }[];
-  nextIncompleteLesson?: {
-    id: string;
-    title: string;
-    unitId: string;
-  };
+// ---------- Types matching ProgressSummaryDto ----------
+
+interface LessonProgress {
+  id: number;
+  title: string;
+  totalExercises: number;
+  completedExercises: number;
+  completionPercentage: number;
+  pointsEarned: number;
+  maxPoints: number;
 }
 
-/**
- * Skeleton loaders for loading state
- */
+interface UnitProgress {
+  id: number;
+  title: string;
+  description: string;
+  totalLessons: number;
+  completedLessons: number;
+  completionPercentage: number;
+  pointsEarned: number;
+  maxPoints: number;
+  lessons: LessonProgress[];
+}
+
+interface LevelProgress {
+  id: number;
+  code: string;
+  name: string;
+  totalUnits: number;
+  completedUnits: number;
+  completionPercentage: number;
+  pointsEarned: number;
+  maxPoints: number;
+  units: UnitProgress[];
+}
+
+interface ProgressSummary {
+  languageCode: string;
+  languageName: string;
+  currentCefrLevel: string;
+  totalExercisesCompleted: number;
+  totalExercisesAttempted: number;
+  totalPointsEarned: number;
+  currentStreak: number;
+  longestStreak: number;
+  overallCompletionPercentage: number;
+  lastActivityAt: string | null;
+  levels: LevelProgress[];
+}
+
+// ---------- Helpers ----------
+
+function findNextIncompleteLesson(
+  levels: LevelProgress[]
+): { id: number; title: string } | null {
+  for (const level of levels) {
+    for (const unit of level.units) {
+      for (const lesson of unit.lessons) {
+        if (lesson.completionPercentage < 100) {
+          return { id: lesson.id, title: lesson.title };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// ---------- Sub-components ----------
+
 function DashboardSkeleton() {
   return (
     <div className="animate-pulse space-y-8">
-      {/* Header skeleton */}
       <div className="space-y-4">
         <div className="bg-linear-to-r h-8 w-48 rounded-lg from-slate-700 to-slate-600" />
         <div className="grid grid-cols-3 gap-4">
@@ -47,8 +88,6 @@ function DashboardSkeleton() {
           ))}
         </div>
       </div>
-
-      {/* Units skeleton */}
       <div className="space-y-4">
         <div className="bg-linear-to-r h-6 w-32 rounded-lg from-slate-700 to-slate-600" />
         {[...Array(3)].map((_, i) => (
@@ -64,9 +103,6 @@ function DashboardSkeleton() {
   );
 }
 
-/**
- * Progress bar component with smooth animation
- */
 function ProgressBar({ percentage, label }: { percentage: number; label?: string }) {
   return (
     <div
@@ -78,17 +114,12 @@ function ProgressBar({ percentage, label }: { percentage: number; label?: string
       aria-label={label ?? `${Math.round(percentage)}% complete`}>
       <div
         className="bg-linear-to-r h-full rounded-full from-cyan-400 to-emerald-400 transition-all duration-1000 ease-out"
-        style={{
-          width: `${percentage}%`,
-        }}
+        style={{ width: `${percentage}%` }}
       />
     </div>
   );
 }
 
-/**
- * CEFR level badge with gradient circle
- */
 function CefrLevelBadge({ level }: { level: string }) {
   const colors: Record<string, { bg: string; text: string; ring: string }> = {
     A1: { bg: 'from-blue-500 to-cyan-500', text: 'text-white', ring: 'ring-blue-400/50' },
@@ -98,7 +129,6 @@ function CefrLevelBadge({ level }: { level: string }) {
     C1: { bg: 'from-amber-500 to-orange-500', text: 'text-white', ring: 'ring-amber-400/50' },
     C2: { bg: 'from-orange-500 to-red-500', text: 'text-white', ring: 'ring-orange-400/50' },
   };
-
   const color = colors[level] || colors.A1;
 
   return (
@@ -109,9 +139,6 @@ function CefrLevelBadge({ level }: { level: string }) {
   );
 }
 
-/**
- * Stats card component
- */
 function StatCard({
   icon: Icon,
   label,
@@ -138,44 +165,47 @@ function StatCard({
   );
 }
 
-/**
- * Unit progress card
- */
 function UnitCard({
   unit,
   onLessonClick,
 }: {
-  unit: ProgressSummary['levelProgress'][0]['units'][0];
+  unit: UnitProgress;
   onLessonClick: () => void;
 }) {
   return (
     <button
       onClick={onLessonClick}
-      aria-label={`${unit.name}: ${Math.round(unit.percentage)}% complete`}
+      aria-label={`${unit.title}: ${Math.round(unit.completionPercentage)}% complete`}
       className="bg-linear-to-br group relative w-full rounded-xl border border-slate-700/50 from-slate-800/50 to-slate-700/30 p-6 text-left backdrop-blur-sm transition-all duration-300 hover:border-slate-600 hover:from-slate-800/80 hover:to-slate-700/50">
       <div className="mb-4 flex items-start justify-between">
-        <h3 className="font-semibold text-slate-100 transition-colors group-hover:text-cyan-300" aria-hidden="true">
-          {unit.name}
+        <h3
+          className="font-semibold text-slate-100 transition-colors group-hover:text-cyan-300"
+          aria-hidden="true">
+          {unit.title}
         </h3>
-        <ChevronRight className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400" aria-hidden="true" />
+        <ChevronRight
+          className="h-5 w-5 transform text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-cyan-400"
+          aria-hidden="true"
+        />
       </div>
-
       <div className="space-y-2">
-        <ProgressBar percentage={unit.percentage} label={`${unit.name} progress: ${Math.round(unit.percentage)}%`} />
-        <p className="text-sm text-slate-400" aria-hidden="true">{Math.round(unit.percentage)}% Complete</p>
+        <ProgressBar
+          percentage={unit.completionPercentage}
+          label={`${unit.title} progress: ${Math.round(unit.completionPercentage)}%`}
+        />
+        <p className="text-sm text-slate-400" aria-hidden="true">
+          {Math.round(unit.completionPercentage)}% Complete
+        </p>
       </div>
     </button>
   );
 }
 
-/**
- * Continue learning card with CTA
- */
 function ContinueLearningCard({
   lesson,
   onClick,
 }: {
-  lesson: ProgressSummary['nextIncompleteLesson'];
+  lesson: { id: number; title: string } | null;
   onClick: () => void;
 }) {
   if (!lesson) return null;
@@ -184,9 +214,7 @@ function ContinueLearningCard({
     <button
       onClick={onClick}
       className="bg-linear-to-r group relative w-full overflow-hidden rounded-xl border border-cyan-500/40 from-cyan-600/20 via-emerald-600/20 to-teal-600/20 p-6 transition-all duration-300 hover:border-cyan-500/80">
-      {/* Animated background effect */}
       <div className="bg-linear-to-r absolute inset-0 from-cyan-500/10 to-emerald-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
       <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="bg-linear-to-br flex h-12 w-12 items-center justify-center rounded-lg from-cyan-500 to-emerald-500">
@@ -205,112 +233,50 @@ function ContinueLearningCard({
   );
 }
 
-/**
- * Main dashboard page
- */
+// ---------- Main page ----------
+
 export default function DashboardPage() {
   const router = useRouter();
   const user = useCurrentUser();
   const authLoading = useAuthLoading();
+  const syncing = useAuthSyncing();
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Initialize token provider for API client
-   */
-  useEffect(() => {
-    const initTokenProvider = async () => {
-      const { getAuth } = await import('firebase/auth');
-      const auth = getAuth();
-
-      apiClient.setTokenProvider(async () => {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          return await currentUser.getIdToken();
-        }
-        return null;
-      });
-    };
-
-    initTokenProvider();
-  }, []);
-
-  /**
-   * Fetch progress data from API
-   */
   useEffect(() => {
     const fetchProgress = async () => {
-      if (!user || authLoading) return;
-
+      // Wait for auth to finish loading AND backend sync to complete
+      // before fetching progress (user must exist in DB first)
+      if (!user || authLoading || syncing) return;
       try {
         setLoading(true);
         setError(null);
-
-        // Fetch progress from API
         const data = await apiClient.get<ProgressSummary>('/progress');
         setProgress(data);
       } catch (err) {
         console.error('Failed to fetch progress:', err);
         setError(err instanceof Error ? err.message : 'Failed to load progress');
-
-        // Set mock data for demonstration if API fails
-        setProgress({
-          totalPoints: 2450,
-          currentStreak: 12,
-          levelProgress: [
-            {
-              level: 'A1',
-              levelName: 'Beginner',
-              percentage: 100,
-              units: [
-                { id: '1', name: 'Greetings & Introductions', percentage: 100 },
-                { id: '2', name: 'Numbers & Colors', percentage: 100 },
-              ],
-            },
-            {
-              level: 'A2',
-              levelName: 'Elementary',
-              percentage: 45,
-              units: [
-                { id: '3', name: 'Daily Routines', percentage: 75 },
-                { id: '4', name: 'Food & Drinks', percentage: 30 },
-              ],
-            },
-          ],
-          nextIncompleteLesson: {
-            id: 'lesson-4',
-            title: 'Ordering Food in Spanish',
-            unitId: '4',
-          },
-        });
       } finally {
         setLoading(false);
       }
     };
-
     fetchProgress();
-  }, [user, authLoading]);
+  }, [user, authLoading, syncing]);
 
-  /**
-   * Navigate to lesson
-   */
+  const nextLesson = progress ? findNextIncompleteLesson(progress.levels) : null;
+
   const handleContinueLearning = () => {
-    if (progress?.nextIncompleteLesson) {
-      router.push(`/lessons/${progress.nextIncompleteLesson.id}`);
+    if (nextLesson) {
+      router.push(`/lessons/${nextLesson.id}`);
     }
   };
 
-  /**
-   * Navigate to level
-   */
-  const handleViewLevel = (levelName: string) => {
-    const levelCode = levelName.split(' ')[0];
+  const handleViewLevel = (levelCode: string) => {
     router.push(`/levels/${levelCode}`);
   };
 
-  // Show loading state if auth is still loading
-  if (authLoading) {
+  if (authLoading || loading) {
     return (
       <div className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -320,18 +286,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Show loading state while fetching progress
-  if (loading) {
-    return (
-      <div className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <DashboardSkeleton />
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
   if (error && !progress) {
     return (
       <div className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700">
@@ -346,11 +300,15 @@ export default function DashboardPage() {
 
   if (!progress) return null;
 
-  const currentLevel = progress.levelProgress[progress.levelProgress.length - 1];
+  const currentLevel =
+    progress.levels.find((l) => l.code === progress.currentCefrLevel) ||
+    progress.levels[progress.levels.length - 1];
 
   return (
-    <main id="main-content" tabIndex={-1} className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
-      {/* Background decorative elements */}
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute right-1/4 top-20 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-32 left-1/3 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -368,30 +326,27 @@ export default function DashboardPage() {
             </h1>
           </div>
 
-          {/* Level and stats section */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:items-center">
-            {/* Current level display */}
             <div className="space-y-4 lg:col-span-2">
               <p className="text-sm font-medium uppercase tracking-wider text-slate-400">
                 Current Level
               </p>
               <div className="flex items-center gap-6">
-                <CefrLevelBadge level={currentLevel.level} />
+                <CefrLevelBadge level={currentLevel.code} />
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-slate-100">{currentLevel.level}</h2>
-                  <p className="text-slate-400">{currentLevel.levelName}</p>
+                  <h2 className="text-2xl font-bold text-slate-100">{currentLevel.code}</h2>
+                  <p className="text-slate-400">{currentLevel.name}</p>
                   <p className="text-sm text-cyan-400">
-                    {Math.round(currentLevel.percentage)}% Complete
+                    {Math.round(currentLevel.completionPercentage)}% Complete
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Stats cards */}
             <StatCard
               icon={Trophy}
               label="Total Points"
-              value={progress.totalPoints}
+              value={progress.totalPointsEarned}
               color="bg-linear-to-br from-amber-500/50 to-orange-500/50"
             />
             <StatCard
@@ -405,46 +360,41 @@ export default function DashboardPage() {
 
         {/* Continue learning CTA */}
         <div className="mb-12">
-          <ContinueLearningCard
-            lesson={progress.nextIncompleteLesson}
-            onClick={handleContinueLearning}
-          />
+          <ContinueLearningCard lesson={nextLesson} onClick={handleContinueLearning} />
         </div>
 
         {/* Progress by level */}
         <div className="space-y-8">
-          {progress.levelProgress.map((level) => (
-            <div key={level.level} className="space-y-4">
+          {progress.levels.map((level) => (
+            <div key={level.code} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-slate-100">
-                    {level.level} - {level.levelName}
+                    {level.code} - {level.name}
                   </h2>
                   <p className="mt-1 text-sm text-slate-400">
-                    {Math.round(level.percentage)}% Complete
+                    {Math.round(level.completionPercentage)}% Complete
                   </p>
                 </div>
                 <button
-                  onClick={() => handleViewLevel(level.level)}
-                  aria-label={`View all units for ${level.level} - ${level.levelName}`}
+                  onClick={() => handleViewLevel(level.code)}
+                  aria-label={`View all units for ${level.code} - ${level.name}`}
                   className="flex items-center gap-2 rounded-lg bg-slate-700/50 px-4 py-2 text-sm font-medium text-cyan-400 transition-all hover:bg-slate-700 hover:text-cyan-300">
                   View All <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 </button>
               </div>
 
-              {/* Level progress bar */}
               <ProgressBar
-                percentage={level.percentage}
-                label={`${level.level} - ${level.levelName}: ${Math.round(level.percentage)}% complete`}
+                percentage={level.completionPercentage}
+                label={`${level.code} - ${level.name}: ${Math.round(level.completionPercentage)}% complete`}
               />
 
-              {/* Units grid */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {level.units.map((unit) => (
                   <UnitCard
                     key={unit.id}
                     unit={unit}
-                    onLessonClick={() => handleViewLevel(level.level)}
+                    onLessonClick={() => handleViewLevel(level.code)}
                   />
                 ))}
               </div>
@@ -452,7 +402,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Additional resources section */}
+        {/* Additional resources */}
         <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="bg-linear-to-r rounded-xl border border-slate-700/50 from-slate-800/50 to-slate-700/30 p-8 backdrop-blur-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

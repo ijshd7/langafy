@@ -32,7 +32,7 @@ export function useUnits(levelId: string) {
         setError(null);
 
         // Fetch units for the level and language
-        const response = await apiClient.get<Unit[]>(`/languages/es/levels/${levelId}/units`);
+        const response = await apiClient.get<Unit[]>(`/languages/es/levels/by-code/${levelId}/units`);
         setData(response);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load units';

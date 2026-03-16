@@ -29,11 +29,13 @@ export interface AuthState {
   // State
   user: FirebaseUser | null;
   loading: boolean;
+  syncing: boolean;
   error: string | null;
 
   // Actions
   setUser: (user: FirebaseUser | null) => void;
   setLoading: (loading: boolean) => void;
+  setSyncing: (syncing: boolean) => void;
   setError: (error: string | null) => void;
   signIn: (email: string, password: string) => Promise<FirebaseUser>;
   signUp: (email: string, password: string) => Promise<FirebaseUser>;
@@ -54,11 +56,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   // Initial state
   user: null,
   loading: true,
+  syncing: false,
   error: null,
 
   // State setters
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
+  setSyncing: (syncing) => set({ syncing }),
   setError: (error) => set({ error }),
   clearError: () => set({ error: null }),
 

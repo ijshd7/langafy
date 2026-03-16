@@ -56,6 +56,47 @@ public class ContentEndpointTests(IntegrationTestFactory factory)
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    // ── GET /api/languages/{code}/levels/by-code/{cefrCode}/units ─────────────
+
+    [Fact]
+    public async Task GetUnitsByCode_ValidLanguageAndCefrCode_Returns200WithUnits()
+    {
+        var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/api/languages/es/levels/by-code/A1/units");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = JsonSerializer.Deserialize<JsonElement[]>(
+            await response.Content.ReadAsStringAsync(), Json)!;
+
+        Assert.NotEmpty(body);
+        var unitTitles = body.Select(u => u.GetProperty("title").GetString()).ToList();
+        Assert.Contains("Greetings & Introductions", unitTitles);
+    }
+
+    [Fact]
+    public async Task GetUnitsByCode_CaseInsensitive_Returns200()
+    {
+        var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/api/languages/es/levels/by-code/a1/units");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = JsonSerializer.Deserialize<JsonElement[]>(
+            await response.Content.ReadAsStringAsync(), Json)!;
+        Assert.NotEmpty(body);
+    }
+
+    [Fact]
+    public async Task GetUnitsByCode_UnknownCefrCode_Returns404()
+    {
+        var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/api/languages/es/levels/by-code/Z9/units");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     // ── GET /api/units/{id}/lessons ───────────────────────────────────────────
 
     [Fact]

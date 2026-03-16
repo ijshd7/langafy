@@ -8,8 +8,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useAuth, useAuthLoading } from '@/hooks/useAuth';
-import { apiClient } from '@/lib/api';
+import { useAuth, useAuthLoading, useCurrentUser } from '@/hooks/useAuth';
 
 const signupSchema = z
   .object({
@@ -27,6 +26,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const router = useRouter();
   const { signUp } = useAuth();
+  const user = useCurrentUser();
   const authLoading = useAuthLoading();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,16 +45,20 @@ export default function SignupPage() {
     },
   });
 
+  // Already authenticated — send to dashboard (after all hooks)
+  if (!authLoading && user) {
+    router.replace('/dashboard');
+    return null;
+  }
+
   const onSubmit = async (data: SignupFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
       // Sign up with Firebase
+      // AuthContext handles syncing the user with the backend API
       await signUp(data.email, data.password);
-
-      // Sync user with API
-      await apiClient.post('/auth/sync', {});
 
       // Redirect to dashboard
       router.push('/dashboard');

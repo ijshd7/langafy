@@ -111,20 +111,6 @@ export default function LessonPage(props: LessonPageProps) {
   const [showPointsToast, setShowPointsToast] = useState(false);
 
   useEffect(() => {
-    const initTokenProvider = async () => {
-      const { getAuth } = await import('firebase/auth');
-      const auth = getAuth();
-
-      apiClient.setTokenProvider(async () => {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          return await currentUser.getIdToken();
-        }
-        return null;
-      });
-    };
-
-    initTokenProvider();
     props.params.then((p) => setLessonId(p.lessonId));
   }, [props.params]);
 

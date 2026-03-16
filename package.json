@@ -19,8 +19,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",
-    "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env up --build",
-    "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down",
+    "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env build --no-cache && docker compose -f docker/docker-compose.yml --env-file .env up",
+    "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down -v",
     "bump:patch": "node scripts/bump.js patch",
     "bump:minor": "node scripts/bump.js minor",
     "bump:major": "node scripts/bump.js major"

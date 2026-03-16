@@ -66,10 +66,11 @@ builder.Host.UseSerilog((ctx, services, config) => config
         missing.Add("OpenRouter:ApiKey  (env var: OpenRouter__ApiKey)");
     }
 
-    if (!builder.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(builder.Configuration["AllowedOrigin"]))
-    {
-        missing.Add("AllowedOrigin  (env var: AllowedOrigin — required outside Development)");
-    }
+    // AllowedOrigin is intentionally NOT checked here. Its validation happens lazily inside
+    // the AddCors delegate below (which runs post-Build() when IOptions<CorsOptions> is
+    // first resolved). This avoids a false-positive fatal exit when WebApplicationFactory
+    // injects AllowedOrigin via ConfigureAppConfiguration — those overrides are only
+    // available after Build(), not during this pre-Build() startup block.
 
     if (missing.Count > 0)
     {

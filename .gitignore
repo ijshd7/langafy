@@ -31,5 +31,9 @@ pgdata/
 *.sublime-project
 *.sublime-workspace
 
+# Test reports
+apps/web/playwright-report/
+apps/web/test-results/
+
 # OS-specific files
 Thumbs.db

@@ -1,6 +1,6 @@
 {
   "name": "@langafy/shared-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared TypeScript types for Langafy API contracts",
   "private": true,
   "main": "dist/index.js",

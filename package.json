@@ -1,6 +1,6 @@
 {
   "name": "langafy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A language learning platform with CEFR-aligned lessons, conversational AI practice, and mini-games",
   "private": true,
   "workspaces": [
@@ -20,6 +20,9 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",
     "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env up --build",
-    "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down"
+    "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down",
+    "bump:patch": "node scripts/bump.js patch",
+    "bump:minor": "node scripts/bump.js minor",
+    "bump:major": "node scripts/bump.js major"
   }
 }

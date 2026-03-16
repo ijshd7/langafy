@@ -1,6 +1,6 @@
 {
   "name": "@langafy/shared-game-logic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared game state logic as React hooks for Langafy mini-games",
   "private": true,
   "main": "dist/index.js",

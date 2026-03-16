@@ -26,6 +26,8 @@ services:
         Host=db;Port=5432;Database=${POSTGRES_DB:-langafy};
         Username=${POSTGRES_USER:-langafy};Password=${POSTGRES_PASSWORD:-langafy_dev}
       Firebase__ProjectId: ${FIREBASE_PROJECT_ID:-your-firebase-project-id}
+      OpenRouter__ApiKey: ${OPENROUTER_API_KEY:-your-openrouter-api-key}
+      AllowedOrigin: ${ALLOWED_ORIGIN:-http://localhost:3000}
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:5000/swagger/index.html || exit 1"]
       interval: 15s

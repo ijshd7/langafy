@@ -44,6 +44,46 @@ builder.Host.UseSerilog((ctx, services, config) => config
     .ReadFrom.Configuration(ctx.Configuration)
     .ReadFrom.Services(services));
 
+// Startup configuration validation — fail fast before DI container is built.
+// Collecting all missing keys at once gives a single comprehensive error message
+// rather than requiring multiple restarts to discover each gap.
+// AllowedOrigin is production-only; all others are required in every environment.
+{
+    var missing = new List<string>();
+
+    if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("DefaultConnection")))
+    {
+        missing.Add("ConnectionStrings:DefaultConnection  (env var: ConnectionStrings__DefaultConnection)");
+    }
+
+    if (string.IsNullOrWhiteSpace(builder.Configuration["Firebase:ProjectId"]))
+    {
+        missing.Add("Firebase:ProjectId  (env var: Firebase__ProjectId)");
+    }
+
+    if (string.IsNullOrWhiteSpace(builder.Configuration["OpenRouter:ApiKey"]))
+    {
+        missing.Add("OpenRouter:ApiKey  (env var: OpenRouter__ApiKey)");
+    }
+
+    if (!builder.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(builder.Configuration["AllowedOrigin"]))
+    {
+        missing.Add("AllowedOrigin  (env var: AllowedOrigin — required outside Development)");
+    }
+
+    if (missing.Count > 0)
+    {
+        foreach (var key in missing)
+        {
+            Log.Fatal("Missing required configuration: {Key}", key);
+        }
+
+        Log.Fatal("Application cannot start. See apps/web/.env.example and apps/api docs for setup.");
+        Log.CloseAndFlush();
+        return;
+    }
+}
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -157,9 +197,8 @@ builder.Services.AddScoped<IConversationAIService, OpenRouterConversationService
 // Register the database-backed conversation rate limiter
 builder.Services.AddScoped<IConversationRateLimitService, DbConversationRateLimitService>();
 
-// Add Firebase JWT authentication
-var firebaseProjectId = builder.Configuration["Firebase:ProjectId"]
-    ?? throw new InvalidOperationException("Firebase ProjectId configuration is missing.");
+// Add Firebase JWT authentication (Firebase:ProjectId validated at startup above)
+var firebaseProjectId = builder.Configuration["Firebase:ProjectId"]!;
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

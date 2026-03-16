@@ -15,8 +15,34 @@ using Microsoft.Extensions.Http.Resilience;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Serilog;
+using Serilog.Events;
+
+// Bootstrap logger captures startup errors before the full pipeline is configured.
+// It is replaced by the fully configured logger once UseSerilog() runs below.
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Replace the built-in logging pipeline with Serilog.
+// - CompactJsonFormatter outputs one JSON object per log line — the format Cloud Logging
+//   expects for structured log parsing (severity, labels, trace fields parsed automatically).
+// - ReadFrom.Configuration() allows overriding levels via appsettings.json or env vars at runtime.
+// - Level overrides silence verbose EF Core + Microsoft framework noise in production.
+builder.Host.UseSerilog((ctx, services, config) => config
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Application", "LangafyApi")
+    .Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName)
+    .WriteTo.Console(new Serilog.Formatting.Compact.CompactJsonFormatter())
+    .ReadFrom.Configuration(ctx.Configuration)
+    .ReadFrom.Services(services));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -232,34 +258,38 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     });
 });
 
-// Request logging middleware
+// Correlation ID middleware: propagate or generate a request-scoped ID, echo it back in
+// the response header, and push it into the Serilog LogContext so every log entry emitted
+// during this request automatically carries "CorrelationId" as a structured property.
 app.Use(async (context, next) =>
 {
-    var startTime = DateTime.UtcNow;
-    var path = context.Request.Path;
-    var method = context.Request.Method;
+    var correlationId = context.Request.Headers["X-Correlation-ID"].FirstOrDefault()
+        ?? Guid.NewGuid().ToString("N");
 
-    try
+    context.Response.Headers["X-Correlation-ID"] = correlationId;
+
+    using (Serilog.Context.LogContext.PushProperty("CorrelationId", correlationId))
     {
         await next();
     }
-    finally
+});
+
+// Serilog request logging — replaces the hand-written request middleware from Step 8.13.
+// Logs one structured message per request with Method, Path, StatusCode, and Elapsed fields.
+// Custom GetLevel maps 4xx → Warning and 5xx (or exceptions) → Error, matching the plan spec.
+// EnrichDiagnosticContext adds CorrelationId to the per-request log entry.
+app.UseSerilogRequestLogging(options =>
+{
+    options.GetLevel = (ctx, _, ex) =>
+        ex != null || ctx.Response.StatusCode >= 500 ? LogEventLevel.Error :
+        ctx.Response.StatusCode >= 400 ? LogEventLevel.Warning :
+        LogEventLevel.Information;
+
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
     {
-        var duration = DateTime.UtcNow - startTime;
-        var statusCode = context.Response.StatusCode;
-
-        var logLevel = statusCode >= 500 ? LogLevel.Error : statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-
-        logger.Log(
-            logLevel,
-            "HTTP {Method} {Path} responded with {StatusCode} in {DurationMs}ms",
-            method,
-            path,
-            statusCode,
-            duration.TotalMilliseconds
-        );
-    }
+        diagnosticContext.Set("CorrelationId",
+            httpContext.Response.Headers["X-Correlation-ID"].FirstOrDefault() ?? string.Empty);
+    };
 });
 
 // CORS middleware

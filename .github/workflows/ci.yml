@@ -80,6 +80,13 @@ jobs:
 
       - name: Test
         run: dotnet test apps/api/LangafyApi.Tests/LangafyApi.Tests.csproj --no-build --logger "console;verbosity=normal"
+        env:
+          # WebApplicationFactory reads builder.Environment/builder.Configuration before its
+          # own ConfigureWebHost overrides are applied (they run at Build() time, not at
+          # CreateBuilder() time). Setting Development here ensures IsDevelopment() is true
+          # during Program.cs startup, so the AllowedOrigin validator and CORS guard are
+          # skipped. The factory then overrides the environment to "Testing" after Build().
+          ASPNETCORE_ENVIRONMENT: Development
 
       - name: Format check
         run: dotnet format apps/api/LangafyApi/LangafyApi.csproj --verify-no-changes

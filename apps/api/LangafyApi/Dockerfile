@@ -26,9 +26,9 @@ COPY --from=publish /app/publish .
 # Expose port 5000
 EXPOSE 5000
 
-# Health check
+# Health check — curl is not in the aspnet image; wget is
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD dotnet-health-check || exit 1
+  CMD wget -qO- http://localhost:5000/api/health || exit 1
 
 # Run the application
 ENTRYPOINT ["dotnet", "LangafyApi.dll"]

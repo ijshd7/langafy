@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
 
 COPY package.json ./
@@ -10,7 +10,7 @@ COPY apps/web/package.json ./apps/web/
 RUN npm install --workspace=packages/shared-types --workspace=@langafy/shared-game-logic --workspace=apps/web
 
 # Stage 2: Build
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -45,8 +45,8 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 WORKDIR /app/apps/web
 RUN npm run build
 
-# Stage 3: Runtime
-FROM node:20-alpine AS runner
+# Stage 3: Runtime — standalone output only (no full node_modules needed)
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -55,10 +55,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/web/public ./public
-COPY --from=builder /app/apps/web/.next ./.next
-COPY --from=builder /app/apps/web/package.json ./package.json
+# output: 'standalone' produces a self-contained server with a trimmed node_modules.
+# The build runs from WORKDIR /app/apps/web, so the standalone root contains server.js
+# directly (not nested under apps/web/).
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+# Static assets (JS/CSS chunks) must sit at .next/static relative to server.js
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+# Public directory
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./public
 
 USER nextjs
 
@@ -66,4 +70,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

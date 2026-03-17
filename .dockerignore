@@ -1,0 +1,44 @@
+# Docker reads .dockerignore from the build context root.
+# Both Dockerfiles (API and Web) are built with the repo root as context,
+# so this file controls what gets sent to the Docker daemon for both.
+
+# Mobile app — not needed by either image
+apps/mobile/
+
+# Node artifacts — installed fresh inside each container
+node_modules/
+.next/
+.expo/
+packages/*/dist/
+
+# .NET build artifacts — rebuilt inside the API container
+apps/api/**/bin/
+apps/api/**/obj/
+
+# Infrastructure / CI — not part of any runtime image
+infra/
+.github/
+docker/
+scripts/
+
+# Secrets — never include in images
+.env
+.env.local
+.env.*.local
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Git history
+.git/
+.gitignore
+.gitattributes
+
+# Docs
+*.md
+PLAN.md
+ARCHITECTURE.md
+LICENSE

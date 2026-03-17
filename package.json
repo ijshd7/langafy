@@ -29,6 +29,19 @@
     "test:regression": "npm -w web run test:regression",
     "bump:patch": "node scripts/bump.js patch",
     "bump:minor": "node scripts/bump.js minor",
-    "bump:major": "node scripts/bump.js major"
+    "bump:major": "node scripts/bump.js major",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "apps/web/**/*.{ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{ts,tsx,js,jsx,mjs,json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
   }
 }

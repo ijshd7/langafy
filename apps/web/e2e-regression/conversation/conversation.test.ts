@@ -3,7 +3,6 @@ import { expect, test } from '@playwright/test';
 import {
   buildConversationListResponse,
   buildConversationListEmpty,
-  buildConversationDetailResponse,
   buildNewConversationResponse,
   buildProgressResponse,
 } from '../fixtures/api-responses';

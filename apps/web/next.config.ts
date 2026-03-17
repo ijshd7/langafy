@@ -1,6 +1,6 @@
-import withBundleAnalyzer from '@next/bundle-analyzer';
 import path from 'path';
 
+import withBundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 
 // Bundle analysis: run `ANALYZE=true npm run build` to generate reports in .next/analyze/

@@ -1,9 +1,10 @@
 'use client';
 
-import { useFlashcardGame, type FlashcardGameResult } from '@/hooks/games/useFlashcardGame';
 import type { Exercise, ExerciseResult, FlashcardMatchConfig } from '@langafy/shared-types';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
+
+import { useFlashcardGame, type FlashcardGameResult } from '@/hooks/games/useFlashcardGame';
 
 interface FlashcardMatchProps {
   exercise: Exercise;
@@ -18,7 +19,6 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
   const {
     gameState,
     cards,
-    selectedCardId,
     lastMismatchIds,
     elapsedMs,
     mistakes,

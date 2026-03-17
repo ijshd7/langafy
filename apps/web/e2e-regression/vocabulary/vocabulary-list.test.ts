@@ -3,7 +3,6 @@ import { expect, test } from '@playwright/test';
 import {
   buildVocabularyListResponse,
   buildVocabularyEmptyResponse,
-  buildVocabularyDueResponse,
   buildProgressResponse,
 } from '../fixtures/api-responses';
 import {

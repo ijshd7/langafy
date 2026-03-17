@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
+
 import { shuffleArray } from './scramble';
-import { useGameTimer } from './useGameTimer';
 import { useGameScoring } from './useGameScoring';
 import type { GameScore } from './useGameScoring';
+import { useGameTimer } from './useGameTimer';
 
 export interface FlashcardPair {
   target: string;

@@ -7,7 +7,6 @@ import {
   mockVocabulary,
   mockVocabularyDue,
   mockConversationList,
-  mockApiFallback,
 } from '../fixtures/mock-network';
 import { loginAs } from '../helpers/actions';
 

@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
+
 import { scrambleWord, isWordMatch } from './scramble';
-import { useGameTimer } from './useGameTimer';
 import { useGameScoring } from './useGameScoring';
 import type { GameScore } from './useGameScoring';
+import { useGameTimer } from './useGameTimer';
 
 export type WordScrambleGameState = 'idle' | 'playing' | 'correct' | 'incorrect' | 'completed';
 

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { DEFAULT_USER } from '../fixtures/auth';
 import { buildProgressResponse } from '../fixtures/api-responses';
+import { DEFAULT_USER } from '../fixtures/auth';
 import {
   mockFirebaseAuth,
   mockFirebaseAuthFailure,

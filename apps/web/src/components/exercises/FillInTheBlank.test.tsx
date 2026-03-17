@@ -3,13 +3,13 @@ import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-import { FillInTheBlank } from './FillInTheBlank';
-
 vi.mock('@/lib/api', () => ({
   apiClient: { post: vi.fn() },
 }));
 
 import { apiClient } from '@/lib/api';
+
+import { FillInTheBlank } from './FillInTheBlank';
 
 const mockPost = vi.mocked(apiClient.post);
 
@@ -38,13 +38,6 @@ const wrongApiResponse = {
 
 // Mapped ExerciseResult shape (what onComplete receives)
 const correctResult: ExerciseResult = { correct: true, score: 10, maxScore: 10 };
-const wrongResult: ExerciseResult = {
-  correct: false,
-  score: 0,
-  maxScore: 10,
-  correctAnswer: 'llamas',
-};
-
 describe('FillInTheBlank', () => {
   beforeEach(() => {
     vi.clearAllMocks();

@@ -10,7 +10,6 @@ import { Page } from '@playwright/test';
 import {
   buildAuthSyncResponse,
   buildConversationDetailResponse,
-  buildConversationListEmpty,
   buildConversationListResponse,
   buildExerciseSubmitCorrect,
   buildNewConversationResponse,

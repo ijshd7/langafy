@@ -38,7 +38,9 @@ export function useGameTimer(
   const startTimeRef = useRef<number | null>(null);
   const accumulatedRef = useRef(0);
   const onExpireRef = useRef(onExpire);
-  onExpireRef.current = onExpire;
+  useEffect(() => {
+    onExpireRef.current = onExpire;
+  }, [onExpire]);
 
   const clearTimer = () => {
     if (intervalRef.current !== null) {

@@ -1,9 +1,10 @@
 'use client';
 
-import { useWordScramble } from '@/hooks/games/useWordScramble';
 import type { Exercise, ExerciseResult, WordScrambleConfig } from '@langafy/shared-types';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
+
+import { useWordScramble } from '@/hooks/games/useWordScramble';
 
 interface WordScrambleProps {
   exercise: Exercise;

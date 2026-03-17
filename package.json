@@ -34,9 +34,10 @@
   },
   "lint-staged": {
     "apps/web/**/*.{ts,tsx}": [
+      "prettier --write --ignore-unknown",
       "eslint --fix --config apps/web/eslint.config.mjs"
     ],
-    "!(packages/**/dist/**)*.{ts,tsx,js,jsx,mjs,json,md,css}": [
+    "!(apps/web/**/*.{ts,tsx}|packages/**/dist/**)*.{js,jsx,mjs,json,md,css}": [
       "prettier --write --ignore-unknown"
     ]
   },

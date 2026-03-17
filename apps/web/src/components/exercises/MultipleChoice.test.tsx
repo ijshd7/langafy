@@ -1,15 +1,21 @@
-import { Exercise, ExerciseResult, ExerciseType, MultipleChoiceConfig } from '@langafy/shared-types';
+import {
+  Exercise,
+  ExerciseResult,
+  ExerciseType,
+  MultipleChoiceConfig,
+} from '@langafy/shared-types';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('@/lib/api', () => ({
-  apiClient: { post: vi.fn() },
-}));
+import { MultipleChoice } from './MultipleChoice';
 
 import { apiClient } from '@/lib/api';
 
-import { MultipleChoice } from './MultipleChoice';
+
+vi.mock('@/lib/api', () => ({
+  apiClient: { post: vi.fn() },
+}));
 
 const mockPost = vi.mocked(apiClient.post);
 

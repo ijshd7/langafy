@@ -13,23 +13,16 @@ interface FlashcardMatchProps {
 }
 
 export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMatchProps) {
-  const config = exercise.config as FlashcardMatchConfig;
+  // Config comes from API as raw JSONB with snake_case keys
+  const rawConfig = exercise.config as Record<string, unknown>;
+  const pairs = (rawConfig.pairs as FlashcardMatchConfig['pairs']) ?? [];
+  const timeLimitSeconds = (rawConfig.time_limit_seconds ?? rawConfig.timeLimit) as
+    | number
+    | undefined;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    gameState,
-    cards,
-    lastMismatchIds,
-    elapsedMs,
-    mistakes,
-    start,
-    flipCard,
-    result,
-  } = useFlashcardGame(
-    config.pairs,
-    basePoints,
-    config.timeLimit ? config.timeLimit * 1000 : undefined
-  );
+  const { gameState, cards, lastMismatchIds, elapsedMs, mistakes, start, flipCard, result } =
+    useFlashcardGame(pairs, basePoints, timeLimitSeconds ? timeLimitSeconds * 1000 : undefined);
 
   // Auto-start game on mount
   useEffect(() => {
@@ -44,7 +37,7 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
         // In a real app, this would POST to the API
         // For now, we'll simulate and call onComplete with a result
         const exResult: ExerciseResult = {
-          correct: gameResult.matches.length === config.pairs.length,
+          correct: gameResult.matches.length === pairs.length,
           score: Math.round(gameResult.score.finalScore),
           maxScore: basePoints,
           timeTaken: gameResult.elapsedMs,
@@ -55,7 +48,7 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
         } else {
           onComplete({
             ...exResult,
-            correctAnswer: `Match all ${config.pairs.length} pairs`,
+            correctAnswer: `Match all ${pairs.length} pairs`,
           });
         }
       } catch (error) {
@@ -64,7 +57,7 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
         setIsSubmitting(false);
       }
     },
-    [config.pairs.length, basePoints, onComplete]
+    [pairs.length, basePoints, onComplete]
   );
 
   // Handle game completion
@@ -104,7 +97,7 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
         <div className="text-center">
           <div className="text-sm font-medium text-gray-600">Matches</div>
           <div className="text-2xl font-bold text-green-600">
-            {cards.filter((c) => c.isMatched).length / 2} / {config.pairs.length}
+            {cards.filter((c) => c.isMatched).length / 2} / {pairs.length}
           </div>
         </div>
 
@@ -224,7 +217,7 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
           <div className="space-y-4 text-center">
             <div>
               <h3 className="mb-2 text-2xl font-bold text-green-700">🎉 Game Complete!</h3>
-              <p className="text-gray-600">You matched all {config.pairs.length} pairs!</p>
+              <p className="text-gray-600">You matched all {pairs.length} pairs!</p>
             </div>
 
             <div className="grid grid-cols-3 gap-4 text-center">

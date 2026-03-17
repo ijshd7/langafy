@@ -34,6 +34,7 @@ pgdata/
 # Test reports
 apps/web/playwright-report/
 apps/web/test-results/
+.playwright-mcp/
 
 # OS-specific files
 Thumbs.db

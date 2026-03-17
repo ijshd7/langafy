@@ -27,6 +27,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Guard: if exercise data is missing, render nothing
+  if (!config?.question || !config?.options) return null;
+
   const handleSelect = (index: number) => {
     if (!submitted) {
       setSelectedIndex(index);
@@ -98,7 +101,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
       {/* Question */}
       <div className="space-y-2">
         <p className="text-sm text-slate-400">Question</p>
-        <h3 id="mc-question" className="text-xl font-semibold text-white">{config.question}</h3>
+        <h3 id="mc-question" className="text-xl font-semibold text-white">
+          {config.question}
+        </h3>
       </div>
 
       {/* Options Grid */}
@@ -146,9 +151,17 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
                 {submitted && (
                   <div className="ml-3 flex-shrink-0">
                     {isCorrect && (
-                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
+                      <CheckCircle
+                        className="h-5 w-5 text-green-600 dark:text-green-400"
+                        aria-hidden="true"
+                      />
                     )}
-                    {isWrong && <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" aria-hidden="true" />}
+                    {isWrong && (
+                      <XCircle
+                        className="h-5 w-5 text-red-600 dark:text-red-400"
+                        aria-hidden="true"
+                      />
+                    )}
                   </div>
                 )}
 
@@ -167,7 +180,9 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
 
       {/* Error Message */}
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
           <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
       )}
@@ -194,9 +209,15 @@ export function MultipleChoice({ exercise, onComplete, isLoading = false }: Mult
             }`}>
             <div className="flex items-start gap-3">
               {result.correct ? (
-                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
+                <CheckCircle
+                  className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400"
+                  aria-hidden="true"
+                />
               ) : (
-                <XCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" aria-hidden="true" />
+                <XCircle
+                  className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400"
+                  aria-hidden="true"
+                />
               )}
               <div>
                 <p

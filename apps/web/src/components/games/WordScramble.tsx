@@ -1,6 +1,6 @@
 'use client';
 
-import type { Exercise, ExerciseResult, WordScrambleConfig } from '@langafy/shared-types';
+import type { Exercise, ExerciseResult } from '@langafy/shared-types';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -13,7 +13,10 @@ interface WordScrambleProps {
 }
 
 export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleProps) {
-  const config = exercise.config as WordScrambleConfig;
+  // Config comes from API as raw JSONB with snake_case keys
+  const rawConfig = exercise.config as Record<string, unknown>;
+  const targetWord = (rawConfig.target_word ?? rawConfig.targetWord) as string;
+  const configHint = (rawConfig.hint as string) || 'No hint available';
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -29,7 +32,7 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
     useHint,
     submit,
     result,
-  } = useWordScramble(config.targetWord, config.hint || 'No hint available', basePoints, undefined);
+  } = useWordScramble(targetWord, configHint, basePoints, undefined);
 
   // Auto-start game on mount
   useEffect(() => {
@@ -55,8 +58,8 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
         } else {
           onComplete({
             ...exResult,
-            correctAnswer: config.targetWord,
-            explanation: config.explanation,
+            correctAnswer: targetWord,
+            explanation: rawConfig.explanation as string | undefined,
           });
         }
       } catch (error) {
@@ -65,7 +68,7 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
         setIsSubmitting(false);
       }
     },
-    [config.targetWord, config.explanation, basePoints, onComplete]
+    [targetWord, rawConfig.explanation, basePoints, onComplete]
   );
 
   // Handle game completion
@@ -107,7 +110,7 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
 
         <div className="text-center">
           <div className="text-sm font-medium text-gray-600">Word</div>
-          <div className="text-2xl font-bold text-gray-700">{config.targetWord.length} letters</div>
+          <div className="text-2xl font-bold text-gray-700">{targetWord.length} letters</div>
         </div>
 
         <div>
@@ -220,8 +223,8 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
               </h3>
               <p className="text-gray-600">
                 {result.correct
-                  ? `You unscrambled the word "${config.targetWord}" correctly!`
-                  : `The word was "${config.targetWord}".`}
+                  ? `You unscrambled the word "${targetWord}" correctly!`
+                  : `The word was "${targetWord}".`}
               </p>
             </div>
 
@@ -260,7 +263,7 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
       {/* Debug info (optional) */}
       {process.env.NODE_ENV === 'development' && (
         <div className="rounded border border-gray-200 bg-gray-50 p-2 text-xs text-gray-400">
-          State: {gameState} | Answer: {answerWord || '(empty)'} | Target: {config.targetWord}
+          State: {gameState} | Answer: {answerWord || '(empty)'} | Target: {targetWord}
         </div>
       )}
     </div>

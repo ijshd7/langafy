@@ -16,6 +16,7 @@ export function shuffleArray<T>(array: T[]): T[] {
  * Returns an array of individual letter strings for use as draggable tiles.
  */
 export function scrambleWord(word: string): string[] {
+  if (!word) return [];
   const letters = word.split('');
   if (letters.length <= 1) return letters;
 

@@ -85,6 +85,9 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
     }
   };
 
+  // Guard: if exercise data is missing, render nothing (prevents crash on unmount race)
+  if (!config?.sentence) return null;
+
   // Replace the blank placeholder with a visual indicator in the sentence
   const displaySentence = config.sentence.replace('_____', '______');
 

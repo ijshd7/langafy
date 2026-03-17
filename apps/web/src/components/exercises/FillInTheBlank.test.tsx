@@ -3,14 +3,14 @@ import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+vi.mock('@/lib/api', () => ({
+  apiClient: { post: vi.fn() },
+}));
+
 import { FillInTheBlank } from './FillInTheBlank';
 
 import { apiClient } from '@/lib/api';
 
-
-vi.mock('@/lib/api', () => ({
-  apiClient: { post: vi.fn() },
-}));
 
 const mockPost = vi.mocked(apiClient.post);
 

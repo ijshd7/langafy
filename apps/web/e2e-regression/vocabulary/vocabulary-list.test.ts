@@ -32,11 +32,11 @@ test.describe('Vocabulary list', () => {
     // Word count
     await expect(page.getByText('5 words loaded')).toBeVisible();
 
-    // Individual vocabulary cards
-    await expect(page.getByText('hola')).toBeVisible();
+    // Individual vocabulary cards (word is in an h3 heading)
+    await expect(page.getByRole('heading', { name: 'hola' })).toBeVisible();
     await expect(page.getByText('hello')).toBeVisible();
-    await expect(page.getByText('adiós')).toBeVisible();
-    await expect(page.getByText('gracias')).toBeVisible();
+    await expect(page.getByText('adiós').first()).toBeVisible();
+    await expect(page.getByText('gracias').first()).toBeVisible();
   });
 
   test('search filters by word', async ({ page }) => {
@@ -83,13 +83,13 @@ test.describe('Vocabulary list', () => {
     // Pagination controls
     await expect(page.getByText('Page 1 of 3')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Previous' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Next' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Next', exact: true })).toBeVisible();
 
     // Previous should be disabled on page 1
     await expect(page.getByRole('button', { name: 'Previous' })).toBeDisabled();
 
     // Click Next
-    await page.getByRole('button', { name: 'Next' }).click();
+    await page.getByRole('button', { name: 'Next', exact: true }).click();
   });
 
   test('empty state with Reset Filters button', async ({ page }) => {

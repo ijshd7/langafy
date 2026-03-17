@@ -99,7 +99,7 @@ export default function SignupPage() {
         </div>
 
         {/* Form Card */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" aria-label="Sign up">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6" aria-label="Sign up">
           <div className="rounded-lg border border-slate-700 bg-slate-800 p-8 shadow-lg">
             {/* Email Field */}
             <div className="space-y-2">

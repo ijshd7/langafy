@@ -25,8 +25,8 @@ test.describe('Level browsing', () => {
     await expect(page.getByText('Greetings & Introductions')).toBeVisible();
     await expect(page.getByText('Numbers & Counting')).toBeVisible();
 
-    // Lessons within a unit
-    await expect(page.getByText('Basic Greetings')).toBeVisible();
+    // Lessons within a unit (lesson cards are buttons with aria-label containing the title)
+    await expect(page.getByRole('button', { name: /Basic Greetings/ })).toBeVisible();
     await expect(page.getByText('Introducing Yourself')).toBeVisible();
   });
 

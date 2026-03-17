@@ -68,10 +68,8 @@ test.describe('Multiple Choice exercise', () => {
     await expect(page.getByRole('button', { name: SEL.continueButton })).toBeVisible();
   });
 
-  test('submit without selection shows validation error', async ({ page }) => {
-    await page.getByRole('button', { name: SEL.submitAnswerButton }).click();
-
-    await expect(page.getByText('Please select an answer')).toBeVisible();
+  test('submit button is disabled without selection', async ({ page }) => {
+    await expect(page.getByRole('button', { name: SEL.submitAnswerButton })).toBeDisabled();
   });
 
   test('Continue button advances after incorrect answer', async ({ page }) => {

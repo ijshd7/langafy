@@ -148,7 +148,10 @@ const CEFR_COLORS: Record<string, string> = {
   C2: 'text-purple-400',
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BASE_URL = (() => {
+  const raw = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  return raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
+})();
 
 /** Maps language codes to BCP-47 locales for STT / TTS. */
 function toSttLocale(langCode: string): string {

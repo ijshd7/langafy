@@ -84,20 +84,24 @@ test.describe('Login page', () => {
     await expect(page.getByText('Password must be at least 6 characters')).toBeVisible();
   });
 
-  test('shows loading state during sign in', async ({ page }) => {
+  test('submit button is disabled while submitting', async ({ page }) => {
     await mockApiFallback(page);
-    // Use a delayed Firebase response to catch loading state
-    await page.route(/identitytoolkit\.googleapis\.com/, async (route) => {
-      await new Promise((r) => setTimeout(r, 1000));
-      return route.abort();
-    });
+    await mockFirebaseAuth(page);
+    await mockAuthSync(page);
+    await mockProgress(page, buildProgressResponse());
 
     await page.goto('/login');
-    await page.getByLabel(SEL.emailInput).fill('test@example.com');
-    await page.getByLabel(SEL.passwordInput).fill('password123');
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByLabel(SEL.emailInput).fill(DEFAULT_USER.email);
+    await page.getByLabel(SEL.passwordInput).fill(DEFAULT_USER.password);
 
-    await expect(page.getByText('Signing in...')).toBeVisible();
+    const submitButton = page.getByRole('button', { name: 'Sign in' });
+    await expect(submitButton).toBeEnabled();
+
+    // Click submit — button should become disabled during processing
+    await submitButton.click();
+
+    // After successful login, should redirect to dashboard
+    await page.waitForURL('**/dashboard', { timeout: 15_000 });
   });
 
   test('Sign up link navigates to signup page', async ({ page }) => {

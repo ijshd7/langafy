@@ -41,14 +41,15 @@ test.describe('Flashcard Match game', () => {
     await expect(page.getByText('Matches')).toBeVisible({ timeout: 10_000 });
 
     // Click the first hidden card
-    const firstCard = page.getByLabel('Hidden card').first();
-    await firstCard.click();
+    const hiddenCards = page.getByLabel('Hidden card');
+    const initialCount = await hiddenCards.count();
+    await hiddenCards.first().click();
 
-    // After clicking, the card should reveal its text (either ES or EN label)
-    // Wait for the card content to appear
-    await expect(
-      page.getByText('ES').or(page.getByText('EN'))
-    ).toBeVisible({ timeout: 3_000 });
+    // After clicking, the card's aria-label changes from "Hidden card" to the revealed content
+    // So the number of "Hidden card" elements should decrease
+    await page.waitForTimeout(500);
+    const afterCount = await page.getByLabel('Hidden card').count();
+    expect(afterCount).toBeLessThan(initialCount);
   });
 
   test('matching pair increments matches counter', async ({ page }) => {
@@ -61,21 +62,17 @@ test.describe('Flashcard Match game', () => {
     const initialMatches = page.getByText('0 / 3');
     await expect(initialMatches).toBeVisible();
 
-    // Click two cards
+    // Click two cards in sequence
     const hiddenCards = page.getByLabel('Hidden card');
-    const count = await hiddenCards.count();
-    if (count >= 2) {
-      await hiddenCards.first().click();
-      // Brief wait for flip animation
-      await page.waitForTimeout(500);
-      await hiddenCards.first().click();
-      // The game processes the match/mismatch — wait for state to settle
-      await page.waitForTimeout(1000);
-    }
+    await hiddenCards.first().click();
+    // Wait for flip and selection processing
+    await page.waitForTimeout(800);
+    // Click the next available hidden card
+    await page.getByLabel('Hidden card').first().click();
+    // Wait for match/mismatch processing
+    await page.waitForTimeout(1500);
 
-    // At this point either Matches or Mistakes counter should have changed
-    // (depending on whether we got lucky with a match)
-    // This verifies the game is interactive and processes card clicks
+    // The game should still be interactive — Matches label visible
     await expect(page.getByText('Matches')).toBeVisible();
   });
 });

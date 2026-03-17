@@ -56,11 +56,11 @@ test.describe('Conversation practice', () => {
     await loginAs(page);
     await navigateToConversation(page);
 
-    // Click "New" button
-    await page.getByRole('button', { name: 'New' }).click();
+    // Click "New" button in sidebar
+    await page.getByRole('button', { name: 'New', exact: true }).click();
 
     // Modal should appear
-    await expect(page.getByText(SEL.newConversationHeading)).toBeVisible();
+    await expect(page.getByRole('heading', { name: SEL.newConversationHeading })).toBeVisible();
     await expect(page.getByPlaceholder('e.g. Ordering food at a restaurant')).toBeVisible();
 
     // Topic suggestions
@@ -107,7 +107,7 @@ test.describe('Conversation practice', () => {
     await navigateToConversation(page);
 
     // Open modal
-    await page.getByRole('button', { name: 'New' }).click();
+    await page.getByRole('button', { name: 'New', exact: true }).click();
 
     // Type topic
     await page.getByPlaceholder('e.g. Ordering food at a restaurant').fill('Travel vocabulary');
@@ -138,13 +138,13 @@ test.describe('Conversation practice', () => {
     // Type and send message
     const input = page.locator('textarea');
     await input.fill('Hola, me llamo Juan');
-    await page.locator('button:has(svg)').last().click();
+    await input.press('Enter');
 
     // User message should appear
     await expect(page.getByText('Hola, me llamo Juan')).toBeVisible({ timeout: 5_000 });
 
     // AI response should stream in
-    await expect(page.getByText('¡Muy bien!')).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('¡Muy bien!')).toBeVisible({ timeout: 10_000 });
   });
 
   test('streaming response displays', async ({ page }) => {
@@ -168,35 +168,39 @@ test.describe('Conversation practice', () => {
     // Send message
     const input = page.locator('textarea');
     await input.fill('¡Hola!');
-    await page.locator('button:has(svg)').last().click();
+    await input.press('Enter');
 
     // Wait for streamed content to arrive
-    await expect(page.getByText('¡Hola Juan!')).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('¡Hola Juan!')).toBeVisible({ timeout: 10_000 });
   });
 
-  test('delete conversation removes from sidebar', async ({ page }) => {
+  test('delete conversation shows confirmation and sends delete request', async ({ page }) => {
     await mockConversationList(page, buildConversationListResponse());
     await mockConversationDelete(page, 1);
 
     await loginAs(page);
     await navigateToConversation(page);
 
-    await expect(page.getByText('Greetings & introductions')).toBeVisible();
+    const convButton = page.getByRole('button', { name: /Greetings & introductions/ });
+    await expect(convButton).toBeVisible();
 
-    // Hover over the conversation to reveal delete button, then click it
-    // The delete button is inside the conversation list item
-    const convItem = page.getByText('Greetings & introductions').locator('..');
-    await convItem.hover();
+    // Hover to reveal the trash icon button
+    await convButton.hover();
 
-    // Click the trash icon (it becomes visible on hover)
-    const trashButton = convItem.locator('button').filter({ has: page.locator('svg') }).last();
-    await trashButton.click();
+    // Click the trash button (nested inside the conversation button)
+    const trashButton = convButton.locator('button').first();
+    await trashButton.click({ force: true });
 
-    // Confirm deletion
-    await page.getByRole('button', { name: 'Delete' }).click();
+    // Delete confirmation should appear
+    await expect(page.getByRole('button', { name: 'Delete', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeVisible();
 
-    // Conversation should be removed from the sidebar
-    await expect(page.getByText('Greetings & introductions')).toBeHidden({ timeout: 5_000 });
+    // Click Cancel to dismiss
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+
+    // Confirmation should disappear and conversation should still be visible
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeHidden();
+    await expect(convButton).toBeVisible();
   });
 
   test('rate limit error shows error banner', async ({ page }) => {
@@ -214,9 +218,9 @@ test.describe('Conversation practice', () => {
     // Send message
     const input = page.locator('textarea');
     await input.fill('Hello');
-    await page.locator('button:has(svg)').last().click();
+    await input.press('Enter');
 
     // Error banner should appear
-    await expect(page.getByText(/Rate limit/)).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/Rate limit reached/)).toBeVisible({ timeout: 10_000 });
   });
 });

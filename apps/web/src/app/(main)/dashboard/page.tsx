@@ -302,7 +302,8 @@ export default function DashboardPage() {
 
   const currentLevel =
     progress.levels.find((l) => l.code === progress.currentCefrLevel) ||
-    progress.levels[progress.levels.length - 1];
+    progress.levels[progress.levels.length - 1] ||
+    null;
 
   return (
     <main
@@ -327,21 +328,23 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:items-center">
-            <div className="space-y-4 lg:col-span-2">
-              <p className="text-sm font-medium uppercase tracking-wider text-slate-400">
-                Current Level
-              </p>
-              <div className="flex items-center gap-6">
-                <CefrLevelBadge level={currentLevel.code} />
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-slate-100">{currentLevel.code}</h2>
-                  <p className="text-slate-400">{currentLevel.name}</p>
-                  <p className="text-sm text-cyan-400">
-                    {Math.round(currentLevel.completionPercentage)}% Complete
-                  </p>
+            {currentLevel && (
+              <div className="space-y-4 lg:col-span-2">
+                <p className="text-sm font-medium uppercase tracking-wider text-slate-400">
+                  Current Level
+                </p>
+                <div className="flex items-center gap-6">
+                  <CefrLevelBadge level={currentLevel.code} />
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold text-slate-100">{currentLevel.code}</h2>
+                    <p className="text-slate-400">{currentLevel.name}</p>
+                    <p className="text-sm text-cyan-400">
+                      {Math.round(currentLevel.completionPercentage)}% Complete
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <StatCard
               icon={Trophy}

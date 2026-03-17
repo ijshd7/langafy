@@ -25,8 +25,8 @@ test.describe('Dashboard', () => {
     await expect(page.getByText('3 days')).toBeVisible();
 
     // Level badge
-    await expect(page.getByText('A1')).toBeVisible();
-    await expect(page.getByText('Beginner')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'A1', exact: true })).toBeVisible();
+    await expect(page.getByText('Beginner', { exact: true })).toBeVisible();
 
     // Unit card
     await expect(page.getByText('Greetings & Introductions')).toBeVisible();
@@ -51,7 +51,7 @@ test.describe('Dashboard', () => {
 
     // With empty levels, no unit cards or Continue Learning CTA
     await expect(page.getByText('Your Learning Journey')).toBeVisible();
-    await expect(page.getByText('0')).toBeVisible(); // 0 points
+    await expect(page.locator('#main-content').getByText('0', { exact: true })).toBeVisible(); // 0 points
     await expect(page.getByText('0 days')).toBeVisible(); // 0 streak
   });
 

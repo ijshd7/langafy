@@ -186,7 +186,9 @@ export async function mockProgressError(page: Page, statusCode: number = 500) {
     route.fulfill({
       status: statusCode,
       contentType: 'application/json',
-      body: JSON.stringify({ error: 'Internal server error' }),
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Internal server error' },
+      }),
     })
   );
 }

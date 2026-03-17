@@ -1,6 +1,6 @@
 'use client';
 
-import { useWordScramble } from '@langafy/shared-game-logic';
+import { useWordScramble } from '@/hooks/games/useWordScramble';
 import type { Exercise, ExerciseResult, WordScrambleConfig } from '@langafy/shared-types';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';

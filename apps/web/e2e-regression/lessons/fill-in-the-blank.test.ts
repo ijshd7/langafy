@@ -60,13 +60,11 @@ test.describe('Fill in the Blank exercise', () => {
 
     await expect(page.getByText(SEL.incorrectFeedback)).toBeVisible({ timeout: 5_000 });
     await expect(page.getByText('The correct answer is:')).toBeVisible();
-    await expect(page.getByText('días')).toBeVisible();
+    await expect(page.getByText('días', { exact: true })).toBeVisible();
   });
 
-  test('empty submit shows validation error', async ({ page }) => {
-    await page.getByRole('button', { name: SEL.submitAnswerButton }).click();
-
-    await expect(page.getByText('Please enter an answer')).toBeVisible();
+  test('submit button is disabled when answer is empty', async ({ page }) => {
+    await expect(page.getByRole('button', { name: SEL.submitAnswerButton })).toBeDisabled();
   });
 
   test('Enter key submits answer', async ({ page }) => {

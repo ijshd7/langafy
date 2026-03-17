@@ -1,6 +1,6 @@
 'use client';
 
-import { useFlashcardGame, type FlashcardGameResult } from '@langafy/shared-game-logic';
+import { useFlashcardGame, type FlashcardGameResult } from '@/hooks/games/useFlashcardGame';
 import type { Exercise, ExerciseResult, FlashcardMatchConfig } from '@langafy/shared-types';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
@@ -120,7 +120,7 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
           <motion.button
             key={card.id}
             onClick={() => flipCard(card.id)}
-            disabled={gameState === 'completed' || card.isMatched || selectedCardId !== null}
+            disabled={gameState === 'completed' || card.isMatched}
             className={`aspect-square rounded-lg text-sm font-semibold transition-colors ${
               card.isMatched
                 ? 'cursor-default bg-green-100 text-green-700'

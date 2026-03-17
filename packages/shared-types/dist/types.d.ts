@@ -92,6 +92,7 @@ export interface FillBlankConfig extends ExerciseConfig {
     sentence: string;
     correctAnswers: string[];
     alternatives?: string[];
+    hint?: string;
     explanation?: string;
 }
 /**

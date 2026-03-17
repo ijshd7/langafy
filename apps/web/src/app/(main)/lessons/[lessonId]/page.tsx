@@ -192,11 +192,20 @@ export default function LessonPage(props: LessonPageProps) {
     );
   }
 
-  const currentExercise = lesson.exercises[currentExerciseIndex];
-  const progressPercentage = ((currentExerciseIndex + 1) / lesson.exercises.length) * 100;
+  const currentExercise =
+    currentExerciseIndex < lesson.exercises.length
+      ? lesson.exercises[currentExerciseIndex]
+      : undefined;
+  const progressPercentage = Math.min(
+    ((currentExerciseIndex + 1) / lesson.exercises.length) * 100,
+    100
+  );
 
   return (
-    <main id="main-content" tabIndex={-1} className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="bg-linear-to-br min-h-screen from-slate-900 via-slate-800 to-slate-700 text-slate-100">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute right-1/4 top-20 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-32 left-1/3 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -348,13 +357,15 @@ export default function LessonPage(props: LessonPageProps) {
               </div>
               <span className="inline-flex items-center gap-1 rounded-lg bg-cyan-500/20 px-3 py-1 text-sm capitalize text-cyan-300">
                 <Zap className="h-4 w-4" aria-hidden="true" />
-                {currentExercise.type.replace(/([A-Z])/g, ' $1').trim()}
+                {currentExercise?.type.replace(/([A-Z])/g, ' $1').trim()}
               </span>
             </div>
 
             {/* Exercise renderer */}
             <div className="mt-8">
-              <ExerciseRenderer exercise={currentExercise} onComplete={handleExerciseComplete} />
+              {currentExercise && (
+                <ExerciseRenderer exercise={currentExercise} onComplete={handleExerciseComplete} />
+              )}
             </div>
           </div>
         )}

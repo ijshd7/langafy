@@ -86,6 +86,16 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
             <Text className="text-foreground text-lg font-semibold">Complete the sentence:</Text>
           </View>
 
+          {/* Hint */}
+          {config.hint && (
+            <View className="rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
+              <Text className="text-sm text-amber-800 dark:text-amber-200">
+                <Text className="font-medium">Hint: </Text>
+                {config.hint}
+              </Text>
+            </View>
+          )}
+
           {/* Sentence with Blank */}
           <View className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
             <Text className="text-foreground text-base leading-relaxed">
@@ -160,9 +170,17 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
                 }`}>
                 <View className="flex-row gap-3">
                   {result.correct ? (
-                    <CheckCircle size={24} className="mt-1 text-green-600 dark:text-green-400" accessible={false} />
+                    <CheckCircle
+                      size={24}
+                      className="mt-1 text-green-600 dark:text-green-400"
+                      accessible={false}
+                    />
                   ) : (
-                    <XCircle size={24} className="mt-1 text-red-600 dark:text-red-400" accessible={false} />
+                    <XCircle
+                      size={24}
+                      className="mt-1 text-red-600 dark:text-red-400"
+                      accessible={false}
+                    />
                   )}
                   <View className="flex-1">
                     <Text

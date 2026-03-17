@@ -96,6 +96,15 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
         <h3 className="text-lg font-medium text-white">Complete the sentence:</h3>
       </div>
 
+      {/* Hint */}
+      {config.hint && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
+            <span className="font-medium">Hint:</span> {config.hint}
+          </p>
+        </div>
+      )}
+
       {/* Sentence with Blank */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
         <p className="text-foreground text-base leading-relaxed">
@@ -103,7 +112,10 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
             <span key={index}>
               {part}
               {index < displaySentence.split('______').length - 1 && (
-                <span aria-label="blank" className="mx-2 inline-block h-8 w-24 border-b-2 border-blue-400 align-middle dark:border-blue-500" />
+                <span
+                  aria-label="blank"
+                  className="mx-2 inline-block h-8 w-24 border-b-2 border-blue-400 align-middle dark:border-blue-500"
+                />
               )}
             </span>
           ))}
@@ -138,7 +150,9 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
 
       {/* Error Message */}
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
           <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
       )}
@@ -165,9 +179,15 @@ export function FillInTheBlank({ exercise, onComplete, isLoading = false }: Fill
             }`}>
             <div className="flex items-start gap-3">
               {result.correct ? (
-                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
+                <CheckCircle
+                  className="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400"
+                  aria-hidden="true"
+                />
               ) : (
-                <XCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400" aria-hidden="true" />
+                <XCircle
+                  className="mt-0.5 h-6 w-6 flex-shrink-0 text-red-600 dark:text-red-400"
+                  aria-hidden="true"
+                />
               )}
               <div>
                 <p

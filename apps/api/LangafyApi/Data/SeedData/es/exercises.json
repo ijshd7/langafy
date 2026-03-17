@@ -20,7 +20,8 @@
     "config": {
       "sentence": "Mi nombre es ______.",
       "correct_answer": "Juan",
-      "alternatives": ["juan", "JUAN"]
+      "alternatives": ["juan", "JUAN"],
+      "hint": "A common Spanish male name"
     }
   },
   {
@@ -45,7 +46,8 @@
     "config": {
       "sentence": "¿Cuál es tu ______?",
       "correct_answer": "nombre",
-      "alternatives": ["Nombre", "NOMBRE"]
+      "alternatives": ["Nombre", "NOMBRE"],
+      "hint": "What you call someone by"
     }
   },
   {
@@ -98,7 +100,8 @@
     "config": {
       "sentence": "Lo ______, no entiendo.",
       "correct_answer": "siento",
-      "alternatives": ["Siento", "SIENTO"]
+      "alternatives": ["Siento", "SIENTO"],
+      "hint": "A word meaning 'I feel' used in apologies"
     }
   },
   {
@@ -139,7 +142,8 @@
     "config": {
       "sentence": "Dos más tres es ______.",
       "correct_answer": "cinco",
-      "alternatives": ["Cinco", "CINCO"]
+      "alternatives": ["Cinco", "CINCO"],
+      "hint": "The result of 2 + 3"
     }
   },
   {
@@ -176,7 +180,8 @@
     "config": {
       "sentence": "El cielo es ______.",
       "correct_answer": "azul",
-      "alternatives": ["Azul", "AZUL"]
+      "alternatives": ["Azul", "AZUL"],
+      "hint": "The color of a clear sky"
     }
   },
   {
@@ -217,7 +222,8 @@
     "config": {
       "sentence": "Veinte más diez es ______.",
       "correct_answer": "treinta",
-      "alternatives": ["Treinta", "TREINTA"]
+      "alternatives": ["Treinta", "TREINTA"],
+      "hint": "The result of 20 + 10"
     }
   },
   {
@@ -299,7 +305,8 @@
     "config": {
       "sentence": "Mi abuelo es muy ______.",
       "correct_answer": "viejo",
-      "alternatives": ["Viejo", "VIEJO"]
+      "alternatives": ["Viejo", "VIEJO"],
+      "hint": "An adjective describing someone of advanced age"
     }
   },
   {
@@ -340,7 +347,8 @@
     "config": {
       "sentence": "______ perro es grande.",
       "correct_answer": "Mi",
-      "alternatives": ["mi", "MI"]
+      "alternatives": ["mi", "MI"],
+      "hint": "A possessive pronoun for 'my'"
     }
   },
   {
@@ -422,7 +430,8 @@
     "config": {
       "sentence": "Quisiera una ______, por favor.",
       "correct_answer": "agua",
-      "alternatives": ["Agua", "AGUA"]
+      "alternatives": ["Agua", "AGUA"],
+      "hint": "The most essential drink for survival"
     }
   },
   {
@@ -463,7 +472,8 @@
     "config": {
       "sentence": "Por la noche comemos la ______.",
       "correct_answer": "cena",
-      "alternatives": ["Cena", "CENA"]
+      "alternatives": ["Cena", "CENA"],
+      "hint": "The evening meal"
     }
   },
   {
@@ -504,7 +514,8 @@
     "config": {
       "sentence": "Cada mañana me ______ a las siete.",
       "correct_answer": "levanto",
-      "alternatives": ["Levanto", "LEVANTO"]
+      "alternatives": ["Levanto", "LEVANTO"],
+      "hint": "A reflexive verb meaning 'I get up'"
     }
   },
   {
@@ -545,7 +556,8 @@
     "config": {
       "sentence": "La clase empieza ______ las nueve de la mañana.",
       "correct_answer": "a",
-      "alternatives": ["A"]
+      "alternatives": ["A"],
+      "hint": "The preposition used before clock times"
     }
   },
   {
@@ -586,7 +598,8 @@
     "config": {
       "sentence": "Los ______ voy al gimnasio.",
       "correct_answer": "lunes",
-      "alternatives": ["Lunes", "LUNES"]
+      "alternatives": ["Lunes", "LUNES"],
+      "hint": "A day of the week"
     }
   },
   {
@@ -627,7 +640,8 @@
     "config": {
       "sentence": "Este libro es muy ______; solo cuesta dos euros.",
       "correct_answer": "barato",
-      "alternatives": ["Barato", "BARATO"]
+      "alternatives": ["Barato", "BARATO"],
+      "hint": "The opposite of expensive"
     }
   },
   {
@@ -709,7 +723,8 @@
     "config": {
       "sentence": "¿Puedo pagar con ______?",
       "correct_answer": "tarjeta",
-      "alternatives": ["Tarjeta", "TARJETA"]
+      "alternatives": ["Tarjeta", "TARJETA"],
+      "hint": "A plastic payment method, not cash"
     }
   },
   {
@@ -750,7 +765,8 @@
     "config": {
       "sentence": "Hoy hace mucho ______.",
       "correct_answer": "calor",
-      "alternatives": ["Calor", "CALOR"]
+      "alternatives": ["Calor", "CALOR"],
+      "hint": "A word for warmth or high temperature"
     }
   },
   {
@@ -837,7 +853,8 @@
     "config": {
       "sentence": "La ______ máxima hoy será de 35 grados.",
       "correct_answer": "temperatura",
-      "alternatives": ["Temperatura", "TEMPERATURA"]
+      "alternatives": ["Temperatura", "TEMPERATURA"],
+      "hint": "What a thermometer measures"
     }
   },
   {
@@ -878,7 +895,8 @@
     "config": {
       "sentence": "Voy al trabajo en ______.",
       "correct_answer": "metro",
-      "alternatives": ["Metro", "METRO"]
+      "alternatives": ["Metro", "METRO"],
+      "hint": "An underground public transport system"
     }
   },
   {
@@ -919,7 +937,8 @@
     "config": {
       "sentence": "Siga ______ recto hasta el semáforo.",
       "correct_answer": "todo",
-      "alternatives": ["Todo", "TODO"]
+      "alternatives": ["Todo", "TODO"],
+      "hint": "A word meaning 'all' or 'completely'"
     }
   },
   {
@@ -960,7 +979,8 @@
     "config": {
       "sentence": "El tren sale del ______ número tres.",
       "correct_answer": "andén",
-      "alternatives": ["Andén", "ANDÉN"]
+      "alternatives": ["Andén", "ANDÉN"],
+      "hint": "The area at a train station where you board"
     }
   },
   {
@@ -1001,7 +1021,8 @@
     "config": {
       "sentence": "Mi jefa trabaja en una empresa de ______.",
       "correct_answer": "tecnología",
-      "alternatives": ["Tecnología", "TECNOLOGÍA"]
+      "alternatives": ["Tecnología", "TECNOLOGÍA"],
+      "hint": "A modern industry sector (computers, software)"
     }
   },
   {
@@ -1042,7 +1063,8 @@
     "config": {
       "sentence": "El ______ del proyecto es el próximo viernes.",
       "correct_answer": "plazo",
-      "alternatives": ["Plazo", "PLAZO"]
+      "alternatives": ["Plazo", "PLAZO"],
+      "hint": "A word meaning 'deadline'"
     }
   },
   {
@@ -1083,7 +1105,8 @@
     "config": {
       "sentence": "La ______ de trabajo es el próximo martes.",
       "correct_answer": "entrevista",
-      "alternatives": ["Entrevista", "ENTREVISTA"]
+      "alternatives": ["Entrevista", "ENTREVISTA"],
+      "hint": "A formal meeting to assess a job candidate"
     }
   },
   {
@@ -1124,7 +1147,8 @@
     "config": {
       "sentence": "Quiero visitar un ______ exótico este verano.",
       "correct_answer": "destino",
-      "alternatives": ["Destino", "DESTINO"]
+      "alternatives": ["Destino", "DESTINO"],
+      "hint": "A travel word meaning where you are going"
     }
   },
   {
@@ -1170,7 +1194,8 @@
     "config": {
       "sentence": "El ______ está incluido en el precio de la habitación.",
       "correct_answer": "desayuno",
-      "alternatives": ["Desayuno", "DESAYUNO"]
+      "alternatives": ["Desayuno", "DESAYUNO"],
+      "hint": "The first meal of the day"
     }
   },
   {
@@ -1211,7 +1236,8 @@
     "config": {
       "sentence": "La ______ al museo cuesta diez euros.",
       "correct_answer": "entrada",
-      "alternatives": ["Entrada", "ENTRADA"]
+      "alternatives": ["Entrada", "ENTRADA"],
+      "hint": "A ticket or admission to a venue"
     }
   },
   {
@@ -1252,7 +1278,8 @@
     "config": {
       "sentence": "Me duele la ______ cuando corro.",
       "correct_answer": "espalda",
-      "alternatives": ["Espalda", "ESPALDA"]
+      "alternatives": ["Espalda", "ESPALDA"],
+      "hint": "A body part on your backside, above the waist"
     }
   },
   {
@@ -1293,7 +1320,8 @@
     "config": {
       "sentence": "El médico me dio una ______ para los antibióticos.",
       "correct_answer": "receta",
-      "alternatives": ["Receta", "RECETA"]
+      "alternatives": ["Receta", "RECETA"],
+      "hint": "A doctor's written order for medicine"
     }
   },
   {
@@ -1339,7 +1367,8 @@
     "config": {
       "sentence": "Hago ______ tres veces a la semana para mantenerme en forma.",
       "correct_answer": "ejercicio",
-      "alternatives": ["Ejercicio", "EJERCICIO"]
+      "alternatives": ["Ejercicio", "EJERCICIO"],
+      "hint": "Physical activity done to stay fit"
     }
   },
   {
@@ -1380,7 +1409,8 @@
     "config": {
       "sentence": "Me gusta mucho la ______ porque me relaja.",
       "correct_answer": "natación",
-      "alternatives": ["Natación", "NATACIÓN"]
+      "alternatives": ["Natación", "NATACIÓN"],
+      "hint": "A sport performed in water"
     }
   },
   {
@@ -1421,7 +1451,8 @@
     "config": {
       "sentence": "______ el cine al teatro porque las películas son más emocionantes.",
       "correct_answer": "Prefiero",
-      "alternatives": ["prefiero", "PREFIERO"]
+      "alternatives": ["prefiero", "PREFIERO"],
+      "hint": "A verb meaning 'I prefer'"
     }
   },
   {
@@ -1467,7 +1498,8 @@
     "config": {
       "sentence": "¿Te ______ ir al cine esta tarde?",
       "correct_answer": "apetece",
-      "alternatives": ["Apetece", "APETECE"]
+      "alternatives": ["Apetece", "APETECE"],
+      "hint": "A verb meaning 'do you feel like...?'"
     }
   },
   {
@@ -1508,7 +1540,8 @@
     "config": {
       "sentence": "Según el ______, el gobierno aprobó nuevas medidas económicas.",
       "correct_answer": "reportaje",
-      "alternatives": ["Reportaje", "REPORTAJE"]
+      "alternatives": ["Reportaje", "REPORTAJE"],
+      "hint": "A word for a news report or article"
     }
   },
   {
@@ -1549,7 +1582,8 @@
     "config": {
       "sentence": "Hay que tener en ______ todos los factores antes de juzgar.",
       "correct_answer": "cuenta",
-      "alternatives": ["Cuenta", "CUENTA"]
+      "alternatives": ["Cuenta", "CUENTA"],
+      "hint": "Part of the idiom 'tener en ____' (to take into account)"
     }
   },
   {
@@ -1595,7 +1629,8 @@
     "config": {
       "sentence": "Esta ______ se ha vuelto viral en las redes sociales.",
       "correct_answer": "publicación",
-      "alternatives": ["Publicación", "PUBLICACIÓN"]
+      "alternatives": ["Publicación", "PUBLICACIÓN"],
+      "hint": "A social media post or published item"
     }
   },
   {
@@ -1636,7 +1671,8 @@
     "config": {
       "sentence": "La ______ de género sigue siendo un problema en muchos países.",
       "correct_answer": "discriminación",
-      "alternatives": ["Discriminación", "DISCRIMINACIÓN"]
+      "alternatives": ["Discriminación", "DISCRIMINACIÓN"],
+      "hint": "Unfair treatment based on identity or group"
     }
   },
   {
@@ -1682,7 +1718,8 @@
     "config": {
       "sentence": "Las ______ culturales de México son distintas a las de España.",
       "correct_answer": "tradiciones",
-      "alternatives": ["Tradiciones", "TRADICIONES"]
+      "alternatives": ["Tradiciones", "TRADICIONES"],
+      "hint": "Customs or practices passed down through generations"
     }
   },
   {
@@ -1723,7 +1760,8 @@
     "config": {
       "sentence": "Por un lado tiene ventajas; ______ otro, presenta riesgos.",
       "correct_answer": "por",
-      "alternatives": ["Por"]
+      "alternatives": ["Por"],
+      "hint": "Complete: '______ otro lado' (on the other hand)"
     }
   },
   {
@@ -1764,7 +1802,8 @@
     "config": {
       "sentence": "La ______ del aire afecta la salud de millones de personas.",
       "correct_answer": "contaminación",
-      "alternatives": ["Contaminación", "CONTAMINACIÓN"]
+      "alternatives": ["Contaminación", "CONTAMINACIÓN"],
+      "hint": "The presence of harmful substances in the environment"
     }
   },
   {
@@ -1810,7 +1849,8 @@
     "config": {
       "sentence": "Reducir nuestra ______ de carbono es una responsabilidad colectiva.",
       "correct_answer": "huella",
-      "alternatives": ["Huella", "HUELLA"]
+      "alternatives": ["Huella", "HUELLA"],
+      "hint": "Think: carbon _____"
     }
   },
   {
@@ -1851,7 +1891,8 @@
     "config": {
       "sentence": "El ______ amazónico es el pulmón del planeta.",
       "correct_answer": "bosque",
-      "alternatives": ["Bosque", "BOSQUE"]
+      "alternatives": ["Bosque", "BOSQUE"],
+      "hint": "A large area densely covered with trees"
     }
   },
   {
@@ -1897,7 +1938,8 @@
     "config": {
       "sentence": "Estamos dispuestos a ______ en el precio si aumentan el volumen del pedido.",
       "correct_answer": "negociar",
-      "alternatives": ["Negociar", "NEGOCIAR"]
+      "alternatives": ["Negociar", "NEGOCIAR"],
+      "hint": "A verb meaning to discuss terms in business"
     }
   },
   {
@@ -1938,7 +1980,8 @@
     "config": {
       "sentence": "El banco central subió los tipos de ______ para controlar la inflación.",
       "correct_answer": "interés",
-      "alternatives": ["Interés", "INTERÉS"]
+      "alternatives": ["Interés", "INTERÉS"],
+      "hint": "Banks charge this rate on loans"
     }
   },
   {
@@ -1979,7 +2022,8 @@
     "config": {
       "sentence": "En ______ a su consulta del día 5 de marzo, les informamos que...",
       "correct_answer": "respuesta",
-      "alternatives": ["Respuesta", "RESPUESTA"]
+      "alternatives": ["Respuesta", "RESPUESTA"],
+      "hint": "A formal word meaning 'reply'"
     }
   },
   {
@@ -2025,7 +2069,8 @@
     "config": {
       "sentence": "La poesía de Pablo Neruda se caracteriza por sus ______ metáforas sobre el amor.",
       "correct_answer": "intensas",
-      "alternatives": ["Intensas", "INTENSAS"]
+      "alternatives": ["Intensas", "INTENSAS"],
+      "hint": "An adjective meaning powerful or deeply felt"
     }
   },
   {
@@ -2071,7 +2116,8 @@
     "config": {
       "sentence": "La película recibió una ______ muy positiva por su dirección innovadora.",
       "correct_answer": "reseña",
-      "alternatives": ["Reseña", "RESEÑA"]
+      "alternatives": ["Reseña", "RESEÑA"],
+      "hint": "A critical evaluation of a book or film"
     }
   },
   {
@@ -2117,7 +2163,8 @@
     "config": {
       "sentence": "El ______ cultural de Gaudí se enmarca en el modernismo catalán.",
       "correct_answer": "legado",
-      "alternatives": ["Legado", "LEGADO"]
+      "alternatives": ["Legado", "LEGADO"],
+      "hint": "A word meaning 'legacy'"
     }
   },
   {
@@ -2163,7 +2210,8 @@
     "config": {
       "sentence": "Es fundamental presentar un ______ sólido antes de refutar la posición contraria.",
       "correct_answer": "argumento",
-      "alternatives": ["Argumento", "ARGUMENTO"]
+      "alternatives": ["Argumento", "ARGUMENTO"],
+      "hint": "A reasoned claim supporting a position"
     }
   },
   {
@@ -2204,7 +2252,8 @@
     "config": {
       "sentence": "Su comentario, aunque ______, revelaba una profunda crítica social.",
       "correct_answer": "sutil",
-      "alternatives": ["Sutil", "SUTIL"]
+      "alternatives": ["Sutil", "SUTIL"],
+      "hint": "An adjective meaning delicate or not obvious"
     }
   },
   {
@@ -2250,7 +2299,8 @@
     "config": {
       "sentence": "Los datos analizados corroboran la ______ inicial del estudio.",
       "correct_answer": "hipótesis",
-      "alternatives": ["Hipótesis", "HIPÓTESIS"]
+      "alternatives": ["Hipótesis", "HIPÓTESIS"],
+      "hint": "A proposed explanation tested through research"
     }
   },
   {
@@ -2296,7 +2346,8 @@
     "config": {
       "sentence": "El uso de la ______ crea ritmo y énfasis en el discurso político.",
       "correct_answer": "anáfora",
-      "alternatives": ["Anáfora", "ANÁFORA"]
+      "alternatives": ["Anáfora", "ANÁFORA"],
+      "hint": "A rhetorical device: repeating words at the start of phrases"
     }
   },
   {
@@ -2337,7 +2388,8 @@
     "config": {
       "sentence": "______ lo dispuesto en el artículo 5, queda prohibida dicha práctica.",
       "correct_answer": "Conforme",
-      "alternatives": ["conforme", "CONFORME"]
+      "alternatives": ["conforme", "CONFORME"],
+      "hint": "A legal term meaning 'in accordance with'"
     }
   },
   {
@@ -2383,7 +2435,8 @@
     "config": {
       "sentence": "Un buen orador adapta su ______ al perfil de su audiencia.",
       "correct_answer": "discurso",
-      "alternatives": ["Discurso", "DISCURSO"]
+      "alternatives": ["Discurso", "DISCURSO"],
+      "hint": "A formal address delivered to an audience"
     }
   },
   {

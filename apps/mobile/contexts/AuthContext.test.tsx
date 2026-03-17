@@ -1,6 +1,6 @@
+import { renderHook, act } from '@testing-library/react-native';
 import { User as FirebaseUser } from 'firebase/auth';
 import React, { useContext } from 'react';
-import { renderHook, act } from '@testing-library/react-native';
 
 jest.mock('@/lib/firebase', () => ({
   signIn: jest.fn(),
@@ -16,6 +16,7 @@ jest.mock('@/lib/api', () => ({
 }));
 
 import * as firebase from '@/lib/firebase';
+
 import { AuthContext, AuthProvider } from './AuthContext';
 
 const mockSignIn = jest.mocked(firebase.signIn);

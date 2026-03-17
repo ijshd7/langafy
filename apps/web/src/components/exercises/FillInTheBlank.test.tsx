@@ -7,9 +7,9 @@ vi.mock('@/lib/api', () => ({
   apiClient: { post: vi.fn() },
 }));
 
-import { apiClient } from '@/lib/api';
-
 import { FillInTheBlank } from './FillInTheBlank';
+
+import { apiClient } from '@/lib/api';
 
 const mockPost = vi.mocked(apiClient.post);
 
@@ -22,6 +22,7 @@ const exercise: Exercise = {
   config: {
     sentence: 'Las _____ son animales.',
     correctAnswers: ['llamas'],
+    hint: 'A South American animal known for spitting',
     explanation: 'Llamas are animals native to South America.',
   } as FillBlankConfig,
 };
@@ -53,6 +54,22 @@ describe('FillInTheBlank', () => {
     expect(screen.getByText(/Las/)).toBeInTheDocument();
     expect(screen.getByText(/son animales/)).toBeInTheDocument();
     expect(screen.getByLabelText(/your answer/i)).toBeInTheDocument();
+  });
+
+  it('renders hint when provided', () => {
+    render(<FillInTheBlank exercise={exercise} onComplete={vi.fn()} />);
+
+    expect(screen.getByText(/A South American animal known for spitting/)).toBeInTheDocument();
+  });
+
+  it('does not render hint section when hint is absent', () => {
+    const exerciseWithoutHint: Exercise = {
+      ...exercise,
+      config: { ...exercise.config, hint: undefined } as FillBlankConfig,
+    };
+    render(<FillInTheBlank exercise={exerciseWithoutHint} onComplete={vi.fn()} />);
+
+    expect(screen.queryByText(/Hint:/)).not.toBeInTheDocument();
   });
 
   it('submit button is disabled when input is empty', () => {
@@ -134,7 +151,9 @@ describe('FillInTheBlank', () => {
     render(<FillInTheBlank exercise={exercise} onComplete={onComplete} />);
 
     // Use fireEvent + act to avoid userEvent's internal timer dependencies
-    act(() => fireEvent.change(screen.getByLabelText(/your answer/i), { target: { value: 'llamas' } }));
+    act(() =>
+      fireEvent.change(screen.getByLabelText(/your answer/i), { target: { value: 'llamas' } })
+    );
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /submit answer/i }));

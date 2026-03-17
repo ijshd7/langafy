@@ -102,6 +102,7 @@ export interface FillBlankConfig extends ExerciseConfig {
   sentence: string; // sentence with _____ placeholder
   correctAnswers: string[]; // multiple acceptable answers (case-insensitive)
   alternatives?: string[]; // alternative correct answers (e.g., contractions)
+  hint?: string; // brief clue shown before submission to provide context
   explanation?: string;
 }
 

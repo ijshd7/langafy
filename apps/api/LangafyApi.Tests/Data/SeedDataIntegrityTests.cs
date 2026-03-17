@@ -166,6 +166,23 @@ public class SeedDataIntegrityTests
     }
 
     [Fact]
+    public void FillBlankExercises_HaveHint()
+    {
+        var fillBlankExercises = Load("es/exercises.json")
+            .Where(e => e.GetProperty("type").GetString() == "FillBlank");
+
+        foreach (var exercise in fillBlankExercises)
+        {
+            string code = exercise.GetProperty("code").GetString()!;
+            var config = exercise.GetProperty("config");
+
+            Assert.True(
+                config.TryGetProperty("hint", out _),
+                $"{code}: missing 'hint'");
+        }
+    }
+
+    [Fact]
     public void WordScrambleExercises_HaveTargetWord()
     {
         var scrambleExercises = Load("es/exercises.json")

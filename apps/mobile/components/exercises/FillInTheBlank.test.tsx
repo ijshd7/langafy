@@ -1,13 +1,13 @@
 import { Exercise, ExerciseResult, ExerciseType, FillBlankConfig } from '@langafy/shared-types';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react-native';
 
-jest.mock('@/lib/api', () => ({
-  apiClient: { post: jest.fn() },
-}));
-
 import { apiClient } from '@/lib/api';
 
 import { FillInTheBlank } from './FillInTheBlank';
+
+jest.mock('@/lib/api', () => ({
+  apiClient: { post: jest.fn() },
+}));
 
 const mockPost = jest.mocked(apiClient.post);
 
@@ -19,7 +19,8 @@ const exercise: Exercise = {
   points: 10,
   config: {
     sentence: 'Los _____ son animales.',
-    correctAnswer: 'gatos',
+    correctAnswers: ['gatos'],
+    hint: 'A common household pet',
     explanation: '"Gatos" means cats in Spanish.',
   } as FillBlankConfig,
 };
@@ -46,6 +47,22 @@ describe('FillInTheBlank', () => {
 
     expect(screen.getByText('Complete the sentence:')).toBeTruthy();
     expect(screen.getByPlaceholderText('Type your answer here...')).toBeTruthy();
+  });
+
+  it('renders hint when provided', () => {
+    render(<FillInTheBlank exercise={exercise} onComplete={jest.fn()} />);
+
+    expect(screen.getByText(/A common household pet/)).toBeTruthy();
+  });
+
+  it('does not render hint when absent', () => {
+    const exerciseWithoutHint: Exercise = {
+      ...exercise,
+      config: { ...exercise.config, hint: undefined } as FillBlankConfig,
+    };
+    render(<FillInTheBlank exercise={exerciseWithoutHint} onComplete={jest.fn()} />);
+
+    expect(screen.queryByText(/Hint:/)).toBeNull();
   });
 
   it('Submit Answer button is disabled when input is empty', () => {
@@ -141,9 +158,7 @@ describe('FillInTheBlank', () => {
       fireEvent.press(screen.getByText('Submit Answer'));
     });
 
-    await waitFor(() =>
-      expect(screen.getByText('"Gatos" means cats in Spanish.')).toBeTruthy()
-    );
+    await waitFor(() => expect(screen.getByText('"Gatos" means cats in Spanish.')).toBeTruthy());
   });
 
   it('submits with correct payload', async () => {

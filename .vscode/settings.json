@@ -1,3 +1,6 @@
 {
-  "dotnet.defaultSolution": "LangafyApi.sln"
+  "dotnet.defaultSolution": "LangafyApi.sln",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  }
 }

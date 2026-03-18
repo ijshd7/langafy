@@ -55,14 +55,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# output: 'standalone' produces a self-contained server with a trimmed node_modules.
-# The build runs from WORKDIR /app/apps/web, so the standalone root contains server.js
-# directly (not nested under apps/web/).
+# output: 'standalone' in a monorepo preserves the directory structure,
+# so server.js lives at apps/web/server.js within the standalone output.
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-# Static assets (JS/CSS chunks) must sit at .next/static relative to server.js
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+# Static assets must sit at .next/static relative to server.js
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 # Public directory
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 
@@ -70,4 +69,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]

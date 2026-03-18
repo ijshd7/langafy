@@ -18,7 +18,7 @@
     "lint": "npm -w web run lint && npm -w mobile run lint && dotnet format apps/api/LangafyApi/LangafyApi.csproj --verify-no-changes",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,md,css}\"",
-    "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up",
+    "docker:up": "docker compose -f docker/docker-compose.yml --env-file .env up --build",
     "docker:rebuild": "docker compose -f docker/docker-compose.yml --env-file .env build --no-cache && docker compose -f docker/docker-compose.yml --env-file .env up",
     "docker:down": "docker compose -f docker/docker-compose.yml --env-file .env down -v",
     "test:web": "npm -w web run test",

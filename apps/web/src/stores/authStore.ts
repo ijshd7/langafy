@@ -23,6 +23,14 @@ function clearAuthCookie() {
 }
 
 /**
+ * Profile data collected during signup, consumed by AuthContext during sync.
+ */
+export interface PendingProfile {
+  firstName: string;
+  lastName: string;
+}
+
+/**
  * Auth store state and actions
  */
 export interface AuthState {
@@ -31,6 +39,7 @@ export interface AuthState {
   loading: boolean;
   syncing: boolean;
   error: string | null;
+  pendingProfile: PendingProfile | null;
 
   // Actions
   setUser: (user: FirebaseUser | null) => void;
@@ -38,7 +47,12 @@ export interface AuthState {
   setSyncing: (syncing: boolean) => void;
   setError: (error: string | null) => void;
   signIn: (email: string, password: string) => Promise<FirebaseUser>;
-  signUp: (email: string, password: string) => Promise<FirebaseUser>;
+  signUp: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => Promise<FirebaseUser>;
   signOut: () => Promise<void>;
   clearError: () => void;
 }
@@ -51,6 +65,7 @@ export interface AuthState {
  * - Loading states
  * - Error states
  * - Sign in/up/out operations
+ * - Pending profile data for new signups
  */
 export const useAuthStore = create<AuthState>((set) => ({
   // Initial state
@@ -58,6 +73,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
   syncing: false,
   error: null,
+  pendingProfile: null,
 
   // State setters
   setUser: (user) => set({ user }),
@@ -81,13 +97,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  // Sign up with email and password
-  signUp: async (email: string, password: string) => {
+  // Sign up with email, password, and name
+  signUp: async (email: string, password: string, firstName: string, lastName: string) => {
     set({ loading: true, error: null });
     try {
       const user = await firebase.signUp(email, password);
       setAuthCookie();
-      set({ user, loading: false });
+      set({ user, loading: false, pendingProfile: { firstName, lastName } });
       return user;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Sign up failed';
@@ -102,7 +118,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await firebase.signOut();
       clearAuthCookie();
-      set({ user: null, loading: false });
+      set({ user: null, loading: false, pendingProfile: null });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
       set({ error: errorMessage, loading: false });

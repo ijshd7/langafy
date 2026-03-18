@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, LogOut, MessageCircle, BarChart3 } from 'lucide-react';
+import { BookOpen, LogOut, MessageCircle, BarChart3, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
   { href: '/vocabulary', label: 'Vocabulary', icon: BookOpen },
   { href: '/practice/conversation', label: 'Practice', icon: MessageCircle },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {

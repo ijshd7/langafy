@@ -134,6 +134,8 @@ public class AppDbContext : DbContext
             entity.Property(e => e.FirebaseUid).HasMaxLength(128).IsRequired();
             entity.Property(e => e.Email).HasMaxLength(256).IsRequired();
             entity.Property(e => e.DisplayName).HasMaxLength(200).IsRequired();
+            entity.Property(e => e.FirstName).HasMaxLength(100);
+            entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.LastActiveAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
         });

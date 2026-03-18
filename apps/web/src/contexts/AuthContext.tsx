@@ -52,12 +52,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user && !loading && !hasSynced.current) {
       hasSynced.current = true;
       useAuthStore.getState().setSyncing(true);
+
+      // Include pending profile data (firstName/lastName) if this is a new signup
+      const pendingProfile = useAuthStore.getState().pendingProfile;
+      const syncBody = pendingProfile
+        ? { firstName: pendingProfile.firstName, lastName: pendingProfile.lastName }
+        : {};
+
       apiClient
-        .post('/auth/sync', {})
+        .post('/auth/sync', syncBody)
         .catch((err) => {
           console.error('Background auth sync failed:', err);
         })
         .finally(() => {
+          // Clear pending profile after sync attempt (success or failure)
+          useAuthStore.setState({ pendingProfile: null });
           useAuthStore.getState().setSyncing(false);
         });
     }

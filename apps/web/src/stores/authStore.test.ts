@@ -24,16 +24,17 @@ describe('authStore', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset store to initial state before each test
-    useAuthStore.setState({ user: null, loading: true, error: null });
+    useAuthStore.setState({ user: null, loading: true, error: null, pendingProfile: null });
   });
 
   // ── Initial state ──────────────────────────────────────────────────────────
 
   it('has the correct initial state', () => {
-    const { user, loading, error } = useAuthStore.getState();
+    const { user, loading, error, pendingProfile } = useAuthStore.getState();
     expect(user).toBeNull();
     expect(loading).toBe(true);
     expect(error).toBeNull();
+    expect(pendingProfile).toBeNull();
   });
 
   // ── signIn ─────────────────────────────────────────────────────────────────
@@ -52,9 +53,9 @@ describe('authStore', () => {
   it('signIn failure: sets error message and clears loading', async () => {
     mockSignIn.mockRejectedValue(new Error('Invalid credentials'));
 
-    await expect(
-      useAuthStore.getState().signIn('test@example.com', 'wrong')
-    ).rejects.toThrow('Invalid credentials');
+    await expect(useAuthStore.getState().signIn('test@example.com', 'wrong')).rejects.toThrow(
+      'Invalid credentials'
+    );
 
     const { user, loading, error } = useAuthStore.getState();
     expect(user).toBeNull();
@@ -64,21 +65,22 @@ describe('authStore', () => {
 
   // ── signUp ─────────────────────────────────────────────────────────────────
 
-  it('signUp success: sets user and clears loading', async () => {
+  it('signUp success: sets user, clears loading, and stores pendingProfile', async () => {
     mockSignUp.mockResolvedValue(fakeUser);
 
-    await useAuthStore.getState().signUp('new@example.com', 'password123');
+    await useAuthStore.getState().signUp('new@example.com', 'password123', 'Jane', 'Doe');
 
-    const { user, loading } = useAuthStore.getState();
+    const { user, loading, pendingProfile } = useAuthStore.getState();
     expect(user).toEqual(fakeUser);
     expect(loading).toBe(false);
+    expect(pendingProfile).toEqual({ firstName: 'Jane', lastName: 'Doe' });
   });
 
   it('signUp failure: sets error and re-throws', async () => {
     mockSignUp.mockRejectedValue(new Error('Email already in use'));
 
     await expect(
-      useAuthStore.getState().signUp('existing@example.com', 'pass')
+      useAuthStore.getState().signUp('existing@example.com', 'pass', 'Test', 'User')
     ).rejects.toThrow('Email already in use');
 
     expect(useAuthStore.getState().error).toBe('Email already in use');
@@ -86,15 +88,20 @@ describe('authStore', () => {
 
   // ── signOut ────────────────────────────────────────────────────────────────
 
-  it('signOut success: sets user to null', async () => {
-    useAuthStore.setState({ user: fakeUser, loading: false });
+  it('signOut success: sets user to null and clears pendingProfile', async () => {
+    useAuthStore.setState({
+      user: fakeUser,
+      loading: false,
+      pendingProfile: { firstName: 'A', lastName: 'B' },
+    });
     mockSignOut.mockResolvedValue(undefined);
 
     await useAuthStore.getState().signOut();
 
-    const { user, loading } = useAuthStore.getState();
+    const { user, loading, pendingProfile } = useAuthStore.getState();
     expect(user).toBeNull();
     expect(loading).toBe(false);
+    expect(pendingProfile).toBeNull();
   });
 
   it('signOut failure: sets error and re-throws', async () => {

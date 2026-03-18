@@ -76,4 +76,64 @@ public class AuthSyncTests(IntegrationTestFactory factory)
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Sync_NewUser_WithNames_StoresFirstAndLastName()
+    {
+        var uid = Guid.NewGuid().ToString();
+        var client = factory.CreateAuthenticatedClient(uid, "names@example.com");
+
+        var syncBody = new { firstName = "Jane", lastName = "Smith" };
+        var response = await client.PostAsJsonAsync("/api/auth/sync", syncBody);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var user = db.Users.FirstOrDefault(u => u.FirebaseUid == uid);
+
+        Assert.NotNull(user);
+        Assert.Equal("Jane", user.FirstName);
+        Assert.Equal("Smith", user.LastName);
+        Assert.Equal("Jane Smith", user.DisplayName);
+    }
+
+    [Fact]
+    public async Task Sync_NewUser_WithNames_ReturnsNamesInResponse()
+    {
+        var uid = Guid.NewGuid().ToString();
+        var client = factory.CreateAuthenticatedClient(uid, "namesresponse@example.com");
+
+        var syncBody = new { firstName = "Alice", lastName = "Johnson" };
+        var response = await client.PostAsJsonAsync("/api/auth/sync", syncBody);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = JsonSerializer.Deserialize<JsonElement>(
+            await response.Content.ReadAsStringAsync(), Json);
+
+        Assert.Equal("Alice", body.GetProperty("firstName").GetString());
+        Assert.Equal("Johnson", body.GetProperty("lastName").GetString());
+        Assert.Equal("Alice Johnson", body.GetProperty("displayName").GetString());
+        Assert.True(body.GetProperty("isFirstSync").GetBoolean());
+    }
+
+    [Fact]
+    public async Task Sync_NewUser_WithoutNames_HasNullNames()
+    {
+        var uid = Guid.NewGuid().ToString();
+        var client = factory.CreateAuthenticatedClient(uid, "nonames@example.com");
+
+        var response = await client.PostAsync("/api/auth/sync", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var user = db.Users.FirstOrDefault(u => u.FirebaseUid == uid);
+
+        Assert.NotNull(user);
+        Assert.Null(user.FirstName);
+        Assert.Null(user.LastName);
+    }
 }

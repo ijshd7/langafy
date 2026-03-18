@@ -17,6 +17,8 @@ test.describe('Signup page', () => {
 
     await expect(page.getByRole('heading', { name: 'Langafy' })).toBeVisible();
     await expect(page.getByText('Create your account to start learning')).toBeVisible();
+    await expect(page.getByLabel(SEL.firstNameInput)).toBeVisible();
+    await expect(page.getByLabel(SEL.lastNameInput)).toBeVisible();
     await expect(page.getByLabel(SEL.emailInput)).toBeVisible();
     await expect(page.getByLabel(SEL.passwordInput, { exact: true })).toBeVisible();
     await expect(page.getByLabel(SEL.confirmPasswordInput)).toBeVisible();
@@ -31,6 +33,8 @@ test.describe('Signup page', () => {
     await mockProgress(page, buildProgressResponse());
 
     await page.goto('/signup');
+    await page.getByLabel(SEL.firstNameInput).fill('New');
+    await page.getByLabel(SEL.lastNameInput).fill('User');
     await page.getByLabel(SEL.emailInput).fill('newuser@example.com');
     await page.getByLabel(SEL.passwordInput, { exact: true }).fill('password123');
     await page.getByLabel(SEL.confirmPasswordInput).fill('password123');
@@ -43,6 +47,8 @@ test.describe('Signup page', () => {
     await mockApiFallback(page);
     await page.goto('/signup');
 
+    await page.getByLabel(SEL.firstNameInput).fill('Test');
+    await page.getByLabel(SEL.lastNameInput).fill('User');
     await page.getByLabel(SEL.emailInput).fill('test@example.com');
     await page.getByLabel(SEL.passwordInput, { exact: true }).fill('password123');
     await page.getByLabel(SEL.confirmPasswordInput).fill('different456');
@@ -55,6 +61,8 @@ test.describe('Signup page', () => {
     await mockApiFallback(page);
     await page.goto('/signup');
 
+    await page.getByLabel(SEL.firstNameInput).fill('Test');
+    await page.getByLabel(SEL.lastNameInput).fill('User');
     await page.getByLabel(SEL.emailInput).fill('test@example.com');
     await page.getByLabel(SEL.passwordInput, { exact: true }).fill('12345');
     await page.getByLabel(SEL.confirmPasswordInput).fill('12345');
@@ -69,6 +77,8 @@ test.describe('Signup page', () => {
 
     await page.getByRole('button', { name: 'Sign up' }).click();
 
+    await expect(page.getByText('First name is required')).toBeVisible();
+    await expect(page.getByText('Last name is required')).toBeVisible();
     await expect(page.getByText('Invalid email address')).toBeVisible();
   });
 
@@ -77,6 +87,8 @@ test.describe('Signup page', () => {
     await mockFirebaseSignUpFailure(page, 'EMAIL_EXISTS');
 
     await page.goto('/signup');
+    await page.getByLabel(SEL.firstNameInput).fill('Existing');
+    await page.getByLabel(SEL.lastNameInput).fill('User');
     await page.getByLabel(SEL.emailInput).fill('existing@example.com');
     await page.getByLabel(SEL.passwordInput, { exact: true }).fill('password123');
     await page.getByLabel(SEL.confirmPasswordInput).fill('password123');

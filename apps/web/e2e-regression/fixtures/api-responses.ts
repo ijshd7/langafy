@@ -12,9 +12,22 @@ export function buildAuthSyncResponse(overrides?: Record<string, unknown>) {
     id: 'user-1',
     email: 'testuser@example.com',
     displayName: 'Test User',
+    firstName: 'Test',
+    lastName: 'User',
     activeLanguage: 'es',
     cefrLevel: 'A1',
     isFirstSync: false,
+    ...overrides,
+  };
+}
+
+export function buildProfileResponse(overrides?: Record<string, unknown>) {
+  return {
+    id: 'user-1',
+    email: 'testuser@example.com',
+    displayName: 'Test User',
+    firstName: 'Test',
+    lastName: 'User',
     ...overrides,
   };
 }
@@ -422,9 +435,7 @@ export function buildVocabularyReviewResponse() {
 
 // ─── Conversations ────────────────────────────────────────────────────────────
 
-export function buildConversationListResponse(
-  conversations?: Array<Record<string, unknown>>
-) {
+export function buildConversationListResponse(conversations?: Array<Record<string, unknown>>) {
   const defaultConversations = [
     {
       id: 1,

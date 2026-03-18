@@ -7,6 +7,8 @@
 
 export const SEL = {
   // ─── Auth ─────────────────────────────────────────────────────────────────
+  firstNameInput: 'First name',
+  lastNameInput: 'Last name',
   emailInput: 'Email address',
   passwordInput: 'Password',
   confirmPasswordInput: 'Confirm password',

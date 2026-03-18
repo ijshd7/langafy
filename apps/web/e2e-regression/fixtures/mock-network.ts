@@ -9,6 +9,7 @@ import { Page } from '@playwright/test';
 
 import {
   buildAuthSyncResponse,
+  buildProfileResponse,
   buildConversationDetailResponse,
   buildConversationListResponse,
   buildExerciseSubmitCorrect,
@@ -119,10 +120,7 @@ export async function mockFirebaseSignUp(page: Page, user: TestUser = DEFAULT_US
 }
 
 /** Mock Firebase sign-up failure (e.g., EMAIL_EXISTS) */
-export async function mockFirebaseSignUpFailure(
-  page: Page,
-  errorCode: string = 'EMAIL_EXISTS'
-) {
+export async function mockFirebaseSignUpFailure(page: Page, errorCode: string = 'EMAIL_EXISTS') {
   await page.route(/identitytoolkit\.googleapis\.com/, (route) =>
     route.fulfill({
       status: 400,
@@ -149,10 +147,7 @@ export async function mockFirebaseSignUpFailure(
 // ─── App API Mocks ────────────────────────────────────────────────────────────
 
 /** Mock POST /api/auth/sync */
-export async function mockAuthSync(
-  page: Page,
-  response?: Record<string, unknown>
-) {
+export async function mockAuthSync(page: Page, response?: Record<string, unknown>) {
   await page.route(/localhost:5000\/api\/auth\/sync/, (route) =>
     route.fulfill({
       status: 200,
@@ -163,10 +158,7 @@ export async function mockAuthSync(
 }
 
 /** Mock GET /api/progress */
-export async function mockProgress(
-  page: Page,
-  response?: Record<string, unknown>
-) {
+export async function mockProgress(page: Page, response?: Record<string, unknown>) {
   await page.route(/localhost:5000\/api\/progress/, (route) => {
     if (route.request().method() === 'GET') {
       return route.fulfill({
@@ -193,11 +185,7 @@ export async function mockProgressError(page: Page, statusCode: number = 500) {
 }
 
 /** Mock GET /api/lessons/:id */
-export async function mockLesson(
-  page: Page,
-  lessonId: string,
-  response: Record<string, unknown>
-) {
+export async function mockLesson(page: Page, lessonId: string, response: Record<string, unknown>) {
   await page.route(new RegExp(`localhost:5000/api/lessons/${lessonId}`), (route) =>
     route.fulfill({
       status: 200,
@@ -213,22 +201,17 @@ export async function mockExerciseSubmit(
   exerciseId: string,
   response?: Record<string, unknown>
 ) {
-  await page.route(
-    new RegExp(`localhost:5000/api/exercises/${exerciseId}/submit`),
-    (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(response ?? buildExerciseSubmitCorrect()),
-      })
+  await page.route(new RegExp(`localhost:5000/api/exercises/${exerciseId}/submit`), (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(response ?? buildExerciseSubmitCorrect()),
+    })
   );
 }
 
 /** Mock GET /api/languages/:code/levels/by-code/:code/units */
-export async function mockUnits(
-  page: Page,
-  response: unknown
-) {
+export async function mockUnits(page: Page, response: unknown) {
   await page.route(/localhost:5000\/api\/languages\/.*\/levels\/.*\/units/, (route) =>
     route.fulfill({
       status: 200,
@@ -239,10 +222,7 @@ export async function mockUnits(
 }
 
 /** Mock GET /api/vocabulary */
-export async function mockVocabulary(
-  page: Page,
-  response?: Record<string, unknown>
-) {
+export async function mockVocabulary(page: Page, response?: Record<string, unknown>) {
   await page.route(/localhost:5000\/api\/vocabulary(?!\/)/, (route) =>
     route.fulfill({
       status: 200,
@@ -253,10 +233,7 @@ export async function mockVocabulary(
 }
 
 /** Mock GET /api/vocabulary/due */
-export async function mockVocabularyDue(
-  page: Page,
-  response?: Record<string, unknown>
-) {
+export async function mockVocabularyDue(page: Page, response?: Record<string, unknown>) {
   await page.route(/localhost:5000\/api\/vocabulary\/due/, (route) =>
     route.fulfill({
       status: 200,
@@ -278,10 +255,7 @@ export async function mockVocabularyReview(page: Page) {
 }
 
 /** Mock GET /api/conversations (list) */
-export async function mockConversationList(
-  page: Page,
-  response?: Record<string, unknown>
-) {
+export async function mockConversationList(page: Page, response?: Record<string, unknown>) {
   await page.route(/localhost:5000\/api\/conversations\?/, (route) =>
     route.fulfill({
       status: 200,
@@ -297,26 +271,20 @@ export async function mockConversationDetail(
   id: number,
   response?: Record<string, unknown>
 ) {
-  await page.route(
-    new RegExp(`localhost:5000/api/conversations/${id}$`),
-    (route) => {
-      if (route.request().method() === 'GET') {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(response ?? buildConversationDetailResponse(id)),
-        });
-      }
-      return route.continue();
+  await page.route(new RegExp(`localhost:5000/api/conversations/${id}$`), (route) => {
+    if (route.request().method() === 'GET') {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(response ?? buildConversationDetailResponse(id)),
+      });
     }
-  );
+    return route.continue();
+  });
 }
 
 /** Mock POST /api/conversations (create) */
-export async function mockConversationCreate(
-  page: Page,
-  response?: Record<string, unknown>
-) {
+export async function mockConversationCreate(page: Page, response?: Record<string, unknown>) {
   await page.route(/localhost:5000\/api\/conversations$/, (route) => {
     if (route.request().method() === 'POST') {
       return route.fulfill({
@@ -344,11 +312,7 @@ export async function mockConversationDelete(page: Page, id?: number) {
 }
 
 /** Mock POST /api/conversations/:id/messages/stream (SSE) */
-export async function mockConversationStream(
-  page: Page,
-  id: number,
-  chunks: string[]
-) {
+export async function mockConversationStream(page: Page, id: number, chunks: string[]) {
   await page.route(
     new RegExp(`localhost:5000/api/conversations/${id}/messages/stream`),
     (route) => {
@@ -368,16 +332,35 @@ export async function mockConversationStreamError(
   id: number,
   statusCode: number = 429
 ) {
-  await page.route(
-    new RegExp(`localhost:5000/api/conversations/${id}/messages/stream`),
-    (route) =>
-      route.fulfill({
-        status: statusCode,
-        contentType: 'application/json',
-        headers: statusCode === 429 ? { 'Retry-After': '60' } : {},
-        body: JSON.stringify({ error: 'Rate limit exceeded' }),
-      })
+  await page.route(new RegExp(`localhost:5000/api/conversations/${id}/messages/stream`), (route) =>
+    route.fulfill({
+      status: statusCode,
+      contentType: 'application/json',
+      headers: statusCode === 429 ? { 'Retry-After': '60' } : {},
+      body: JSON.stringify({ error: 'Rate limit exceeded' }),
+    })
   );
+}
+
+/** Mock GET /api/auth/profile */
+export async function mockProfile(page: Page, response?: Record<string, unknown>) {
+  await page.route(/localhost:5000\/api\/auth\/profile/, (route) => {
+    if (route.request().method() === 'GET') {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(response ?? buildProfileResponse()),
+      });
+    }
+    if (route.request().method() === 'PUT') {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(response ?? buildProfileResponse()),
+      });
+    }
+    return route.continue();
+  });
 }
 
 /** Generic fallback for unmatched API server calls */
@@ -392,10 +375,7 @@ export async function mockApiFallback(page: Page) {
  * Registers Firebase auth mocks + auth sync + API fallback.
  * Use in beforeEach for most authenticated test suites.
  */
-export async function mockFullAuthenticatedSession(
-  page: Page,
-  user: TestUser = DEFAULT_USER
-) {
+export async function mockFullAuthenticatedSession(page: Page, user: TestUser = DEFAULT_USER) {
   // Register fallback first (lowest priority in Playwright LIFO)
   await mockApiFallback(page);
   // Then specific mocks on top

@@ -163,7 +163,7 @@ var openRouterBaseUrl = builder.Configuration["OpenRouter:BaseUrl"] ?? "https://
 
 builder.Services.AddHttpClient("OpenRouter", client =>
 {
-    client.BaseAddress = new Uri(openRouterBaseUrl);
+    client.BaseAddress = new Uri(openRouterBaseUrl.TrimEnd('/') + "/");
     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openRouterApiKey}");
     client.DefaultRequestHeaders.Add("HTTP-Referer", "https://langafy.app");
     client.DefaultRequestHeaders.Add("X-Title", "Langafy Language Learning");

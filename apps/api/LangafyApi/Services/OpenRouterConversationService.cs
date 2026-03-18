@@ -132,7 +132,7 @@ public class OpenRouterConversationService : IConversationAIService
         var client = _httpClientFactory.CreateClient("OpenRouter");
         var requestBody = new OpenRouterRequest(model, messages, Stream: false);
 
-        var response = await client.PostAsJsonAsync("/chat/completions", requestBody, JsonOptions, ct);
+        var response = await client.PostAsJsonAsync("chat/completions", requestBody, JsonOptions, ct);
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<OpenRouterResponse>(JsonOptions, ct);
@@ -175,7 +175,7 @@ public class OpenRouterConversationService : IConversationAIService
         var client = _httpClientFactory.CreateClient("OpenRouter");
         var requestBody = new OpenRouterRequest(model, messages, Stream: true);
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "/chat/completions")
+        var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions")
         {
             Content = JsonContent.Create(requestBody, options: JsonOptions)
         };

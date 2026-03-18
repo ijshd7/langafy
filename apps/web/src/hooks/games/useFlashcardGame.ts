@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { shuffleArray } from './scramble';
 import { useGameScoring } from './useGameScoring';
@@ -65,15 +65,29 @@ export function useFlashcardGame(
   const [result, setResult] = useState<FlashcardGameResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Refs for values that need to be read from callbacks without stale closures
+  const elapsedMsRef = useRef(0);
+  const cardsRef = useRef<FlashcardGameCard[]>([]);
+
   const {
     elapsedMs,
     remainingMs,
     start: startTimer,
+    pause: pauseTimer,
     reset: resetTimer,
   } = useGameTimer(timeLimitMs !== undefined ? 'countdown' : 'countup', timeLimitMs, () =>
     handleTimeout()
   );
   const scoring = useGameScoring();
+
+  // Keep refs in sync with latest state
+  useEffect(() => {
+    elapsedMsRef.current = elapsedMs;
+  }, [elapsedMs]);
+
+  useEffect(() => {
+    cardsRef.current = cards;
+  }, [cards]);
 
   function buildCards(p: FlashcardPair[]): FlashcardGameCard[] {
     const all: FlashcardGameCard[] = [];
@@ -111,12 +125,15 @@ export function useFlashcardGame(
   }, [pairs]);
 
   function handleTimeout() {
+    pauseTimer();
     setGameState('completed');
-    const finalScore = scoring.computeScore(basePoints, elapsedMs, timeLimitMs);
+    const elapsed = elapsedMsRef.current;
+    const currentCards = cardsRef.current;
+    const finalScore = scoring.computeScore(basePoints, elapsed, timeLimitMs);
     setResult({
-      matches: pairs.filter((_, i) => cards.find((c) => c.pairIndex === i && c.isMatched)),
+      matches: pairs.filter((_, i) => currentCards.find((c) => c.pairIndex === i && c.isMatched)),
       score: finalScore,
-      elapsedMs,
+      elapsedMs: elapsed,
     });
   }
 
@@ -133,6 +150,11 @@ export function useFlashcardGame(
       setSelectedCardId((prevSelected) => {
         if (prevSelected === null) {
           return cardId;
+        }
+
+        // Ignore double-click on the same card
+        if (cardId === prevSelected) {
+          return prevSelected;
         }
 
         // Second card selected — evaluate
@@ -169,9 +191,11 @@ export function useFlashcardGame(
           );
           const allMatched = updated.every((c) => c.isMatched);
           if (allMatched) {
+            pauseTimer();
             setGameState('completed');
-            const finalScore = scoring.computeScore(basePoints, elapsedMs, timeLimitMs);
-            setResult({ matches: pairs, score: finalScore, elapsedMs });
+            const elapsed = elapsedMsRef.current;
+            const finalScore = scoring.computeScore(basePoints, elapsed, timeLimitMs);
+            setResult({ matches: pairs, score: finalScore, elapsedMs: elapsed });
           }
           setIsProcessing(false);
           return updated;
@@ -180,11 +204,8 @@ export function useFlashcardGame(
         return null;
       });
     },
-    [gameState, isProcessing, scoring, basePoints, elapsedMs, timeLimitMs, pairs]
+    [gameState, isProcessing, scoring, basePoints, timeLimitMs, pairs, pauseTimer]
   );
-
-  // Keep elapsedMs in sync for the timeout handler
-  useEffect(() => {}, [elapsedMs]);
 
   return {
     gameState,

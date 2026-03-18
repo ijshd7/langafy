@@ -1,8 +1,8 @@
 'use client';
 
-import type { Exercise, ExerciseResult, FlashcardMatchConfig } from '@langafy/shared-types';
+import type { Exercise, ExerciseResult } from '@langafy/shared-types';
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useFlashcardGame, type FlashcardGameResult } from '@/hooks/games/useFlashcardGame';
 import { apiClient } from '@/lib/api';
@@ -16,7 +16,17 @@ interface FlashcardMatchProps {
 export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMatchProps) {
   // Config comes from API as raw JSONB with snake_case keys
   const rawConfig = exercise.config as Record<string, unknown>;
-  const pairs = (rawConfig.pairs as FlashcardMatchConfig['pairs']) ?? [];
+  // Normalize pair fields: seed data uses 'en', shared type expects 'english'
+  const rawPairs = rawConfig.pairs as Array<Record<string, string>> | undefined;
+  const pairs = useMemo(
+    () =>
+      (rawPairs ?? []).map((p) => ({
+        target: p.target ?? '',
+        english: p.english ?? p.en ?? '',
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(rawPairs)]
+  );
   const timeLimitSeconds = (rawConfig.time_limit_seconds ?? rawConfig.timeLimit) as
     | number
     | undefined;
@@ -119,102 +129,70 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
 
       {/* Game grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-        {cards.map((card) => (
-          <motion.button
-            key={card.id}
-            onClick={() => flipCard(card.id)}
-            disabled={gameState === 'completed' || card.isMatched}
-            className={`aspect-square rounded-lg text-sm font-semibold transition-colors ${
-              card.isMatched
-                ? 'cursor-default bg-green-100 text-green-700'
-                : 'cursor-pointer border-2 border-blue-300 bg-white hover:border-blue-500 hover:shadow-md'
-            } disabled:cursor-not-allowed disabled:opacity-50`}
-            whileHover={!card.isMatched && gameState !== 'completed' ? { scale: 1.05 } : {}}
-            whileTap={!card.isMatched && gameState !== 'completed' ? { scale: 0.95 } : {}}
-            aria-label={
-              card.isFlipped || card.isMatched
-                ? `${card.text}, ${card.side === 'target' ? 'Target' : 'English'}`
-                : 'Hidden card'
-            }>
-            <motion.div
-              initial={{ rotateY: 0 }}
-              animate={{ rotateY: card.isFlipped ? 180 : 0 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                transformStyle: 'preserve-3d',
-              }}>
-              <div
-                style={{
-                  backfaceVisibility: 'hidden',
-                }}
-                className={`flex h-full items-center justify-center ${
-                  card.isMatched ? 'block' : 'hidden'
-                }`}>
-                <div className="text-center">
-                  <div className="mb-1 text-xs font-medium text-gray-500">
-                    {card.side === 'target' ? 'ES' : 'EN'}
-                  </div>
-                  <div className="break-words px-1">{card.text}</div>
-                </div>
-              </div>
+        {cards.map((card) => {
+          const isRevealed = card.isFlipped || card.isMatched;
+          const isMismatched = lastMismatchIds?.includes(card.id) ?? false;
 
-              {!card.isMatched && (
+          return (
+            <motion.button
+              key={card.id}
+              onClick={() => flipCard(card.id)}
+              disabled={gameState === 'completed' || card.isMatched}
+              className={`relative aspect-square rounded-lg text-sm font-semibold transition-colors ${
+                card.isMatched
+                  ? 'cursor-default bg-green-100 text-green-700'
+                  : 'cursor-pointer border-2 border-blue-300 bg-white hover:border-blue-500 hover:shadow-md'
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+              style={{ perspective: '1000px' }}
+              animate={isMismatched ? { x: [-10, 10, -10, 10, 0] } : { x: 0 }}
+              transition={isMismatched ? { duration: 0.4 } : undefined}
+              whileHover={!card.isMatched && gameState !== 'completed' ? { scale: 1.05 } : {}}
+              whileTap={!card.isMatched && gameState !== 'completed' ? { scale: 0.95 } : {}}
+              aria-label={
+                isRevealed
+                  ? `${card.text}, ${card.side === 'target' ? 'Target' : 'English'}`
+                  : 'Hidden card'
+              }>
+              <motion.div
+                className="relative h-full w-full"
+                initial={false}
+                animate={{ rotateY: isRevealed ? 180 : 0 }}
+                transition={{ duration: 0.4 }}
+                style={{ transformStyle: 'preserve-3d' }}>
+                {/* Front face — question mark */}
                 <div
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    transform: 'rotateY(180deg)',
-                  }}>
-                  <div className="flex h-full flex-col items-center justify-center">
-                    <div className="text-center">
-                      <div className="mb-1 text-xs font-medium text-gray-500">
-                        {card.side === 'target' ? 'ES' : 'EN'}
-                      </div>
-                      <div className="line-clamp-3 break-words px-1">{card.text}</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Fallback for non-matched cards shown face-up */}
-              {!card.isMatched && card.isFlipped && (
-                <div className="flex h-full flex-col items-center justify-center">
-                  <div className="text-center">
-                    <div className="mb-1 text-xs font-medium text-gray-500">
-                      {card.side === 'target' ? 'ES' : 'EN'}
-                    </div>
-                    <div className="line-clamp-3 break-words px-1">{card.text}</div>
-                  </div>
-                </div>
-              )}
-
-              {!card.isMatched && !card.isFlipped && (
-                <div className="flex h-full items-center justify-center">
+                  className="absolute inset-0 flex items-center justify-center rounded-lg"
+                  style={{ backfaceVisibility: 'hidden' }}>
                   <div className="text-3xl font-light text-blue-400">?</div>
                 </div>
+
+                {/* Back face — card content */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center rounded-lg"
+                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                  <div className="text-center">
+                    <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-500">
+                      {card.side === 'target' ? 'ES' : 'EN'}
+                    </div>
+                    <div className="line-clamp-3 break-words px-2 text-base font-bold text-gray-900">
+                      {card.text}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Match glow animation */}
+              {card.isMatched && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 1 }}
+                  animate={{ scale: 1.2, opacity: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="pointer-events-none absolute inset-0 rounded-lg border-2 border-green-400"
+                />
               )}
-            </motion.div>
-
-            {/* Mismatch shake animation */}
-            {lastMismatchIds && lastMismatchIds.includes(card.id) && (
-              <motion.div
-                initial={{ x: 0 }}
-                animate={{ x: [-10, 10, -10, 10, 0] }}
-                transition={{ duration: 0.4 }}
-                className="pointer-events-none absolute inset-0"
-              />
-            )}
-
-            {/* Match glow animation */}
-            {card.isMatched && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 0 }}
-                transition={{ duration: 0.6 }}
-                className="pointer-events-none absolute inset-0 rounded-lg border-2 border-green-400"
-              />
-            )}
-          </motion.button>
-        ))}
+            </motion.button>
+          );
+        })}
       </div>
 
       {/* Completion state */}

@@ -201,8 +201,13 @@ public static class ProgressEndpoints
                         }
                     }
 
-                    unitProgress.CompletionPercentage = unitProgress.TotalLessons > 0
-                        ? (unitProgress.CompletedLessons * 100) / unitProgress.TotalLessons
+                    // Use exercise-level progress for a smoother, more accurate
+                    // completion percentage (avoids showing 0% when a lesson is
+                    // partially finished).
+                    int unitTotalExercises = unitProgress.Lessons.Sum(l => l.TotalExercises);
+                    int unitCompletedExercises = unitProgress.Lessons.Sum(l => l.CompletedExercises);
+                    unitProgress.CompletionPercentage = unitTotalExercises > 0
+                        ? (unitCompletedExercises * 100) / unitTotalExercises
                         : 0;
 
                     levelProgress.Units.Add(unitProgress);
@@ -215,8 +220,11 @@ public static class ProgressEndpoints
                     }
                 }
 
-                levelProgress.CompletionPercentage = levelProgress.TotalUnits > 0
-                    ? (levelProgress.CompletedUnits * 100) / levelProgress.TotalUnits
+                // Use exercise-level progress across all units in this level.
+                int levelTotalExercises = levelProgress.Units.SelectMany(u => u.Lessons).Sum(l => l.TotalExercises);
+                int levelCompletedExercises = levelProgress.Units.SelectMany(u => u.Lessons).Sum(l => l.CompletedExercises);
+                levelProgress.CompletionPercentage = levelTotalExercises > 0
+                    ? (levelCompletedExercises * 100) / levelTotalExercises
                     : 0;
 
                 levelProgressList.Add(levelProgress);

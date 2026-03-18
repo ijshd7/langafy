@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useWordScramble } from '@/hooks/games/useWordScramble';
+import { apiClient } from '@/lib/api';
 
 interface WordScrambleProps {
   exercise: Exercise;
@@ -46,29 +47,36 @@ export function WordScramble({ exercise, onComplete, basePoints }: WordScrambleP
       try {
         setIsSubmitting(true);
 
+        const apiResult = await apiClient.post<{
+          isCorrect: boolean;
+          score: number;
+          pointsEarned: number;
+          correctAnswer?: string;
+          feedback: string;
+          explanation?: string;
+        }>(`/exercises/${exercise.id}/submit`, {
+          type: 'WordScramble',
+          answer: gameResult.target,
+          timeSpentMs: gameResult.elapsedMs,
+        });
+
         const exResult: ExerciseResult = {
-          correct: gameResult.correct,
-          score: gameResult.correct ? Math.round(gameResult.score.finalScore) : 0,
+          correct: apiResult.isCorrect,
+          score: apiResult.pointsEarned,
           maxScore: basePoints,
           timeTaken: gameResult.elapsedMs,
+          correctAnswer: apiResult.correctAnswer,
+          explanation: apiResult.explanation,
         };
 
-        if (exResult.correct) {
-          onComplete(exResult);
-        } else {
-          onComplete({
-            ...exResult,
-            correctAnswer: targetWord,
-            explanation: rawConfig.explanation as string | undefined,
-          });
-        }
+        onComplete(exResult);
       } catch (error) {
         console.error('Error submitting game result:', error);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [targetWord, rawConfig.explanation, basePoints, onComplete]
+    [exercise.id, basePoints, onComplete]
   );
 
   // Handle game completion

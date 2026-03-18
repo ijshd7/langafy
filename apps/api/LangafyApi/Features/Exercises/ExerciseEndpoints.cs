@@ -137,8 +137,8 @@ public static class ExerciseEndpoints
             // Update existing progress
             existingProgress.Attempts += 1;
             existingProgress.Score = Math.Max(existingProgress.Score, result.Score);
-            existingProgress.Completed = result.IsCorrect || existingProgress.Completed;
-            if (result.IsCorrect && !existingProgress.CompletedAt.HasValue)
+            existingProgress.Completed = true;
+            if (!existingProgress.CompletedAt.HasValue)
             {
                 existingProgress.CompletedAt = DateTime.UtcNow;
             }
@@ -147,15 +147,16 @@ public static class ExerciseEndpoints
         }
         else
         {
-            // Create new progress record
+            // Create new progress record — an exercise is "completed" once
+            // the user submits any answer; the Score tracks correctness.
             var progress = new UserProgress
             {
                 UserId = user.Id,
                 ExerciseId = id,
                 Attempts = 1,
                 Score = result.Score,
-                Completed = result.IsCorrect,
-                CompletedAt = result.IsCorrect ? DateTime.UtcNow : null
+                Completed = true,
+                CompletedAt = DateTime.UtcNow
             };
 
             dbContext.UserProgress.Add(progress);

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useFlashcardGame, type FlashcardGameResult } from '@/hooks/games/useFlashcardGame';
+import { apiClient } from '@/lib/api';
 
 interface FlashcardMatchProps {
   exercise: Exercise;
@@ -34,30 +35,39 @@ export function FlashcardMatch({ exercise, onComplete, basePoints }: FlashcardMa
       try {
         setIsSubmitting(true);
 
-        // In a real app, this would POST to the API
-        // For now, we'll simulate and call onComplete with a result
+        const apiResult = await apiClient.post<{
+          isCorrect: boolean;
+          score: number;
+          pointsEarned: number;
+          correctAnswer?: string;
+          feedback: string;
+          explanation?: string;
+        }>(`/exercises/${exercise.id}/submit`, {
+          type: 'FlashcardMatch',
+          matches: gameResult.matches.map((m) => ({
+            target: m.target,
+            en: m.english,
+          })),
+          timeSpentMs: gameResult.elapsedMs,
+        });
+
         const exResult: ExerciseResult = {
-          correct: gameResult.matches.length === pairs.length,
-          score: Math.round(gameResult.score.finalScore),
+          correct: apiResult.isCorrect,
+          score: apiResult.pointsEarned,
           maxScore: basePoints,
           timeTaken: gameResult.elapsedMs,
+          correctAnswer: apiResult.correctAnswer,
+          explanation: apiResult.explanation,
         };
 
-        if (exResult.correct) {
-          onComplete(exResult);
-        } else {
-          onComplete({
-            ...exResult,
-            correctAnswer: `Match all ${pairs.length} pairs`,
-          });
-        }
+        onComplete(exResult);
       } catch (error) {
         console.error('Error submitting game result:', error);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [pairs.length, basePoints, onComplete]
+    [exercise.id, basePoints, onComplete]
   );
 
   // Handle game completion

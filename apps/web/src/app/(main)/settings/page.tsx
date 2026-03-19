@@ -1,12 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Check, Loader2 } from 'lucide-react';
+import { AlertCircle, Check, Loader2, Mail, Settings, User } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { apiClient, ApiError } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
 
 const profileSchema = z.object({
   firstName: z
@@ -41,8 +42,9 @@ export default function SettingsPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
+    watch,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -50,6 +52,9 @@ export default function SettingsPage() {
       lastName: '',
     },
   });
+
+  const firstName = watch('firstName');
+  const lastName = watch('lastName');
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -80,8 +85,11 @@ export default function SettingsPage() {
         firstName: data.firstName,
         lastName: data.lastName,
       });
+      // Update the navbar immediately
+      useAuthStore.getState().setProfileName(data.firstName);
+      // Reset form dirty state so the button reflects saved state
+      reset(data);
       setSaveSuccess(true);
-      // Auto-dismiss success message after 3 seconds
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       const message =
@@ -92,130 +100,171 @@ export default function SettingsPage() {
     }
   };
 
+  // Build initials for the avatar
+  const initials =
+    firstName || lastName
+      ? `${(firstName?.[0] ?? '').toUpperCase()}${(lastName?.[0] ?? '').toUpperCase()}`
+      : (email?.[0]?.toUpperCase() ?? '?');
+
   if (loading) {
     return (
-      <main id="main-content" tabIndex={-1} className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center py-12">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center py-20">
           <Loader2 className="h-6 w-6 animate-spin text-slate-400" aria-hidden="true" />
-          <span className="ml-2 text-slate-400">Loading profile...</span>
+          <span className="ml-3 text-slate-400">Loading profile...</span>
         </div>
       </main>
     );
   }
 
   return (
-    <main id="main-content" tabIndex={-1} className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold text-slate-100">Settings</h1>
-      <p className="mt-1 text-sm text-slate-400">Manage your profile information</p>
+    <main id="main-content" tabIndex={-1} className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Page Header */}
+      <div className="flex items-center gap-3">
+        <div className="rounded-lg bg-cyan-500/10 p-2">
+          <Settings className="h-6 w-6 text-cyan-400" aria-hidden="true" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100">Settings</h1>
+          <p className="text-sm text-slate-400">Manage your account and profile</p>
+        </div>
+      </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
         className="mt-8 space-y-6"
         aria-label="Update profile">
-        <div className="rounded-lg border border-slate-700 bg-slate-800 p-6 shadow-lg">
-          <h2 className="text-lg font-semibold text-slate-100">Profile</h2>
-
-          {/* Email (read-only) */}
-          <div className="mt-4 space-y-2">
-            <label className="block text-sm font-medium text-slate-400">Email address</label>
-            <p className="text-sm text-slate-300">{email}</p>
-          </div>
-
-          {/* Name Fields */}
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            {/* First Name */}
-            <div className="space-y-2">
-              <label htmlFor="firstName" className="block text-sm font-medium text-slate-200">
-                First name
-              </label>
-              <input
-                {...register('firstName')}
-                id="firstName"
-                type="text"
-                autoComplete="given-name"
-                disabled={saving}
-                aria-invalid={!!errors.firstName}
-                aria-describedby={errors.firstName ? 'firstName-error' : undefined}
-                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
-                  errors.firstName
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-slate-600 focus:border-blue-500 focus:ring-blue-500'
-                }`}
-              />
-              {errors.firstName && (
-                <p
-                  id="firstName-error"
-                  role="alert"
-                  className="flex items-center gap-1 text-sm text-red-400">
-                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
-                  {errors.firstName.message}
-                </p>
-              )}
-            </div>
-
-            {/* Last Name */}
-            <div className="space-y-2">
-              <label htmlFor="lastName" className="block text-sm font-medium text-slate-200">
-                Last name
-              </label>
-              <input
-                {...register('lastName')}
-                id="lastName"
-                type="text"
-                autoComplete="family-name"
-                disabled={saving}
-                aria-invalid={!!errors.lastName}
-                aria-describedby={errors.lastName ? 'lastName-error' : undefined}
-                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
-                  errors.lastName
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-slate-600 focus:border-blue-500 focus:ring-blue-500'
-                }`}
-              />
-              {errors.lastName && (
-                <p
-                  id="lastName-error"
-                  role="alert"
-                  className="flex items-center gap-1 text-sm text-red-400">
-                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
-                  {errors.lastName.message}
-                </p>
-              )}
+        {/* Profile Card */}
+        <div className="overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-800/60 to-slate-700/40 shadow-lg backdrop-blur-sm">
+          {/* Card Header with avatar */}
+          <div className="border-b border-slate-700/50 px-6 py-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 text-lg font-bold text-white shadow-lg ring-2 ring-cyan-400/20">
+                {initials}
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-slate-100">Profile</h2>
+                <p className="text-sm text-slate-400">Your personal information</p>
+              </div>
             </div>
           </div>
 
-          {/* Error Alert */}
-          {saveError && (
-            <div
-              role="alert"
-              className="mt-4 flex items-start gap-3 rounded-md border border-red-800 bg-red-950 p-3">
-              <AlertCircle className="h-5 w-5 shrink-0 text-red-400" aria-hidden="true" />
-              <p className="text-sm font-medium text-red-200">{saveError}</p>
+          <div className="space-y-5 px-6 py-5">
+            {/* Email (read-only) */}
+            <div>
+              <label className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-400">
+                <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                Email address
+              </label>
+              <p className="text-sm text-slate-200">{email}</p>
             </div>
-          )}
 
-          {/* Success Alert */}
-          {saveSuccess && (
-            <div
-              role="status"
-              className="mt-4 flex items-center gap-2 rounded-md border border-green-800 bg-green-950 p-3">
-              <Check className="h-5 w-5 text-green-400" aria-hidden="true" />
-              <p className="text-sm font-medium text-green-200">Profile updated successfully.</p>
+            {/* Name Fields */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* First Name */}
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-300">
+                  <User className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
+                  First name
+                </label>
+                <input
+                  {...register('firstName')}
+                  id="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  disabled={saving}
+                  aria-invalid={!!errors.firstName}
+                  aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+                  className={`block w-full rounded-lg border bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
+                    errors.firstName
+                      ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/30'
+                      : 'border-slate-600/50 hover:border-slate-500/50 focus:border-cyan-500 focus:ring-cyan-500/30'
+                  }`}
+                />
+                {errors.firstName && (
+                  <p
+                    id="firstName-error"
+                    role="alert"
+                    className="mt-1.5 flex items-center gap-1 text-sm text-red-400">
+                    <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                    {errors.firstName.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-300">
+                  <User className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
+                  Last name
+                </label>
+                <input
+                  {...register('lastName')}
+                  id="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  disabled={saving}
+                  aria-invalid={!!errors.lastName}
+                  aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+                  className={`block w-full rounded-lg border bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
+                    errors.lastName
+                      ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/30'
+                      : 'border-slate-600/50 hover:border-slate-500/50 focus:border-cyan-500 focus:ring-cyan-500/30'
+                  }`}
+                />
+                {errors.lastName && (
+                  <p
+                    id="lastName-error"
+                    role="alert"
+                    className="mt-1.5 flex items-center gap-1 text-sm text-red-400">
+                    <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                    {errors.lastName.message}
+                  </p>
+                )}
+              </div>
             </div>
-          )}
 
-          {/* Save Button */}
-          <div className="mt-6">
+            {/* Alerts */}
+            {saveError && (
+              <div
+                role="alert"
+                className="flex items-start gap-3 rounded-lg border border-red-800/50 bg-red-950/50 p-3">
+                <AlertCircle className="h-5 w-5 shrink-0 text-red-400" aria-hidden="true" />
+                <p className="text-sm font-medium text-red-200">{saveError}</p>
+              </div>
+            )}
+
+            {saveSuccess && (
+              <div
+                role="status"
+                className="flex items-center gap-2 rounded-lg border border-emerald-800/50 bg-emerald-950/50 p-3">
+                <Check className="h-5 w-5 text-emerald-400" aria-hidden="true" />
+                <p className="text-sm font-medium text-emerald-200">
+                  Profile updated successfully.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Card Footer */}
+          <div className="flex items-center justify-end border-t border-slate-700/50 bg-slate-800/30 px-6 py-4">
             <button
               type="submit"
-              disabled={saving}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50">
+              disabled={saving || !isDirty}
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:from-cyan-600 hover:to-emerald-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-40">
               {saving ? (
-                <span className="flex items-center gap-2">
+                <>
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   Saving...
-                </span>
+                </>
               ) : (
                 'Save changes'
               )}

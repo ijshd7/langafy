@@ -40,12 +40,15 @@ export interface AuthState {
   syncing: boolean;
   error: string | null;
   pendingProfile: PendingProfile | null;
+  /** Display name from the backend profile (firstName, or "firstName lastName"). */
+  profileName: string | null;
 
   // Actions
   setUser: (user: FirebaseUser | null) => void;
   setLoading: (loading: boolean) => void;
   setSyncing: (syncing: boolean) => void;
   setError: (error: string | null) => void;
+  setProfileName: (name: string | null) => void;
   signIn: (email: string, password: string) => Promise<FirebaseUser>;
   signUp: (
     email: string,
@@ -74,12 +77,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   syncing: false,
   error: null,
   pendingProfile: null,
+  profileName: null,
 
   // State setters
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
   setSyncing: (syncing) => set({ syncing }),
   setError: (error) => set({ error }),
+  setProfileName: (name) => set({ profileName: name }),
   clearError: () => set({ error: null }),
 
   // Sign in with email and password
@@ -118,7 +123,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await firebase.signOut();
       clearAuthCookie();
-      set({ user: null, loading: false, pendingProfile: null });
+      set({ user: null, loading: false, pendingProfile: null, profileName: null });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
       set({ error: errorMessage, loading: false });

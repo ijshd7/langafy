@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useCurrentUser, useAuth, useAuthLoading } from '@/hooks/useAuth';
+import { useAuthStore } from '@/stores/authStore';
 
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -16,6 +17,7 @@ const NAV_LINKS = [
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const user = useCurrentUser();
   const authLoading = useAuthLoading();
+  const profileName = useAuthStore((s) => s.profileName);
   const { signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -71,7 +73,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex items-center gap-3">
             {user && (
               <span className="hidden text-sm text-slate-400 sm:inline">
-                {user.displayName || user.email?.split('@')[0]}
+                {profileName || user.displayName || user.email?.split('@')[0]}
               </span>
             )}
             <button

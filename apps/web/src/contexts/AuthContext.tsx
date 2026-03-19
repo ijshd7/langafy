@@ -60,7 +60,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         : {};
 
       apiClient
-        .post('/auth/sync', syncBody)
+        .post<{ firstName?: string; lastName?: string; displayName?: string }>(
+          '/auth/sync',
+          syncBody
+        )
+        .then((res) => {
+          // Populate profileName from the backend so the navbar can show it
+          const name = res.firstName || res.displayName || null;
+          useAuthStore.getState().setProfileName(name);
+        })
         .catch((err) => {
           console.error('Background auth sync failed:', err);
         })

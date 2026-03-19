@@ -94,11 +94,15 @@ export default function LoginPage() {
         </div>
 
         {/* Form Card */}
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6" aria-label="Sign in">
-          <div className="rounded-lg border border-slate-700 bg-slate-800 p-8 shadow-lg">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-6"
+          aria-label="Sign in">
+          <div className="space-y-5 overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-800/60 to-slate-700/40 p-8 shadow-lg backdrop-blur-sm">
             {/* Email Field */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-slate-200">
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-300">
                 Email address
               </label>
               <input
@@ -110,23 +114,26 @@ export default function LoginPage() {
                 disabled={isSubmitting}
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? 'email-error' : undefined}
-                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`block w-full rounded-lg border bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
                   errors.email
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-slate-600 focus:border-blue-500 focus:ring-blue-500'
+                    ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/30'
+                    : 'border-slate-600/50 hover:border-slate-500/50 focus:border-cyan-500 focus:ring-cyan-500/30'
                 }`}
               />
               {errors.email && (
-                <p id="email-error" role="alert" className="flex items-center gap-1 text-sm text-red-400">
-                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                <p
+                  id="email-error"
+                  role="alert"
+                  className="flex items-center gap-1 text-sm text-red-400">
+                  <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
                   {errors.email.message}
                 </p>
               )}
             </div>
 
             {/* Password Field */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-slate-200">
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-300">
                 Password
               </label>
               <input
@@ -138,15 +145,18 @@ export default function LoginPage() {
                 disabled={isSubmitting}
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? 'password-error' : undefined}
-                className={`block w-full rounded-md border bg-slate-700 px-4 py-2 text-white placeholder-slate-500 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`block w-full rounded-lg border bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
                   errors.password
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-slate-600 focus:border-blue-500 focus:ring-blue-500'
+                    ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/30'
+                    : 'border-slate-600/50 hover:border-slate-500/50 focus:border-cyan-500 focus:ring-cyan-500/30'
                 }`}
               />
               {errors.password && (
-                <p id="password-error" role="alert" className="flex items-center gap-1 text-sm text-red-400">
-                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                <p
+                  id="password-error"
+                  role="alert"
+                  className="flex items-center gap-1 text-sm text-red-400">
+                  <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
                   {errors.password.message}
                 </p>
               )}
@@ -154,11 +164,11 @@ export default function LoginPage() {
 
             {/* Submit Error Alert */}
             {submitError && (
-              <div role="alert" className="flex items-start gap-3 rounded-md border border-red-800 bg-red-950 p-3">
+              <div
+                role="alert"
+                className="flex items-start gap-3 rounded-lg border border-red-800/50 bg-red-950/50 p-3">
                 <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-400" aria-hidden="true" />
-                <div>
-                  <p className="text-sm font-medium text-red-200">{submitError}</p>
-                </div>
+                <p className="text-sm font-medium text-red-200">{submitError}</p>
               </div>
             )}
 
@@ -166,7 +176,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50">
+              className="w-full rounded-lg bg-gradient-to-r from-cyan-500 to-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:from-cyan-600 hover:to-emerald-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-40">
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -184,7 +194,7 @@ export default function LoginPage() {
           Don&apos;t have an account?{' '}
           <Link
             href="/signup"
-            className="font-medium text-blue-400 transition-colors hover:text-blue-300">
+            className="font-medium text-cyan-400 transition-colors hover:text-cyan-300">
             Sign up
           </Link>
         </p>

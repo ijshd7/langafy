@@ -2,21 +2,27 @@
 
 A language learning platform with CEFR-aligned lessons, conversational AI practice, and mini-games. The MVP targets Spanish, but the architecture supports multiple target languages across web, mobile, and cloud deployment.
 
+## Screenshots
+
+![Dashboard](screenshot1.png)
+
+![Lesson exercise](screenshot2.png)
+
 ## What's Built
 
-| Feature | Web | Mobile |
-|---------|-----|--------|
-| Firebase authentication (email + Google) | ✓ | ✓ |
-| CEFR-aligned content (A1–C2, units → lessons → exercises) | ✓ | ✓ |
-| Multiple choice exercises | ✓ | ✓ |
-| Fill-in-the-blank exercises | ✓ | ✓ |
-| Word scramble mini-game | ✓ | ✓ |
-| Flashcard matching mini-game | ✓ | ✓ |
-| Progress tracking (per-exercise, lesson, unit, level) | ✓ | ✓ |
-| AI conversation practice (streaming + non-streaming) | ✓ | ✓ |
-| Voice input for conversation (speech recognition) | — | ✓ |
-| Text-to-speech pronunciation | — | ✓ |
-| Vocabulary bank with spaced repetition (SM-2) | ✓ | ✓ |
+| Feature                                                   | Web | Mobile |
+| --------------------------------------------------------- | --- | ------ |
+| Firebase authentication (email + Google)                  | ✓   | ✓      |
+| CEFR-aligned content (A1–C2, units → lessons → exercises) | ✓   | ✓      |
+| Multiple choice exercises                                 | ✓   | ✓      |
+| Fill-in-the-blank exercises                               | ✓   | ✓      |
+| Word scramble mini-game                                   | ✓   | ✓      |
+| Flashcard matching mini-game                              | ✓   | ✓      |
+| Progress tracking (per-exercise, lesson, unit, level)     | ✓   | ✓      |
+| AI conversation practice (streaming + non-streaming)      | ✓   | ✓      |
+| Voice input for conversation (speech recognition)         | —   | ✓      |
+| Text-to-speech pronunciation                              | —   | ✓      |
+| Vocabulary bank with spaced repetition (SM-2)             | ✓   | ✓      |
 
 ## Prerequisites
 
@@ -65,6 +71,7 @@ npm run docker:up
 ```
 
 This starts:
+
 - **PostgreSQL** on port `5432`
 - **API** on `http://localhost:5000` (Swagger UI at `/swagger`)
 - **Web app** on `http://localhost:3000`
@@ -152,16 +159,16 @@ langafy/
 
 ### Root `.env` (consumed by docker-compose)
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `POSTGRES_USER` | No (default: `langafy`) | PostgreSQL username |
-| `POSTGRES_PASSWORD` | No (default: `langafy_dev`) | PostgreSQL password |
-| `POSTGRES_DB` | No (default: `langafy`) | PostgreSQL database name |
-| `FIREBASE_PROJECT_ID` | Yes | Firebase project ID for API JWT validation |
-| `OPENROUTER_API_KEY` | Yes | OpenRouter API key for AI conversations |
-| `ALLOWED_ORIGIN` | No (default: `http://localhost:3000`) | CORS origin for production |
-| `NEXT_PUBLIC_FIREBASE_*` | Yes | Firebase public keys baked into the web build |
-| `NEXT_PUBLIC_API_URL` | No (default: `http://localhost:5000`) | API URL for the web app |
+| Variable                 | Required                              | Description                                   |
+| ------------------------ | ------------------------------------- | --------------------------------------------- |
+| `POSTGRES_USER`          | No (default: `langafy`)               | PostgreSQL username                           |
+| `POSTGRES_PASSWORD`      | No (default: `langafy_dev`)           | PostgreSQL password                           |
+| `POSTGRES_DB`            | No (default: `langafy`)               | PostgreSQL database name                      |
+| `FIREBASE_PROJECT_ID`    | Yes                                   | Firebase project ID for API JWT validation    |
+| `OPENROUTER_API_KEY`     | Yes                                   | OpenRouter API key for AI conversations       |
+| `ALLOWED_ORIGIN`         | No (default: `http://localhost:3000`) | CORS origin for production                    |
+| `NEXT_PUBLIC_FIREBASE_*` | Yes                                   | Firebase public keys baked into the web build |
+| `NEXT_PUBLIC_API_URL`    | No (default: `http://localhost:5000`) | API URL for the web app                       |
 
 Copy `.env.example` for the full list with descriptions.
 
@@ -177,42 +184,42 @@ Copy `apps/mobile/.env.example`. `EXPO_PUBLIC_*` vars are injected into `Constan
 
 ### Development
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev:web` | Start Next.js dev server (`localhost:3000`) |
-| `npm run dev:mobile` | Start Expo dev server |
-| `npm run dev:api` | Start .NET API (`localhost:5000`) |
+| Script               | Description                                 |
+| -------------------- | ------------------------------------------- |
+| `npm run dev:web`    | Start Next.js dev server (`localhost:3000`) |
+| `npm run dev:mobile` | Start Expo dev server                       |
+| `npm run dev:api`    | Start .NET API (`localhost:5000`)           |
 
 ### Docker
 
-| Script | Description |
-|--------|-------------|
-| `npm run docker:up` | Start all services (db, api, web) |
-| `npm run docker:rebuild` | Rebuild images and start |
-| `npm run docker:down` | Stop all services |
+| Script                   | Description                       |
+| ------------------------ | --------------------------------- |
+| `npm run docker:up`      | Start all services (db, api, web) |
+| `npm run docker:rebuild` | Rebuild images and start          |
+| `npm run docker:down`    | Stop all services                 |
 
 ### Database
 
-| Script | Description |
-|--------|-------------|
-| `npm run seed` | Seed the database with Spanish content |
-| `npm run seed:reset` | Drop and re-seed the database |
-| `npm run seed:help` | Show seed script options |
+| Script               | Description                            |
+| -------------------- | -------------------------------------- |
+| `npm run seed`       | Seed the database with Spanish content |
+| `npm run seed:reset` | Drop and re-seed the database          |
+| `npm run seed:help`  | Show seed script options               |
 
 ### Quality
 
-| Script | Description |
-|--------|-------------|
-| `npm run lint` | ESLint (web + mobile) + `dotnet format --verify-no-changes` |
-| `npm run format` | Prettier format all files |
-| `npm run format:check` | Verify formatting without writing |
+| Script                 | Description                                                 |
+| ---------------------- | ----------------------------------------------------------- |
+| `npm run lint`         | ESLint (web + mobile) + `dotnet format --verify-no-changes` |
+| `npm run format`       | Prettier format all files                                   |
+| `npm run format:check` | Verify formatting without writing                           |
 
 ### Versioning
 
-| Script | Description |
-|--------|-------------|
-| `npm run bump:patch` | `0.1.0` → `0.1.1` — bug fixes |
-| `npm run bump:minor` | `0.1.0` → `0.2.0` — new features |
+| Script               | Description                          |
+| -------------------- | ------------------------------------ |
+| `npm run bump:patch` | `0.1.0` → `0.1.1` — bug fixes        |
+| `npm run bump:minor` | `0.1.0` → `0.2.0` — new features     |
 | `npm run bump:major` | `0.1.0` → `1.0.0` — breaking changes |
 
 The bump script updates all `package.json` files and the `.csproj <Version>` element atomically (lockstep versioning). After bumping:
@@ -226,20 +233,20 @@ git tag vX.Y.Z
 
 ## Technology Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Web** | Next.js + React + Tailwind CSS | 16 / 19 / 4 |
-| **Web animations** | framer-motion | 12 |
-| **Mobile** | Expo + React Native + NativeWind | 54 / 0.81 / 4.2 |
-| **Mobile animations** | react-native-reanimated | 4.1 |
-| **API** | ASP.NET Core / C# | net10.0 |
-| **Database** | PostgreSQL | 16 |
-| **Auth** | Firebase Authentication | SDK 12 |
-| **AI** | OpenRouter | — |
-| **Logging** | Serilog | 10.0 |
-| **Containerization** | Docker + docker-compose | — |
-| **Shared types** | `@langafy/shared-types` | — |
-| **Shared game logic** | `@langafy/shared-game-logic` | — |
+| Layer                 | Technology                       | Version         |
+| --------------------- | -------------------------------- | --------------- |
+| **Web**               | Next.js + React + Tailwind CSS   | 16 / 19 / 4     |
+| **Web animations**    | framer-motion                    | 12              |
+| **Mobile**            | Expo + React Native + NativeWind | 54 / 0.81 / 4.2 |
+| **Mobile animations** | react-native-reanimated          | 4.1             |
+| **API**               | ASP.NET Core / C#                | net10.0         |
+| **Database**          | PostgreSQL                       | 16              |
+| **Auth**              | Firebase Authentication          | SDK 12          |
+| **AI**                | OpenRouter                       | —               |
+| **Logging**           | Serilog                          | 10.0            |
+| **Containerization**  | Docker + docker-compose          | —               |
+| **Shared types**      | `@langafy/shared-types`          | —               |
+| **Shared game logic** | `@langafy/shared-game-logic`     | —               |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full technical design, trade-off analysis, and GCP deployment architecture.
 
